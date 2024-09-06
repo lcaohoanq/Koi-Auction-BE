@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "unsplash.api")
 @Getter
+@Setter
 public class UnsplashConfig {
     private String root;
     private String clientId;
