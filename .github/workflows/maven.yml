@@ -21,7 +21,7 @@ jobs:
     services:
       # Define the H2 service container
       h2:
-        image: h2database/h2:latest
+        image: oscarfonts/h2:latest
         ports:
           - "1521:1521"  # Map port 1521 from the container to the host
         options: >-
