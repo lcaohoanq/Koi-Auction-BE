@@ -17,7 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 class UserServiceTest {
 
     @InjectMocks
-    private UserService userService;
+    private UserService  userService;
 
     @BeforeEach
     void setUp() {
