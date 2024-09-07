@@ -9,8 +9,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.mockito.InjectMocks;
 import com.swp391_09.Koi_BE.dtos.UserRegisterDTO;
 import com.swp391_09.Koi_BE.models.User;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
