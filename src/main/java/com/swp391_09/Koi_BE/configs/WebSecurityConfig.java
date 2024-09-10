@@ -43,6 +43,10 @@ public class WebSecurityConfig {
                     .requestMatchers(
                         String.format("%s/users/register", apiPrefix),
                         String.format("%s/users/login", apiPrefix)
+
+                        //demo api
+                        //String.format("%s/products/test/view", apiPrefix)
+
                     )
                     .permitAll()
 
