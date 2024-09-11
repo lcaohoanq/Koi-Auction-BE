@@ -34,44 +34,48 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
-        throws Exception {
+            throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
 
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
-            .authorizeHttpRequests(requests -> {
-                requests
-                    .requestMatchers(
-                        String.format("%s/users/register", apiPrefix),
-                        String.format("%s/users/login", apiPrefix)
-
-                        //demo api
-                        //String.format("%s/products/test/view", apiPrefix)
+                .authorizeHttpRequests(requests -> {
+                    requests
+                            .requestMatchers(
+                                    String.format("%s/users/register", apiPrefix),
+                                    String.format("%s/users/login", apiPrefix)
+                    // demo api
+                    // String.format("%s/products/test/view", apiPrefix)
 
                     )
-                    .permitAll()
+                            .permitAll()
 
-                    .requestMatchers(GET,
-                                     String.format("%s/roles**", apiPrefix)).permitAll()
+                            .requestMatchers(GET,
+                                    String.format("%s/roles**", apiPrefix))
+                            .permitAll()
 
-                    .requestMatchers(GET,
-                                     String.format("%s/categories**", apiPrefix)).permitAll()
+                            .requestMatchers(POST,
+                                    String.format("%s/autho2/**", apiPrefix))
+                            .permitAll()
 
-                    .requestMatchers(POST,
-                                     String.format("%s/categories/**", apiPrefix))
-                    .hasAnyRole(Role.MANAGER)
+                            .requestMatchers(GET,
+                                    String.format("%s/categories**", apiPrefix))
+                            .permitAll()
 
-                    .requestMatchers(PUT,
-                                     String.format("%s/categories/**", apiPrefix))
-                    .hasAnyRole(Role.MANAGER)
+                            .requestMatchers(POST,
+                                    String.format("%s/categories/**", apiPrefix))
+                            .hasAnyRole(Role.MANAGER)
 
-                    .requestMatchers(DELETE,
-                                     String.format("%s/categories/**", apiPrefix))
-                    .hasAnyRole(Role.MANAGER)
+                            .requestMatchers(PUT,
+                                    String.format("%s/categories/**", apiPrefix))
+                            .hasAnyRole(Role.MANAGER)
 
-                    .anyRequest().authenticated();
-                //.anyRequest().permitAll();
+                            .requestMatchers(DELETE,
+                                    String.format("%s/categories/**", apiPrefix))
+                            .hasAnyRole(Role.MANAGER)
+                            .anyRequest().authenticated();
+                    // .anyRequest().permitAll();
 
-            });
+                });
 
         return http.build();
     }

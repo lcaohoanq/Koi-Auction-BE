@@ -8,8 +8,6 @@ import com.swp391_09.Koi_BE.models.Role;
 import com.swp391_09.Koi_BE.models.User;
 import com.swp391_09.Koi_BE.repositories.RoleRepository;
 import com.swp391_09.Koi_BE.repositories.UserRepository;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +38,7 @@ public class UserService implements IUserService {
         }
 
         Role role = roleRepository.findById(userRegisterDTO.getRoleId())
-            .orElseThrow(() -> new DataNotFoundException("Role not found"));
+                .orElseThrow(() -> new DataNotFoundException("Role not found"));
 
         if(role.getName().toUpperCase().equals(Role.MANAGER)){
             log.error("Cannot create manager account");
@@ -48,14 +46,14 @@ public class UserService implements IUserService {
         }
 
         User newUser = User.builder()
-            .fullName(userRegisterDTO.getFullName())
-            .email(userRegisterDTO.getEmail())
-            .password(userRegisterDTO.getPassword())
-            .address(userRegisterDTO.getAddress())
-            .dob(userRegisterDTO.getDateOfBirth())
-            .facebookAccountId(userRegisterDTO.getFacebookAccountId())
-            .googleAccountId(userRegisterDTO.getGoogleAccountId())
-            .build();
+                .fullName(userRegisterDTO.getFullName())
+                .email(userRegisterDTO.getEmail())
+                .password(userRegisterDTO.getPassword())
+                .address(userRegisterDTO.getAddress())
+                .dob(userRegisterDTO.getDateOfBirth())
+                .facebookAccountId(userRegisterDTO.getFacebookAccountId())
+                .googleAccountId(userRegisterDTO.getGoogleAccountId())
+                .build();
 
         newUser.setRole(role);
 
@@ -80,9 +78,38 @@ public class UserService implements IUserService {
             }
         }
         UsernamePasswordAuthenticationToken authenticationToken =
-            new UsernamePasswordAuthenticationToken(email, password, existingUser.getAuthorities());
+                new UsernamePasswordAuthenticationToken(email, password, existingUser.getAuthorities());
         authenticationManager.authenticate(authenticationToken);
         return jwtTokenUtils.generateToken(existingUser);
+    }
+
+    @Override
+    public String loginOrRegisterGoogle(String email, String name, String googleId) throws Exception {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        User user;
+
+        if (optionalUser.isEmpty()) {
+            // Register new user
+            Role memberRole = roleRepository.findByName("MEMBER")
+                    .orElseThrow(() -> new DataNotFoundException("Default MEMBER role not found"));
+
+            User newUser = User.builder()
+                    .fullName(name)
+                    .email(email)
+                    .googleAccountId(1)
+                    .role(memberRole)
+                    .build();
+
+            user = userRepository.save(newUser);
+        } else {
+            // Login existing user
+            user = optionalUser.get();
+            if (user.getGoogleAccountId() != 1) {
+                throw new PermissionDeniedException("Cannot login with google account");
+            }
+        }
+
+        return jwtTokenUtils.generateToken(user);
     }
 
 }
