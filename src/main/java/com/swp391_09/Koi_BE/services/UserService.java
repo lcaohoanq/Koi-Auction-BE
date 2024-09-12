@@ -51,6 +51,7 @@ public class UserService implements IUserService {
                 .password(userRegisterDTO.getPassword())
                 .address(userRegisterDTO.getAddress())
                 .dob(userRegisterDTO.getDateOfBirth())
+                .avatarUrl("https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1677509740.jpg")
                 .facebookAccountId(userRegisterDTO.getFacebookAccountId())
                 .googleAccountId(userRegisterDTO.getGoogleAccountId())
                 .build();
@@ -84,7 +85,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public String loginOrRegisterGoogle(String email, String name, String googleId) throws Exception {
+    public String loginOrRegisterGoogle(String email, String name, String googleId, String avatarUrl) throws Exception {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         User user;
 
@@ -97,6 +98,7 @@ public class UserService implements IUserService {
                     .fullName(name)
                     .email(email)
                     .googleAccountId(1)
+                    .avatarUrl(avatarUrl)
                     .role(memberRole)
                     .build();
 

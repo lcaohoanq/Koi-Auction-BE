@@ -53,6 +53,9 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name="date_of_birth")
     private Date dob;
 
+    @Column(name="avatar_url")
+    private String avatarUrl;
+
     @Column(name="facebook_account_id", columnDefinition = "INT(11)")
     private int facebookAccountId;
 
