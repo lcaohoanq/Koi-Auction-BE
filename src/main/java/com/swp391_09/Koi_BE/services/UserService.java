@@ -51,6 +51,7 @@ public class UserService implements IUserService {
                 .password(userRegisterDTO.getPassword())
                 .address(userRegisterDTO.getAddress())
                 .dob(userRegisterDTO.getDateOfBirth())
+                .avatarUrl("https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1677509740.jpg")
                 .facebookAccountId(userRegisterDTO.getFacebookAccountId())
                 .googleAccountId(userRegisterDTO.getGoogleAccountId())
                 .build();
