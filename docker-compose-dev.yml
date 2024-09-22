@@ -16,7 +16,7 @@ services:
     volumes: 
       - mysql_data:/var/lib/mysql        # Persist MySQL data
     ports:
-      - "3303:3306"
+      - "3306:3306"
 
   phpmyadmin:
     image: phpmyadmin:5

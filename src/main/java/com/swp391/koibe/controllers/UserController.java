@@ -73,7 +73,7 @@ public class UserController {
                                                         .build());
         }
 
-        if (!userRegisterDTO.getPassword().equals(userRegisterDTO.getRetypePassword())) {
+        if (!userRegisterDTO.getPassword().equals(userRegisterDTO.getConfirmPassword())) {
             return ResponseEntity.badRequest()
                 .body(RegisterResponse.builder()
                           .message(localizationUtils.getLocalizedMessage(MessageKeys.PASSWORD_NOT_MATCH))

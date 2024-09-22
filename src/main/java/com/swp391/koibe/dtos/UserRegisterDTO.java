@@ -32,9 +32,9 @@ public class UserRegisterDTO {
     @NotBlank(message = "Password is required")
     private String password;
 
-    @JsonProperty("retype_password")
-    @NotBlank(message = "Retype password is required")
-    private String retypePassword;
+    @JsonProperty("confirm_password")
+    @NotBlank(message = "Confirm password is required")
+    private String confirmPassword;
 
     @JsonProperty("date_of_birth")
     private Date dateOfBirth;
