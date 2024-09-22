@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -40,8 +41,11 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "id")
     private Long id;
 
-    @Column(name="fullname", length = 100)
-    private String fullName;
+    @Column(name="first_name", length = 100)
+    private String firstName;
+
+    @Column(name="last_name", length = 100)
+    private String lastName;
 
     @Column(name="phone_number", length = 20)
     private String phoneNumber;
@@ -54,6 +58,9 @@ public class User extends BaseEntity implements UserDetails {
 
     @Column(name="password", length = 200)
     private String password;
+
+    @Transient //do not save to database, check if needed
+    private String confirmPassword;
 
 //    @Column(name="is_active", columnDefinition = "TINYINT(1)")
 //    private boolean isActive;

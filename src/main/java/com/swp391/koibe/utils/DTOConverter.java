@@ -10,7 +10,8 @@ public class DTOConverter {
     public static UserResponse convertToUserDTO(User user) {
         return UserResponse.builder()
             .id(user.getId())
-            .fullName(user.getFullName())
+            .firstName(user.getFirstName())
+            .lastName(user.getLastName())
             .phoneNumber(user.getPhoneNumber())
             .email(user.getEmail())
             .address(user.getAddress())

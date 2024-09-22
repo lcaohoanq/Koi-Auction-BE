@@ -50,7 +50,8 @@ public class UserService implements IUserService {
         }
 
         User newUser = User.builder()
-                .fullName(userRegisterDTO.getFullName())
+                .firstName(userRegisterDTO.getFirstName())
+                .lastName(userRegisterDTO.getLastName())
                 .email(userRegisterDTO.getEmail())
                 .password(userRegisterDTO.getPassword())
                 .address(userRegisterDTO.getAddress())
@@ -99,7 +100,7 @@ public class UserService implements IUserService {
                     .orElseThrow(() -> new DataNotFoundException("Default MEMBER role not found"));
 
             User newUser = User.builder()
-                    .fullName(name)
+                    .firstName(name)
                     .email(email)
                     .googleAccountId(1)
                     .avatarUrl(avatarUrl)
