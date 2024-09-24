@@ -2,25 +2,15 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Máy chủ: mysql_db
--- Thời gian đã tạo: Th9 22, 2024 lúc 04:25 PM
--- Phiên bản máy phục vụ: 9.0.1
--- Phiên bản PHP: 8.2.23
-
-DROP DATABASE IF EXISTS koi_company_dev;
--- Nếu cơ sở dữ liệu koi_company_dev chưa tồn tại, thực hiện câu lệnh CREATE DATABASE
-CREATE DATABASE IF NOT EXISTS koi_company_dev;
-
--- Sử dụng cơ sở dữ liệu koi_company_dev
-USE koi_company_dev;
+-- Host: mysql_db_koi_development
+-- Generation Time: Sep 24, 2024 at 02:32 AM
+-- Server version: 9.0.1
+-- PHP Version: 8.2.23
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -28,27 +18,133 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Cơ sở dữ liệu: `koi_company_dev`
+-- Database: `koi_company_dev`
 --
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `auctions`
+-- Table structure for table `auctions`
 --
 
 CREATE TABLE `auctions` (
   `id` bigint NOT NULL,
-  `status` enum('ACTIVE','ENDED','ONGOING') DEFAULT NULL,
+  `status` enum('ACTIVE','ENDED','ONGOING') COLLATE utf8mb4_general_ci DEFAULT NULL,
   `end_time` datetime(6) DEFAULT NULL,
   `start_time` datetime(6) DEFAULT NULL,
-  `title` varchar(255) DEFAULT NULL
+  `title` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `auctions`
+--
+
+INSERT INTO `auctions` (`id`, `status`, `end_time`, `start_time`, `title`) VALUES
+(1, 'ENDED', '2024-09-13 04:29:14.164000', '2024-08-29 04:29:14.164000', ' Auction0'),
+(2, 'ENDED', '2024-08-25 05:12:57.662000', '2024-08-24 05:12:57.662000', ' Auction1'),
+(3, 'ENDED', '2024-09-02 04:33:25.697000', '2024-08-16 04:33:25.697000', ' Auction2'),
+(4, 'ENDED', '2024-08-25 04:18:05.149000', '2024-08-15 04:18:05.149000', ' Auction3'),
+(5, 'ENDED', '2024-09-23 15:26:57.481000', '2024-09-05 15:26:57.481000', ' Auction4'),
+(6, 'ENDED', '2024-09-10 04:59:46.963000', '2024-08-25 04:59:46.963000', ' Auction5'),
+(7, 'ENDED', '2024-08-27 17:10:57.954000', '2024-08-13 17:10:57.954000', ' Auction6'),
+(8, 'ENDED', '2024-09-13 10:25:02.371000', '2024-09-03 10:25:02.371000', ' Auction7'),
+(9, 'ENDED', '2024-09-07 03:22:34.482000', '2024-08-30 03:22:34.482000', ' Auction8'),
+(10, 'ENDED', '2024-09-23 18:11:36.723000', '2024-09-18 18:11:36.723000', ' Auction9'),
+(11, 'ENDED', '2024-09-23 08:18:45.882000', '2024-09-17 08:18:45.882000', ' Auction10'),
+(12, 'ENDED', '2024-09-09 07:12:00.520000', '2024-08-23 07:12:00.520000', ' Auction11'),
+(13, 'ENDED', '2024-09-12 06:28:22.727000', '2024-08-27 06:28:22.727000', ' Auction12'),
+(14, 'ENDED', '2024-09-02 06:22:10.487000', '2024-08-16 06:22:10.487000', ' Auction13'),
+(15, 'ENDED', '2024-09-04 22:55:21.729000', '2024-09-02 22:55:21.729000', ' Auction14'),
+(16, 'ENDED', '2024-09-11 09:39:58.155000', '2024-08-25 09:39:58.155000', ' Auction15'),
+(17, 'ENDED', '2024-09-08 00:51:15.190000', '2024-09-01 00:51:15.190000', ' Auction16'),
+(18, 'ENDED', '2024-09-16 17:15:30.034000', '2024-09-04 17:15:30.034000', ' Auction17'),
+(19, 'ENDED', '2024-09-15 10:59:28.682000', '2024-09-12 10:59:28.682000', ' Auction18'),
+(20, 'ENDED', '2024-09-13 00:39:46.130000', '2024-09-11 00:39:46.130000', ' Auction19'),
+(21, 'ENDED', '2024-08-29 00:10:39.792000', '2024-08-25 00:10:39.792000', ' Auction20'),
+(22, 'ENDED', '2024-09-06 02:43:08.527000', '2024-08-25 02:43:08.527000', ' Auction21'),
+(23, 'ENDED', '2024-08-29 16:50:34.287000', '2024-08-23 16:50:34.287000', ' Auction22'),
+(24, 'ENDED', '2024-08-26 04:10:04.791000', '2024-08-16 04:10:04.791000', ' Auction23'),
+(25, 'ENDED', '2024-09-09 14:56:54.904000', '2024-08-22 14:56:54.904000', ' Auction24'),
+(26, 'ENDED', '2024-08-26 15:59:16.179000', '2024-08-12 15:59:16.179000', ' Auction25'),
+(27, 'ENDED', '2024-09-11 19:59:31.836000', '2024-08-25 19:59:31.836000', ' Auction26'),
+(28, 'ENDED', '2024-09-09 11:59:38.268000', '2024-08-29 11:59:38.268000', ' Auction27'),
+(29, 'ENDED', '2024-09-23 13:02:51.255000', '2024-09-05 13:02:51.255000', ' Auction28'),
+(30, 'ENDED', '2024-08-30 09:04:25.803000', '2024-08-12 09:04:25.803000', ' Auction29'),
+(31, 'ENDED', '2024-09-17 15:06:29.694000', '2024-09-08 15:06:29.694000', ' Auction30'),
+(32, 'ENDED', '2024-09-20 15:31:56.773000', '2024-09-07 15:31:56.773000', ' Auction31'),
+(33, 'ENDED', '2024-08-31 13:45:34.270000', '2024-08-16 13:45:34.270000', ' Auction32'),
+(34, 'ENDED', '2024-09-21 00:59:33.445000', '2024-09-09 00:59:33.445000', ' Auction33'),
+(35, 'ENDED', '2024-09-14 10:20:48.607000', '2024-09-12 10:20:48.607000', ' Auction34'),
+(36, 'ENDED', '2024-09-03 03:33:15.412000', '2024-08-20 03:33:15.412000', ' Auction35'),
+(37, 'ENDED', '2024-09-13 10:20:53.955000', '2024-09-03 10:20:53.955000', ' Auction36'),
+(38, 'ENDED', '2024-09-17 18:14:50.514000', '2024-09-08 18:14:50.514000', ' Auction37'),
+(39, 'ENDED', '2024-09-04 22:10:18.230000', '2024-08-21 22:10:18.230000', ' Auction38'),
+(40, 'ENDED', '2024-09-03 22:31:33.363000', '2024-08-21 22:31:33.363000', ' Auction39'),
+(41, 'ENDED', '2024-09-02 08:32:35.705000', '2024-08-21 08:32:35.705000', ' Auction40'),
+(42, 'ENDED', '2024-09-18 22:40:46.268000', '2024-09-16 22:40:46.268000', ' Auction41'),
+(43, 'ENDED', '2024-09-08 06:46:16.133000', '2024-08-23 06:46:16.133000', ' Auction42'),
+(44, 'ENDED', '2024-09-10 19:21:30.211000', '2024-08-31 19:21:30.211000', ' Auction43'),
+(45, 'ENDED', '2024-08-29 20:41:56.450000', '2024-08-21 20:41:56.450000', ' Auction44'),
+(46, 'ENDED', '2024-09-05 13:19:46.177000', '2024-08-25 13:19:46.177000', ' Auction45'),
+(47, 'ENDED', '2024-09-22 09:53:19.109000', '2024-09-08 09:53:19.109000', ' Auction46'),
+(48, 'ENDED', '2024-09-19 14:07:16.762000', '2024-09-04 14:07:16.762000', ' Auction47'),
+(49, 'ENDED', '2024-09-12 16:34:07.351000', '2024-09-09 16:34:07.351000', ' Auction48'),
+(50, 'ENDED', '2024-09-19 16:19:52.460000', '2024-09-06 16:19:52.460000', ' Auction49'),
+(51, 'ENDED', '2024-09-03 11:06:44.510000', '2024-08-19 11:06:44.510000', ' Auction50'),
+(52, 'ENDED', '2024-09-21 04:15:20.175000', '2024-09-12 04:15:20.175000', ' Auction51'),
+(53, 'ENDED', '2024-09-10 06:59:01.868000', '2024-08-24 06:59:01.868000', ' Auction52'),
+(54, 'ENDED', '2024-09-14 10:23:33.986000', '2024-09-04 10:23:33.986000', ' Auction53'),
+(55, 'ENDED', '2024-09-10 01:56:05.108000', '2024-08-26 01:56:05.108000', ' Auction54'),
+(56, 'ENDED', '2024-09-10 08:34:39.802000', '2024-08-30 08:34:39.802000', ' Auction55'),
+(57, 'ENDED', '2024-08-25 17:05:57.701000', '2024-08-24 17:05:57.701000', ' Auction56'),
+(58, 'ENDED', '2024-08-28 07:24:18.611000', '2024-08-13 07:24:18.611000', ' Auction57'),
+(59, 'ENDED', '2024-09-05 09:35:00.460000', '2024-08-19 09:35:00.460000', ' Auction58'),
+(60, 'ENDED', '2024-08-25 10:53:16.511000', '2024-08-11 10:53:16.511000', ' Auction59'),
+(61, 'ENDED', '2024-09-17 04:46:24.851000', '2024-09-09 04:46:24.851000', ' Auction60'),
+(62, 'ENDED', '2024-08-30 04:18:30.878000', '2024-08-26 04:18:30.878000', ' Auction61'),
+(63, 'ENDED', '2024-08-30 14:39:02.512000', '2024-08-16 14:39:02.512000', ' Auction62'),
+(64, 'ENDED', '2024-08-26 05:47:03.050000', '2024-08-09 05:47:03.050000', ' Auction63'),
+(65, 'ENDED', '2024-09-14 20:42:51.207000', '2024-09-02 20:42:51.207000', ' Auction64'),
+(66, 'ENDED', '2024-09-10 21:17:31.200000', '2024-09-07 21:17:31.200000', ' Auction65'),
+(67, 'ENDED', '2024-09-15 13:27:01.063000', '2024-09-07 13:27:01.063000', ' Auction66'),
+(68, 'ENDED', '2024-09-05 13:07:42.477000', '2024-08-31 13:07:42.477000', ' Auction67'),
+(69, 'ENDED', '2024-09-12 19:53:24.307000', '2024-09-04 19:53:24.307000', ' Auction68'),
+(70, 'ENDED', '2024-08-31 16:16:56.605000', '2024-08-16 16:16:56.605000', ' Auction69'),
+(71, 'ENDED', '2024-09-15 16:19:51.353000', '2024-08-31 16:19:51.353000', ' Auction70'),
+(72, 'ENDED', '2024-09-02 12:01:57.705000', '2024-08-31 12:01:57.705000', ' Auction71'),
+(73, 'ENDED', '2024-09-18 05:36:51.025000', '2024-08-31 05:36:51.025000', ' Auction72'),
+(74, 'ENDED', '2024-08-25 22:00:48.704000', '2024-08-12 22:00:48.704000', ' Auction73'),
+(75, 'ENDED', '2024-08-28 02:49:56.967000', '2024-08-19 02:49:56.967000', ' Auction74'),
+(76, 'ENDED', '2024-09-07 10:34:02.352000', '2024-08-28 10:34:02.352000', ' Auction75'),
+(77, 'ENDED', '2024-08-31 08:46:31.851000', '2024-08-13 08:46:31.851000', ' Auction76'),
+(78, 'ENDED', '2024-09-22 14:32:11.713000', '2024-09-09 14:32:11.713000', ' Auction77'),
+(79, 'ENDED', '2024-09-03 16:17:01.046000', '2024-08-28 16:17:01.046000', ' Auction78'),
+(80, 'ENDED', '2024-08-27 08:23:22.872000', '2024-08-18 08:23:22.872000', ' Auction79'),
+(81, 'ENDED', '2024-08-30 19:05:02.264000', '2024-08-16 19:05:02.264000', ' Auction80'),
+(82, 'ENDED', '2024-09-17 22:04:31.815000', '2024-09-03 22:04:31.815000', ' Auction81'),
+(83, 'ENDED', '2024-09-10 11:05:35.422000', '2024-09-01 11:05:35.422000', ' Auction82'),
+(84, 'ENDED', '2024-09-17 03:03:47.172000', '2024-09-02 03:03:47.172000', ' Auction83'),
+(85, 'ENDED', '2024-09-13 08:09:11.420000', '2024-09-08 08:09:11.420000', ' Auction84'),
+(86, 'ENDED', '2024-09-14 07:46:56.943000', '2024-08-27 07:46:56.943000', ' Auction85'),
+(87, 'ENDED', '2024-09-17 10:08:09.958000', '2024-09-13 10:08:09.958000', ' Auction86'),
+(88, 'ENDED', '2024-08-27 09:32:06.669000', '2024-08-24 09:32:06.669000', ' Auction87'),
+(89, 'ENDED', '2024-09-03 04:44:58.630000', '2024-08-24 04:44:58.630000', ' Auction88'),
+(90, 'ENDED', '2024-09-23 17:37:29.241000', '2024-09-08 17:37:29.241000', ' Auction89'),
+(91, 'ENDED', '2024-09-05 14:21:57.530000', '2024-08-24 14:21:57.530000', ' Auction90'),
+(92, 'ENDED', '2024-08-28 07:46:58.995000', '2024-08-18 07:46:58.995000', ' Auction91'),
+(93, 'ENDED', '2024-09-05 15:30:51.407000', '2024-08-21 15:30:51.407000', ' Auction92'),
+(94, 'ENDED', '2024-09-09 13:02:54.500000', '2024-08-22 13:02:54.500000', ' Auction93'),
+(95, 'ENDED', '2024-08-27 18:10:27.300000', '2024-08-22 18:10:27.300000', ' Auction94'),
+(96, 'ENDED', '2024-08-29 13:15:43.228000', '2024-08-23 13:15:43.228000', ' Auction95'),
+(97, 'ENDED', '2024-08-30 16:38:53.084000', '2024-08-25 16:38:53.084000', ' Auction96'),
+(98, 'ENDED', '2024-08-29 07:36:19.973000', '2024-08-24 07:36:19.973000', ' Auction97'),
+(99, 'ENDED', '2024-09-23 20:22:18.963000', '2024-09-14 20:22:18.963000', ' Auction98'),
+(100, 'ENDED', '2024-09-16 20:35:14.804000', '2024-08-29 20:35:14.804000', ' Auction99');
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `auction_kois`
+-- Table structure for table `auction_kois`
 --
 
 CREATE TABLE `auction_kois` (
@@ -60,12 +156,12 @@ CREATE TABLE `auction_kois` (
   `is_sold` tinyint(1) NOT NULL DEFAULT '0',
   `auction_id` bigint DEFAULT NULL,
   `koi_id` bigint DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `auction_kois_details`
+-- Table structure for table `auction_kois_details`
 --
 
 CREATE TABLE `auction_kois_details` (
@@ -79,7 +175,7 @@ CREATE TABLE `auction_kois_details` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `auction_participants`
+-- Table structure for table `auction_participants`
 --
 
 CREATE TABLE `auction_participants` (
@@ -92,16 +188,16 @@ CREATE TABLE `auction_participants` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `categories`
+-- Table structure for table `categories`
 --
 
 CREATE TABLE `categories` (
   `id` int NOT NULL,
-  `name` varchar(255) NOT NULL
+  `name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `categories`
+-- Dumping data for table `categories`
 --
 
 INSERT INTO `categories` (`id`, `name`) VALUES
@@ -129,7 +225,7 @@ INSERT INTO `categories` (`id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `kois`
+-- Table structure for table `kois`
 --
 
 CREATE TABLE `kois` (
@@ -137,20 +233,20 @@ CREATE TABLE `kois` (
   `created_at` datetime(6) DEFAULT NULL,
   `updated_at` datetime(6) DEFAULT NULL,
   `age` int DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
+  `description` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `is_display` int DEFAULT NULL,
   `length` int DEFAULT NULL,
-  `name` varchar(350) NOT NULL,
+  `name` varchar(350) COLLATE utf8mb4_general_ci NOT NULL,
   `base_price` float DEFAULT NULL,
-  `sex` varchar(10) DEFAULT NULL,
-  `status` enum('PENDING','REJECTED','SOLD','UNVERIFIED','VERIFIED') DEFAULT NULL,
-  `thumbnail` varchar(300) DEFAULT NULL,
+  `sex` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `status` enum('PENDING','REJECTED','SOLD','UNVERIFIED','VERIFIED') COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `thumbnail` varchar(300) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `category_id` int DEFAULT NULL,
   `owner_id` bigint DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `kois`
+-- Dumping data for table `kois`
 --
 
 INSERT INTO `kois` (`id`, `created_at`, `updated_at`, `age`, `description`, `is_display`, `length`, `name`, `base_price`, `sex`, `status`, `thumbnail`, `category_id`, `owner_id`) VALUES
@@ -2169,20 +2265,20 @@ INSERT INTO `kois` (`id`, `created_at`, `updated_at`, `age`, `description`, `is_
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `koi_images`
+-- Table structure for table `koi_images`
 --
 
 CREATE TABLE `koi_images` (
   `id` bigint NOT NULL,
-  `image_url` varchar(300) NOT NULL,
-  `video_url` varchar(500) DEFAULT NULL,
+  `image_url` varchar(300) COLLATE utf8mb4_general_ci NOT NULL,
+  `video_url` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `koi_id` bigint DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `orders`
+-- Table structure for table `orders`
 --
 
 CREATE TABLE `orders` (
@@ -2202,12 +2298,12 @@ CREATE TABLE `orders` (
   `total_money` float DEFAULT NULL,
   `tracking_number` varchar(255) DEFAULT NULL,
   `user_id` bigint DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `order_details`
+-- Table structure for table `order_details`
 --
 
 CREATE TABLE `order_details` (
@@ -2222,29 +2318,29 @@ CREATE TABLE `order_details` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `payments`
+-- Table structure for table `payments`
 --
 
 CREATE TABLE `payments` (
   `id` bigint NOT NULL,
   `payment_amount` float NOT NULL,
   `payment_date` datetime(6) NOT NULL,
-  `payment_method` varchar(255) NOT NULL,
-  `payment_status` varchar(255) NOT NULL,
+  `payment_method` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `payment_status` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `order_id` bigint NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `refunds`
+-- Table structure for table `refunds`
 --
 
 CREATE TABLE `refunds` (
   `id` bigint NOT NULL,
   `refund_amount` float NOT NULL,
-  `refund_reason` varchar(255) NOT NULL,
-  `refund_status` varchar(255) NOT NULL,
+  `refund_reason` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `refund_status` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `payment_id` bigint NOT NULL,
   `user_id` bigint NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -2252,16 +2348,16 @@ CREATE TABLE `refunds` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `roles`
+-- Table structure for table `roles`
 --
 
 CREATE TABLE `roles` (
   `id` bigint NOT NULL,
-  `name` varchar(20) DEFAULT NULL
+  `name` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `roles`
+-- Dumping data for table `roles`
 --
 
 INSERT INTO `roles` (`id`, `name`) VALUES
@@ -2273,21 +2369,21 @@ INSERT INTO `roles` (`id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `social_accounts`
+-- Table structure for table `social_accounts`
 --
 
 CREATE TABLE `social_accounts` (
   `id` bigint NOT NULL,
-  `email` varchar(150) DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `provider_name` enum('FACEBOOK','GOOGLE') DEFAULT NULL,
+  `email` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `provider_name` enum('FACEBOOK','GOOGLE') COLLATE utf8mb4_general_ci DEFAULT NULL,
   `user_id` bigint DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `tokens`
+-- Table structure for table `tokens`
 --
 
 CREATE TABLE `tokens` (
@@ -2296,38 +2392,38 @@ CREATE TABLE `tokens` (
   `expired` bit(1) NOT NULL,
   `is_mobile` tinyint(1) DEFAULT NULL,
   `refresh_expiration_date` datetime(6) DEFAULT NULL,
-  `refresh_token` varchar(255) DEFAULT NULL,
+  `refresh_token` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `revoked` bit(1) NOT NULL,
-  `token` varchar(255) DEFAULT NULL,
-  `token_type` varchar(50) DEFAULT NULL,
+  `token` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `token_type` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `user_id` bigint DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `users`
+-- Table structure for table `users`
 --
 
 CREATE TABLE `users` (
   `id` bigint NOT NULL,
   `created_at` datetime(6) DEFAULT NULL,
   `updated_at` datetime(6) DEFAULT NULL,
-  `address` varchar(200) DEFAULT NULL,
-  `avatar_url` varchar(255) DEFAULT NULL,
+  `address` varchar(200) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `avatar_url` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `date_of_birth` datetime(6) DEFAULT NULL,
-  `email` varchar(100) NOT NULL,
-  `first_name` varchar(100) DEFAULT NULL,
+  `email` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `first_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `google_account_id` int DEFAULT NULL,
-  `last_name` varchar(100) DEFAULT NULL,
-  `password` varchar(200) DEFAULT NULL,
-  `phone_number` varchar(20) DEFAULT NULL,
-  `status` enum('ACTIVE','BANNED','INACTIVE','UNVERIFIED','VERIFIED') DEFAULT NULL,
+  `last_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `password` varchar(200) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `phone_number` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `status` enum('ACTIVE','BANNED','INACTIVE','UNVERIFIED','VERIFIED') COLLATE utf8mb4_general_ci DEFAULT NULL,
   `role_id` bigint DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `users`
+-- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`id`, `created_at`, `updated_at`, `address`, `avatar_url`, `date_of_birth`, `email`, `first_name`, `google_account_id`, `last_name`, `password`, `phone_number`, `status`, `role_id`) VALUES
@@ -2350,7 +2446,7 @@ INSERT INTO `users` (`id`, `created_at`, `updated_at`, `address`, `avatar_url`, 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `wallets`
+-- Table structure for table `wallets`
 --
 
 CREATE TABLE `wallets` (
@@ -2360,17 +2456,17 @@ CREATE TABLE `wallets` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Chỉ mục cho các bảng đã đổ
+-- Indexes for dumped tables
 --
 
 --
--- Chỉ mục cho bảng `auctions`
+-- Indexes for table `auctions`
 --
 ALTER TABLE `auctions`
   ADD PRIMARY KEY (`id`);
 
 --
--- Chỉ mục cho bảng `auction_kois`
+-- Indexes for table `auction_kois`
 --
 ALTER TABLE `auction_kois`
   ADD PRIMARY KEY (`id`),
@@ -2378,7 +2474,7 @@ ALTER TABLE `auction_kois`
   ADD KEY `FKhiwdnap3fod80aliuymaklkit` (`koi_id`);
 
 --
--- Chỉ mục cho bảng `auction_kois_details`
+-- Indexes for table `auction_kois_details`
 --
 ALTER TABLE `auction_kois_details`
   ADD PRIMARY KEY (`id`),
@@ -2386,7 +2482,7 @@ ALTER TABLE `auction_kois_details`
   ADD KEY `FKkaaka2inkbtxrlqno2syf1x4s` (`user_id`);
 
 --
--- Chỉ mục cho bảng `auction_participants`
+-- Indexes for table `auction_participants`
 --
 ALTER TABLE `auction_participants`
   ADD PRIMARY KEY (`id`),
@@ -2394,13 +2490,13 @@ ALTER TABLE `auction_participants`
   ADD KEY `FK9jnbjd50w43dg3vtc4b1th1fw` (`user_id`);
 
 --
--- Chỉ mục cho bảng `categories`
+-- Indexes for table `categories`
 --
 ALTER TABLE `categories`
   ADD PRIMARY KEY (`id`);
 
 --
--- Chỉ mục cho bảng `kois`
+-- Indexes for table `kois`
 --
 ALTER TABLE `kois`
   ADD PRIMARY KEY (`id`),
@@ -2408,21 +2504,21 @@ ALTER TABLE `kois`
   ADD KEY `FKcx45ppp71l5dlu25f9kd0qpa` (`owner_id`);
 
 --
--- Chỉ mục cho bảng `koi_images`
+-- Indexes for table `koi_images`
 --
 ALTER TABLE `koi_images`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FKj6nh95hilrad5roxpf7hy6v7w` (`koi_id`);
 
 --
--- Chỉ mục cho bảng `orders`
+-- Indexes for table `orders`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FK32ql8ubntj5uh44ph9659tiih` (`user_id`);
 
 --
--- Chỉ mục cho bảng `order_details`
+-- Indexes for table `order_details`
 --
 ALTER TABLE `order_details`
   ADD PRIMARY KEY (`id`),
@@ -2430,14 +2526,14 @@ ALTER TABLE `order_details`
   ADD KEY `FKjyu2qbqt8gnvno9oe9j2s2ldk` (`order_id`);
 
 --
--- Chỉ mục cho bảng `payments`
+-- Indexes for table `payments`
 --
 ALTER TABLE `payments`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FK81gagumt0r8y3rmudcgpbk42l` (`order_id`);
 
 --
--- Chỉ mục cho bảng `refunds`
+-- Indexes for table `refunds`
 --
 ALTER TABLE `refunds`
   ADD PRIMARY KEY (`id`),
@@ -2445,223 +2541,223 @@ ALTER TABLE `refunds`
   ADD KEY `FKrtxief4co3k1lfklj7n05m8mo` (`user_id`);
 
 --
--- Chỉ mục cho bảng `roles`
+-- Indexes for table `roles`
 --
 ALTER TABLE `roles`
   ADD PRIMARY KEY (`id`);
 
 --
--- Chỉ mục cho bảng `social_accounts`
+-- Indexes for table `social_accounts`
 --
 ALTER TABLE `social_accounts`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FK6rmxxiton5yuvu7ph2hcq2xn7` (`user_id`);
 
 --
--- Chỉ mục cho bảng `tokens`
+-- Indexes for table `tokens`
 --
 ALTER TABLE `tokens`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FK2dylsfo39lgjyqml2tbe0b0ss` (`user_id`);
 
 --
--- Chỉ mục cho bảng `users`
+-- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FKp56c1712k691lhsyewcssf40f` (`role_id`);
 
 --
--- Chỉ mục cho bảng `wallets`
+-- Indexes for table `wallets`
 --
 ALTER TABLE `wallets`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `UKsswfdl9fq40xlkove1y5kc7kv` (`user_id`);
 
 --
--- AUTO_INCREMENT cho các bảng đã đổ
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT cho bảng `auctions`
+-- AUTO_INCREMENT for table `auctions`
 --
 ALTER TABLE `auctions`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
 
 --
--- AUTO_INCREMENT cho bảng `auction_kois`
+-- AUTO_INCREMENT for table `auction_kois`
 --
 ALTER TABLE `auction_kois`
   MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT cho bảng `auction_kois_details`
+-- AUTO_INCREMENT for table `auction_kois_details`
 --
 ALTER TABLE `auction_kois_details`
   MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT cho bảng `auction_participants`
+-- AUTO_INCREMENT for table `auction_participants`
 --
 ALTER TABLE `auction_participants`
   MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT cho bảng `categories`
+-- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
--- AUTO_INCREMENT cho bảng `kois`
+-- AUTO_INCREMENT for table `kois`
 --
 ALTER TABLE `kois`
   MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2001;
 
 --
--- AUTO_INCREMENT cho bảng `koi_images`
+-- AUTO_INCREMENT for table `koi_images`
 --
 ALTER TABLE `koi_images`
   MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT cho bảng `orders`
+-- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
   MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT cho bảng `order_details`
+-- AUTO_INCREMENT for table `order_details`
 --
 ALTER TABLE `order_details`
   MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT cho bảng `payments`
+-- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
   MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT cho bảng `refunds`
+-- AUTO_INCREMENT for table `refunds`
 --
 ALTER TABLE `refunds`
   MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT cho bảng `roles`
+-- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
   MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT cho bảng `social_accounts`
+-- AUTO_INCREMENT for table `social_accounts`
 --
 ALTER TABLE `social_accounts`
   MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT cho bảng `tokens`
+-- AUTO_INCREMENT for table `tokens`
 --
 ALTER TABLE `tokens`
   MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT cho bảng `users`
+-- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
   MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
--- AUTO_INCREMENT cho bảng `wallets`
+-- AUTO_INCREMENT for table `wallets`
 --
 ALTER TABLE `wallets`
   MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
 
 --
--- Các ràng buộc cho các bảng đã đổ
+-- Constraints for dumped tables
 --
 
 --
--- Các ràng buộc cho bảng `auction_kois`
+-- Constraints for table `auction_kois`
 --
 ALTER TABLE `auction_kois`
   ADD CONSTRAINT `FKhiwdnap3fod80aliuymaklkit` FOREIGN KEY (`koi_id`) REFERENCES `kois` (`id`),
   ADD CONSTRAINT `FKp4gi0darfksbicctbsh6uc3ou` FOREIGN KEY (`auction_id`) REFERENCES `auctions` (`id`);
 
 --
--- Các ràng buộc cho bảng `auction_kois_details`
+-- Constraints for table `auction_kois_details`
 --
 ALTER TABLE `auction_kois_details`
   ADD CONSTRAINT `FKjo0888rrp37jokibr875ftqcx` FOREIGN KEY (`auction_koi_id`) REFERENCES `auction_kois` (`id`),
   ADD CONSTRAINT `FKkaaka2inkbtxrlqno2syf1x4s` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
--- Các ràng buộc cho bảng `auction_participants`
+-- Constraints for table `auction_participants`
 --
 ALTER TABLE `auction_participants`
   ADD CONSTRAINT `FK9jnbjd50w43dg3vtc4b1th1fw` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `FKoueiq28cuki5mhu0i7udc8q9b` FOREIGN KEY (`auction_id`) REFERENCES `auctions` (`id`);
 
 --
--- Các ràng buộc cho bảng `kois`
+-- Constraints for table `kois`
 --
 ALTER TABLE `kois`
   ADD CONSTRAINT `FKabkupc6s0m4jrqoh0e0a9ri1f` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`),
   ADD CONSTRAINT `FKcx45ppp71l5dlu25f9kd0qpa` FOREIGN KEY (`owner_id`) REFERENCES `users` (`id`);
 
 --
--- Các ràng buộc cho bảng `koi_images`
+-- Constraints for table `koi_images`
 --
 ALTER TABLE `koi_images`
   ADD CONSTRAINT `FKj6nh95hilrad5roxpf7hy6v7w` FOREIGN KEY (`koi_id`) REFERENCES `kois` (`id`);
 
 --
--- Các ràng buộc cho bảng `orders`
+-- Constraints for table `orders`
 --
 ALTER TABLE `orders`
   ADD CONSTRAINT `FK32ql8ubntj5uh44ph9659tiih` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
--- Các ràng buộc cho bảng `order_details`
+-- Constraints for table `order_details`
 --
 ALTER TABLE `order_details`
   ADD CONSTRAINT `FKe9d6wfc3gtdvbc4aoy3lge1o0` FOREIGN KEY (`product_id`) REFERENCES `kois` (`id`),
   ADD CONSTRAINT `FKjyu2qbqt8gnvno9oe9j2s2ldk` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`);
 
 --
--- Các ràng buộc cho bảng `payments`
+-- Constraints for table `payments`
 --
 ALTER TABLE `payments`
   ADD CONSTRAINT `FK81gagumt0r8y3rmudcgpbk42l` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`);
 
 --
--- Các ràng buộc cho bảng `refunds`
+-- Constraints for table `refunds`
 --
 ALTER TABLE `refunds`
   ADD CONSTRAINT `FKpt9ic0j1y6xwlej99wnynvnpy` FOREIGN KEY (`payment_id`) REFERENCES `payments` (`id`),
   ADD CONSTRAINT `FKrtxief4co3k1lfklj7n05m8mo` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
--- Các ràng buộc cho bảng `social_accounts`
+-- Constraints for table `social_accounts`
 --
 ALTER TABLE `social_accounts`
   ADD CONSTRAINT `FK6rmxxiton5yuvu7ph2hcq2xn7` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
--- Các ràng buộc cho bảng `tokens`
+-- Constraints for table `tokens`
 --
 ALTER TABLE `tokens`
   ADD CONSTRAINT `FK2dylsfo39lgjyqml2tbe0b0ss` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
--- Các ràng buộc cho bảng `users`
+-- Constraints for table `users`
 --
 ALTER TABLE `users`
   ADD CONSTRAINT `FKp56c1712k691lhsyewcssf40f` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`);
 
 --
--- Các ràng buộc cho bảng `wallets`
+-- Constraints for table `wallets`
 --
 ALTER TABLE `wallets`
   ADD CONSTRAINT `FKc1foyisidw7wqqrkamafuwn4e` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);

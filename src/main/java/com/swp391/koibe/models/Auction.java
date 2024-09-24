@@ -42,7 +42,7 @@ public class Auction {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private EAuctionStatus auctionStatus;
+    private EAuctionStatus status;
 
 //    @OneToMany(mappedBy = "auction")
 //    private List<AuctionKoi> auctionKoisk;
