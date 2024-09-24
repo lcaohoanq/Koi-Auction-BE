@@ -27,6 +27,9 @@ public class AuctionKoi {
     @Column(name = "current_bid", nullable = false, columnDefinition = "int default 0")
     private int currentBid; // Track current highest bid
 
+    @Column(name = "bid_step", nullable = false, columnDefinition = "int default 0")
+    private int bidStep; // Track the bid step
+
     @Column(name = "current_bidder_id", nullable = true) // Nullable since no bidder initially
     private Long currentBidderId; // Track the highest bidder
 

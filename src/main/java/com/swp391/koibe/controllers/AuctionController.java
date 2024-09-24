@@ -38,7 +38,7 @@ public class AuctionController {
                     .status(EAuctionStatus.ENDED)
                     .endTime(endTime)
                     .startTime(startTime)
-                    .title(" Auction" + i)
+                    .title(" Auction #" + i)
                     .build();
             try {
                  auctionService.createAuction(auction);

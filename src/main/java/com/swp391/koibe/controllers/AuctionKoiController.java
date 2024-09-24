@@ -51,50 +51,56 @@ public class AuctionKoiController {
                 usedKoiIds.add(randomKoi.getId());
 
                 boolean isSold = random.nextBoolean();
-
-                AuctionKoi auctionKoi = AuctionKoi.builder()
-                        .auction(auction)
-                        .koi(randomKoi)
-                        .basePrice(randomKoi.getPrice())
-                        .bidMethod(EBidMethod.ASCENDING_BID)
-                        .currentBid(isSold ? randomBid(randomKoi.getPrice()) : 0)
-                        .currentBidderId(isSold ? random.nextLong(1, 16) : null)
-                        .isSold(isSold)
-                        .build();
-
-                // active the koi when it is in auction
-                randomKoi.setStatus(EKoiStatus.VERIFIED);
-
+                int bid = 0;
                 if (isSold) {
-                    randomKoi.setStatus(EKoiStatus.SOLD);
-                    randomKoi.setOwner(userService.getUserById(auctionKoi.getCurrentBidderId()));
-                    kois.remove(randomKoi);
+                    bid = randomBid(randomKoi.getPrice());
                 }
-                // convert Koi to KoiDTO
-                KoiDTO randomKoiDTO = KoiDTO.builder()
-                        .name(randomKoi.getName())
-                        .price(randomKoi.getPrice())
-                        .isDisplay(randomKoi.getIsDisplay())
-                        .thumbnail(randomKoi.getThumbnail())
-                        .sex(randomKoi.getSex())
-                        .length(randomKoi.getLength())
-                        .age(randomKoi.getAge())
-                        .isDisplay(randomKoi.getIsDisplay())
-                        .description(randomKoi.getDescription())
-                        .categoryId(randomKoi.getCategory().getId())
-                        .ownerId(randomKoi.getOwner().getId())
-                        .build();
 
-                try {
-                    koiService.updateKoi(randomKoi.getId(), randomKoiDTO);
-                    auctionKoiService.createAuctionKoi(auctionKoi);
-                } catch (Exception e) {
-                    log.error("Error creating AuctionKoi or updating Koi: " + e.getMessage(), e);
-                    return ResponseEntity.status(500)
-                            .body("Error creating AuctionKoi or updating Koi: " + e.getMessage());
+                    AuctionKoi auctionKoi = AuctionKoi.builder()
+                            .auction(auction)
+                            .koi(randomKoi)
+                            .basePrice(randomKoi.getPrice())
+                            .bidMethod(EBidMethod.ASCENDING_BID)
+                            .currentBid(isSold ? bid : 0)
+                            .currentBidderId(isSold ? random.nextLong(1, 16) : null)
+                            .isSold(isSold)
+                            .bidStep(isSold ? Math.floorDiv((int) (bid - randomKoi.getPrice()), 10) : 0)
+                            .build();
+
+                    // active the koi when it is in auction
+                    randomKoi.setStatus(EKoiStatus.VERIFIED);
+
+                    if (isSold) {
+                        randomKoi.setStatus(EKoiStatus.SOLD);
+                        randomKoi.setOwner(userService.getUserById(auctionKoi.getCurrentBidderId()));
+                        kois.remove(randomKoi);
+                    }
+
+                    // convert Koi to KoiDTO
+                    KoiDTO randomKoiDTO = KoiDTO.builder()
+                            .name(randomKoi.getName())
+                            .price(randomKoi.getPrice())
+                            .isDisplay(randomKoi.getIsDisplay())
+                            .thumbnail(randomKoi.getThumbnail())
+                            .sex(randomKoi.getSex())
+                            .length(randomKoi.getLength())
+                            .age(randomKoi.getAge())
+                            .isDisplay(randomKoi.getIsDisplay())
+                            .description(randomKoi.getDescription())
+                            .categoryId(randomKoi.getCategory().getId())
+                            .ownerId(randomKoi.getOwner().getId())
+                            .build();
+
+                    try {
+                        koiService.updateKoi(randomKoi.getId(), randomKoiDTO);
+                        auctionKoiService.createAuctionKoi(auctionKoi);
+                    } catch (Exception e) {
+                        log.error("Error creating AuctionKoi or updating Koi: " + e.getMessage(), e);
+                        return ResponseEntity.status(500)
+                                .body("Error creating AuctionKoi or updating Koi: " + e.getMessage());
+                    }
                 }
             }
-        }
 
         return ResponseEntity.ok("Fake AuctionKoi data generated successfully");
     }
@@ -111,8 +117,7 @@ public class AuctionKoiController {
             PageRequest pageRequest = PageRequest.of(page, limit);
             Page<AuctionKoiResponse> auctionKois = auctionKoiService.getAllAuctionKois(pageRequest);
             return ResponseEntity.ok(auctionKois.getContent());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Error getting all auctionkois    : " + e.getMessage());
             return ResponseEntity.badRequest().body(null);
         }
