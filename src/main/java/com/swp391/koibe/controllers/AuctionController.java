@@ -4,7 +4,7 @@ import com.github.javafaker.Faker;
 import com.swp391.koibe.enums.EAuctionStatus;
 import com.swp391.koibe.models.Auction;
 import com.swp391.koibe.responses.AuctionResponse;
-import com.swp391.koibe.services.auction.AuctionService;
+import com.swp391.koibe.services.auction.IAuctionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class AuctionController {
 
-    private final AuctionService auctionService;
+    private final IAuctionService auctionService;
 
     @PostMapping("/generateFakeAuctions")
     private void generateFakeAuctions() {

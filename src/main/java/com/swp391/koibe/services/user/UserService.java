@@ -126,4 +126,10 @@ public class UserService implements IUserService {
         return jwtTokenUtils.generateToken(user);
     }
 
+    @Override
+    public User getUserById(long id) throws DataNotFoundException {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("User not found: " + id));
+    }
+
 }

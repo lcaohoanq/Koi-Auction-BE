@@ -21,4 +21,6 @@ public interface IAuctionService {
         Auction update(int auctionId, Auction auction) throws DataNotFoundException;
 
         void delete(int id);
+
+        List<Auction> getAllAuctions();
 }

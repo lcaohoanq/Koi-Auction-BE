@@ -1,8 +1,10 @@
 package com.swp391.koibe.utils;
 
 import com.swp391.koibe.models.Auction;
+import com.swp391.koibe.models.AuctionKoi;
 import com.swp391.koibe.models.Koi;
 import com.swp391.koibe.models.User;
+import com.swp391.koibe.responses.AuctionKoiResponse;
 import com.swp391.koibe.responses.AuctionResponse;
 import com.swp391.koibe.responses.KoiResponse;
 import com.swp391.koibe.responses.UserResponse;
@@ -51,6 +53,19 @@ public class DTOConverter {
                 .startTime(auction.getStartTime())
                 .endTime(auction.getEndTime())
                 .status(auction.getStatus() != null ? auction.getStatus().getStatus() : null)
+            .build();
+    }
+
+    public static AuctionKoiResponse convertToAuctionKoiDTO(AuctionKoi auctionKoi) {
+        return AuctionKoiResponse.builder()
+            .id(auctionKoi.getId())
+            .auctionId(auctionKoi.getAuction().getId())
+            .koiId(auctionKoi.getKoi().getId())
+            .basePrice(auctionKoi.getBasePrice())
+            .bidMethod(auctionKoi.getBidMethod() != null ? auctionKoi.getBidMethod().getType() : null)
+            .currentBid(auctionKoi.getCurrentBid())
+            .currentBidderId(auctionKoi.getCurrentBidderId())
+            .isSold(auctionKoi.isSold())
             .build();
     }
 

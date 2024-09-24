@@ -15,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class KoiService implements IKoiService {
@@ -74,5 +76,10 @@ public class KoiService implements IKoiService {
     @Override
     public boolean existsByName(String name) {
         return koiRepository.existsByName(name);
+    }
+
+    @Override
+    public List<Koi> getAllKois() {
+        return koiRepository.findAll();
     }
 }

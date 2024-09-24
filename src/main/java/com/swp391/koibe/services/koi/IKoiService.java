@@ -7,6 +7,8 @@ import com.swp391.koibe.responses.KoiResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface IKoiService {
 
     Koi createKoi(KoiDTO koiDTO) throws DataNotFoundException;
@@ -15,5 +17,6 @@ public interface IKoiService {
     Koi updateKoi(long id, KoiDTO koiDTO);
     void deleteKoi(long id);
     boolean existsByName(String name);
+    List<Koi> getAllKois();
 
 }

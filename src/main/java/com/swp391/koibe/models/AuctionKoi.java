@@ -21,7 +21,7 @@ public class AuctionKoi {
 
     @Column(name = "base_price")
     @Min(0)
-    private Long basePrice;
+    private Float basePrice;
 
     // New fields
     @Column(name = "current_bid", nullable = false, columnDefinition = "int default 0")
