@@ -1,13 +1,13 @@
 networks:
-  mysql_connector:
+  koi_networks:
     driver: bridge
 
 services:
   mysql:
     image: lcaohoanq/sample-mysql-db:2.0
-    container_name: mysql_db
+    container_name: mysql_db_koi_development
     networks:
-      - mysql_connector
+      - koi_networks
     environment:
       MYSQL_ROOT_PASSWORD: Luucaohoang1604^^
       MYSQL_DATABASE: mysql_starter
@@ -20,11 +20,11 @@ services:
 
   phpmyadmin:
     image: phpmyadmin:5
-    container_name: phpmyadmin_ui
+    container_name: phpmyadmin_ui_koi_development
     networks:
-      - mysql_connector
+      - koi_networks
     environment:
-      PMA_HOST: mysql_db                 # Hostname of the MySQL service (container name)
+      PMA_HOST: mysql_db_koi_development                 # Hostname of the MySQL service (container name)
       PMA_USER: root                     # MySQL root user
       PMA_PASSWORD: Luucaohoang1604^^    # MySQL root password
     ports:
