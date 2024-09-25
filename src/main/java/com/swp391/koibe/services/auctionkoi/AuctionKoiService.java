@@ -54,7 +54,7 @@ public class AuctionKoiService implements IAuctionKoiService {
 
     @Override
     public List<AuctionKoi> getAuctionIsSold() {
-        // get All Auction with status is sold
-        List<AuctionResponse> auctionResponses = auctionRepository.findAllByStatus("SOLD");
+        // get all auction koi
+        return auctionKoiRepository.findAll().stream().filter(auctionKoi -> auctionKoi.isSold()).toList();
     }
 }
