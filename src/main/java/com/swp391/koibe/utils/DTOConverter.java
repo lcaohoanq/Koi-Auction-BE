@@ -25,7 +25,7 @@ public class DTOConverter {
             .avatarUrl(user.getAvatarUrl())
             .googleAccountId(user.getGoogleAccountId())
             .roleName(user.getRole() != null ? user.getRole().getName() : null)
-            .walletId(user.getWallet() != null ? user.getWallet().getId() : 0)
+            .accountBalance(user.getAccountBalance())
             .build();
     }
 

@@ -50,7 +50,7 @@ public class UserResponse {
     @JsonProperty("role_name")
     private String roleName;
 
-    @JsonProperty("wallet_id")
-    private long walletId;
+    @JsonProperty("account_balance")
+    private long accountBalance;
 
 }

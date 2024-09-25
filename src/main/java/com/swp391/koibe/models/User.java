@@ -82,7 +82,7 @@ public class User extends BaseEntity implements UserDetails {
     @JoinColumn(name="role_id")
     private Role role;
 
-    @Column(name="account_balance")
+    @Column(name="account_balance", columnDefinition = "BIGINT(20) DEFAULT 0")
     private long accountBalance;
 
 //    @ManyToOne

@@ -52,7 +52,7 @@ public class UserDTO {
     @NotNull(message = "Role name is required")
     private String roleName;
 
-    @JsonProperty("wallet_id")
-    private long walletId;
+    @JsonProperty("account_balance")
+    private long accountBalance;
 
 }
