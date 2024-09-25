@@ -28,7 +28,7 @@ public class BidHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "bid_step")
+    @Column(name = "bid_amount")
     private int bidStep; // Optional, if you want to enforce bid increments
 
     @Column(name = "bid_time")

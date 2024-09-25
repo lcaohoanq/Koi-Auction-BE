@@ -5,11 +5,14 @@ import com.swp391.koibe.models.AuctionKoi;
 import com.swp391.koibe.repositories.AuctionKoiRepository;
 import com.swp391.koibe.repositories.AuctionRepository;
 import com.swp391.koibe.responses.AuctionKoiResponse;
+import com.swp391.koibe.responses.AuctionResponse;
 import com.swp391.koibe.utils.DTOConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -47,5 +50,11 @@ public class AuctionKoiService implements IAuctionKoiService {
     @Override
     public boolean existsByName(String name) {
         return false;
+    }
+
+    @Override
+    public List<AuctionKoi> getAuctionIsSold() {
+        // get All Auction with status is sold
+        List<AuctionResponse> auctionResponses = auctionRepository.findAllByStatus("SOLD");
     }
 }

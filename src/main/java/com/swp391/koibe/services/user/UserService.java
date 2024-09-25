@@ -11,6 +11,8 @@ import com.swp391.koibe.models.User;
 import com.swp391.koibe.repositories.RoleRepository;
 import com.swp391.koibe.repositories.SocialAccountRepository;
 import com.swp391.koibe.repositories.UserRepository;
+
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -130,6 +132,11 @@ public class UserService implements IUserService {
     public User getUserById(long id) throws DataNotFoundException {
         return userRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("User not found: " + id));
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
 }
