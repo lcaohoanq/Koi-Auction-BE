@@ -2,11 +2,9 @@ package com.swp391.koibe.controllers;
 
 import com.github.javafaker.Faker;
 import com.swp391.koibe.dtos.KoiDTO;
-import com.swp391.koibe.enums.EKoiStatus;
-import com.swp391.koibe.models.Koi;
 import com.swp391.koibe.responses.KoiResponse;
 import com.swp391.koibe.services.koi.IKoiService;
-import java.util.Arrays;
+import com.swp391.koibe.utils.SampleDataStorage;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,36 +29,20 @@ public class KoiController {
     private ResponseEntity<String> generateFakeKois() {
         Faker faker = new Faker();
 
-        List<String> koiNames = Arrays.asList(
-            "Kohaku", "Sanke", "Showa", "Tancho", "Shusui", "Asagi", "Bekko",
-            "Utsurimono", "Goshiki", "Kumonryu", "Ochiba", "Koromo", "Yamabuki",
-            "Doitsu", "Chagoi", "Ki Utsuri", "Beni Kikokuryu", "Platinum Ogon",
-            "Hariwake", "Kikokuryu", "Matsuba", "Ginrin Kohaku", "Ginrin Sanke",
-            "Ginrin Showa", "Doitsu Kohaku", "Doitsu Sanke", "Doitsu Showa",
-            "Aka Matsuba", "Kage Shiro Utsuri", "Kin Showa", "Orenji Ogon",
-            "Kikusui", "Ki Bekko", "Hikari Muji", "Hikari Utsuri", "Benigoi",
-            "Soragoi", "Midorigoi", "Ginrin Chagoi", "Kanoko Kohaku",
-            "Kanoko Sanke", "Kanoko Showa", "Kujaku", "Doitsu Kujaku",
-            "Yamatonishiki", "Budo Sanke", "Ai Goromo", "Sumi Goromo",
-            "Kin Ki Utsuri", "Gin Shiro Utsuri"
-        );
-
-        String[] genders = {"M", "F", "O", "U"};
-
-        EKoiStatus[] koiStatusList = EKoiStatus.values();
+        SampleDataStorage.Koi koi = new SampleDataStorage.Koi();
 
         for (int i = 1; i < 300; i++) {
-            String koiName = koiNames.get(faker.number().numberBetween(0, koiNames.size()));
+            String koiName = koi.getKoiNames().get(faker.number().numberBetween(0, koi.getKoiNames().size()));
 //            if(koiService.existsByName(koiName)) {
 //                continue;
 //            }
             KoiDTO koiDTO = KoiDTO.builder()
                 .name(koiName)
                 .price((float)faker.number().numberBetween(10, 90_000_000))
-                .EKoiStatus(koiStatusList[faker.number().numberBetween(0, koiStatusList.length)])
+                .EKoiStatus(koi.getKoiStatusList()[faker.number().numberBetween(0, koi.getKoiStatusList().length)])
                 .isDisplay(faker.number().numberBetween(0, 2))
                 .thumbnail("https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/48/photos/Sanke%2040cm.png")
-                .sex(genders[faker.number().numberBetween(0, genders.length)])
+                .sex(koi.getGenders()[faker.number().numberBetween(0, koi.getGenders().length)])
                 .length(faker.number().numberBetween(1, 100))
                 .age(faker.number().numberBetween(1, 231)) //1-230
                 .description(faker.lorem().sentence())
