@@ -25,9 +25,10 @@ public class AuctionService implements IAuctionService {
     }
 
     @Override
-    public Auction getById(int id) throws DataNotFoundException {
-        return auctionRepository.findById((long) id)
-                .orElseThrow(() -> new DataNotFoundException("Auction not found: " + id));
+    public AuctionResponse getById(long id) throws DataNotFoundException {
+        return auctionRepository.findById(id)
+            .map(DTOConverter::convertToAuctionDTO)
+            .orElseThrow(() -> new DataNotFoundException("Auction not found"));
     }
 
     @Override

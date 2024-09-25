@@ -63,4 +63,17 @@ public class AuctionController {
             return ResponseEntity.badRequest().body(null);
         }
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AuctionResponse> getAuctionById(@PathVariable long id) {
+        try {
+            AuctionResponse auction = auctionService.getById(id);
+            return ResponseEntity.ok(auction);
+        }
+        catch (Exception e) {
+            log.error("Error getting auction by id: " + e.getMessage());
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
 }

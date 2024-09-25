@@ -14,7 +14,7 @@ public interface IAuctionService {
 
         Auction createAuction(Auction auction) throws DataAlreadyExistException;
 
-        Auction getById(int id) throws DataNotFoundException;
+        AuctionResponse getById(long id) throws DataNotFoundException;
 
         Page<AuctionResponse> getAllAuctions(Pageable pageable);
 
