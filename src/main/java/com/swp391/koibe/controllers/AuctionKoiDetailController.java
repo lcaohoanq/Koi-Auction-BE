@@ -1,10 +1,7 @@
 package com.swp391.koibe.controllers;
 
 import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
-import com.swp391.koibe.models.AuctionKoi;
-import com.swp391.koibe.models.AuctionParticipant;
-import com.swp391.koibe.models.BidHistory;
-import com.swp391.koibe.models.User;
+import com.swp391.koibe.models.*;
 import com.swp391.koibe.repositories.AuctionParticipantRepository;
 import com.swp391.koibe.services.auctionkoi.IAuctionKoiService;
 import com.swp391.koibe.services.auctionkoidetail.IAuctionKoiDetailService;
@@ -20,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -39,55 +38,66 @@ public class AuctionKoiDetailController {
             List<User> users = userService.getAllUsers();
             Random random = new Random();
 
-            for (AuctionKoi auctionKoi : auctionKois) {
-                List<BidHistory> bidHistories = new ArrayList<>();
+            // Group AuctionKois by Auction
+            Map<Auction, List<AuctionKoi>> auctionKoisByAuction = auctionKois.stream()
+                    .collect(Collectors.groupingBy(AuctionKoi::getAuction));
+
+            for (Map.Entry<Auction, List<AuctionKoi>> entry : auctionKoisByAuction.entrySet()) {
+                Auction auction = entry.getKey();
+                List<AuctionKoi> auctionKoisForAuction = entry.getValue();
                 Set<Long> participantIds = new HashSet<>();
-                int numberOfBids = random.nextInt(5, 16); // Random number of bids between 5 and 15
-                float currentBidAmount = auctionKoi.getBasePrice();
 
-                for (int i = 1; i <= numberOfBids; i++) {
-                    User bidder = users.get(random.nextInt(users.size()));
-                    BidHistory bidHistory = new BidHistory();
-                    bidHistory.setAuctionKoi(auctionKoi);
-                    bidHistory.setBidder(bidder);
+                for (AuctionKoi auctionKoi : auctionKoisForAuction) {
+                    List<BidHistory> bidHistories = new ArrayList<>();
+                    int numberOfBids = random.nextInt(5, 16); // Random number of bids between 5 and 15
+                    int currentBidAmount = auctionKoi.getBasePrice().intValue();
 
-                    // Ensure each bid is higher than the previous one
-                    currentBidAmount += auctionKoi.getBidStep() * (1 + random.nextFloat());
-                    bidHistory.setBidAmount(Math.round(currentBidAmount));
+                    for (int i = 1; i <= numberOfBids; i++) {
+                        long ownerId = auctionKoi.getKoi().getOwner().getId();
+                        User bidder = users.stream()
+                                .filter(user -> user.getId() != ownerId)
+                                .skip(random.nextInt(users.size() - 1))
+                                .findFirst()
+                                .orElseThrow(() -> new DataNotFoundException("No suitable bidder found"));
 
-                    // Randomize bid time within auction duration
-                    LocalDateTime startTime = auctionKoi.getAuction().getStartTime();
-                    LocalDateTime endTime = auctionKoi.getAuction().getEndTime();
-                    long secondsBetween = startTime.until(endTime, ChronoUnit.SECONDS);
-                    long randomSeconds = random.nextLong(secondsBetween);
-                    bidHistory.setBidTime(startTime.plusSeconds(randomSeconds));
+                        BidHistory bidHistory = new BidHistory();
+                        bidHistory.setAuctionKoi(auctionKoi);
+                        bidHistory.setBidder(bidder);
 
-                    bidHistories.add(bidHistory);
+                        // Ensure each bid is higher than the previous one
+                        currentBidAmount += auctionKoi.getBidStep();
+                        bidHistory.setBidAmount(Math.round(currentBidAmount));
 
-                    // Add participant if not already added
-                    if (!participantIds.contains(bidder.getId())) {
-                        AuctionParticipant participant = new AuctionParticipant();
-                        participant.setAuction(auctionKoi.getAuction());
-                        participant.setUser(bidder);
-                        participant.setJoinTime(bidHistory.getBidTime());
-                        auctionParticipantRepository.save(participant);
-                        participantIds.add(bidder.getId());
+                        LocalDateTime bidTime = auctionKoi.getAuction().getStartTime().plusHours(i);
+                        bidHistory.setBidTime(bidTime);
+
+                        bidHistories.add(bidHistory);
+
+                        // Add participant if not already added for this auction
+                        if (!participantIds.contains(bidder.getId())) {
+                            AuctionParticipant participant = new AuctionParticipant();
+                            participant.setAuction(auction);
+                            participant.setUser(bidder);
+                            participant.setJoinTime(bidHistory.getBidTime());
+                            auctionParticipantRepository.save(participant);
+                            participantIds.add(bidder.getId());
+                        }
                     }
+
+                    // Sort bid histories by time
+                    bidHistories.sort(Comparator.comparing(BidHistory::getBidTime));
+
+                    // Set the last bid as the winning bid
+                    BidHistory winningBid = bidHistories.get(bidHistories.size() - 1);
+                    auctionKoi.setCurrentBid(winningBid.getBidAmount());
+                    auctionKoi.setCurrentBidderId(winningBid.getBidder().getId());
+
+                    // Save all bid histories in batch
+                    auctionKoiDetailService.createBidHistories(bidHistories);
+
+                    // Update the AuctionKoi
+                    auctionKoiService.updateAuctionKoi(auctionKoi.getId(), auctionKoi);
                 }
-
-                // Sort bid histories by time
-                bidHistories.sort(Comparator.comparing(BidHistory::getBidTime));
-
-                // Set the last bid as the winning bid
-                BidHistory winningBid = bidHistories.get(bidHistories.size() - 1);
-                auctionKoi.setCurrentBid(winningBid.getBidAmount());
-                auctionKoi.setCurrentBidderId(winningBid.getBidder().getId());
-
-                // Save all bid histories in batch
-                auctionKoiDetailService.createBidHistories(bidHistories);
-
-                // Update the AuctionKoi
-                auctionKoiService.updateAuctionKoi(auctionKoi.getId(), auctionKoi);
             }
 
             return ResponseEntity.ok("Fake auction koi details and participants generated");
