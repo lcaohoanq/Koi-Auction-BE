@@ -26,6 +26,7 @@ public class KoiImageController {
         for(int i = 1; i <= 100; i++){
 
         }
+        return ResponseEntity.ok("Fake koi images generated");
     }
 
 }
