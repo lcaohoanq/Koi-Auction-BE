@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("${api.prefix}/products")
 @RequiredArgsConstructor
+@Deprecated
 public class ProductController {
 
     private final RestTemplate restTemplate;
