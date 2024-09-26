@@ -31,5 +31,10 @@ public class SampleDataStorage {
     }
 
     //others sample data here
+    @Getter
+    public static class KoiImage {
+        String imageUrl = "https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/48/photos/Sanke%2040cm.png";
+        String videoUrl = "https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/48/photos/Sanke%2040cm.png";
+    }
 
 }
