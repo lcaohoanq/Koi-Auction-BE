@@ -53,8 +53,8 @@ public class KoiService implements IKoiService {
     }
 
     @Override
-    public Koi getKoiById(long id) {
-        return null;
+    public KoiResponse getKoiById(long id) {
+        return koiRepository.findById(id).map(DTOConverter::convertToKoiDTO).get();
     }
 
     @Override
