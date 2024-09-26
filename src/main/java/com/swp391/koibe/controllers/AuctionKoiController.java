@@ -34,6 +34,16 @@ public class AuctionKoiController {
     private final IKoiService koiService;
     private final IUserService userService;
 
+    @GetMapping("/auction/{id}")
+    public ResponseEntity<List<AuctionKoiResponse>> getAuctionKoisByAuctionId(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(auctionKoiService.getAuctionKoiByAuctionId(id));
+        } catch (Exception e) {
+            log.error("Error getting auctionkois by auction id: " + e.getMessage());
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
     @PostMapping("/generateFakeAuctionKois")
     public ResponseEntity<String> generateFakeAuctionKois() throws DataNotFoundException {
         List<Auction> auctions = auctionService.getAllAuctions();

@@ -32,6 +32,11 @@ public class AuctionKoiService implements IAuctionKoiService {
     }
 
     @Override
+    public List<AuctionKoiResponse> getAuctionKoiByAuctionId(long id) {
+        return auctionKoiRepository.getAuctionKoiByAuctionId(id).stream().map(DTOConverter::convertToAuctionKoiDTO).toList();
+    }
+
+    @Override
     public Page<AuctionKoiResponse> getAllAuctionKois(Pageable pageable) {
         Page<AuctionKoi> kois = auctionKoiRepository.findAll(pageable);
         return kois.map(DTOConverter::convertToAuctionKoiDTO);

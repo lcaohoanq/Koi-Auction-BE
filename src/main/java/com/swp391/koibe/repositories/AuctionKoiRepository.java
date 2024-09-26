@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface AuctionKoiRepository extends JpaRepository<AuctionKoi, Long> {
-
+    List<AuctionKoi> getAuctionKoiByAuctionId(Long auctionId);
 }

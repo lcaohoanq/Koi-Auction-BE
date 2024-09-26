@@ -11,6 +11,7 @@ import java.util.List;
 public interface IAuctionKoiService {
     AuctionKoi createAuctionKoi(AuctionKoi auctionKoi) throws DataNotFoundException;
     AuctionKoi getAuctionKoiById(long id);
+    List<AuctionKoiResponse> getAuctionKoiByAuctionId(long id);
     Page<AuctionKoiResponse> getAllAuctionKois(Pageable pageable);
     AuctionKoi updateAuctionKoi(long id, AuctionKoi auctionKoi);
     void deleteAuctionKoi(long id);
