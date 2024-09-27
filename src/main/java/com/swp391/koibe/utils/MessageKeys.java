@@ -3,6 +3,8 @@ package com.swp391.koibe.utils;
 public class MessageKeys {
 
     public static final String LOGIN_SUCCESSFULLY = "user.login.login_successfully";
+    public static final String LOGOUT_SUCCESSFULLY = "user.login.logout_successfully";
+    public static final String LOGOUT_FAILED = "user.login.logout_failed";
     public static final String REGISTER_SUCCESSFULLY = "user.login.register_successfully";
     public static final String LOGIN_FAILED = "user.login.login_failed";
     public static final String PASSWORD_NOT_MATCH = "user.register.password_not_match";

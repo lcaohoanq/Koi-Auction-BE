@@ -3,12 +3,14 @@ package com.swp391.koibe.services.token;
 import com.swp391.koibe.components.JwtTokenUtils;
 import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
 import com.swp391.koibe.exceptions.ExpiredTokenException;
+import com.swp391.koibe.exceptions.notfound.TokenNotFoundException;
 import com.swp391.koibe.models.Token;
 import com.swp391.koibe.models.User;
 import com.swp391.koibe.repositories.TokenRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,6 +48,19 @@ public class TokenService implements ITokenService{
         existingToken.setRefreshExpirationDate(LocalDateTime.now().plusSeconds(expirationRefreshToken));
         return existingToken;
     }
+
+    //do revoke token
+    @Override
+    public void deleteToken(String token, User user) throws DataNotFoundException {
+        Token existingToken = tokenRepository.findByToken(token);
+        //check if token is attaching with user
+        if(existingToken == null || !Objects.equals(existingToken.getUser().getId(), user.getId())){
+            throw new TokenNotFoundException("Token does not exist");
+        }
+        existingToken.setRevoked(true);
+        tokenRepository.save(existingToken);
+    }
+
     @Transactional
     @Override
     public Token addToken(User user,String token, boolean isMobileDevice) {

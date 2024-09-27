@@ -161,4 +161,18 @@ public class UserController {
         }
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(
+        @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        try {
+            String extractedToken = authorizationHeader.substring(7);
+            User user = userService.getUserDetailsFromToken(extractedToken);
+            tokenService.deleteToken(extractedToken, user); //revoke token
+            return ResponseEntity.ok().body(localizationUtils.getLocalizedMessage(MessageKeys.LOGOUT_SUCCESSFULLY));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(localizationUtils.getLocalizedMessage(MessageKeys.LOGOUT_FAILED, e.getMessage()));
+        }
+    }
+
 }
