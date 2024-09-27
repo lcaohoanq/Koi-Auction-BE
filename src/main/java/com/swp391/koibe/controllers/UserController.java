@@ -7,6 +7,7 @@ import com.swp391.koibe.dtos.UserRegisterDTO;
 import com.swp391.koibe.models.Token;
 import com.swp391.koibe.models.User;
 import com.swp391.koibe.responses.LoginResponse;
+import com.swp391.koibe.responses.LogoutResponse;
 import com.swp391.koibe.responses.RegisterResponse;
 import com.swp391.koibe.responses.UserResponse;
 import com.swp391.koibe.services.token.TokenService;
@@ -162,16 +163,20 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(
+    public ResponseEntity<LogoutResponse> logout(
         @RequestHeader("Authorization") String authorizationHeader
     ) {
+        LogoutResponse logoutResponse = new LogoutResponse();
         try {
             String extractedToken = authorizationHeader.substring(7);
             User user = userService.getUserDetailsFromToken(extractedToken);
             tokenService.deleteToken(extractedToken, user); //revoke token
-            return ResponseEntity.ok().body(localizationUtils.getLocalizedMessage(MessageKeys.LOGOUT_SUCCESSFULLY));
+            logoutResponse.setMessage(localizationUtils.getLocalizedMessage(MessageKeys.LOGOUT_SUCCESSFULLY));
+            return ResponseEntity.ok().body(logoutResponse);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(localizationUtils.getLocalizedMessage(MessageKeys.LOGOUT_FAILED, e.getMessage()));
+            logoutResponse.setMessage(localizationUtils.getLocalizedMessage(MessageKeys.LOGOUT_FAILED));
+            logoutResponse.setReason(e.getMessage());
+            return ResponseEntity.badRequest().body(logoutResponse);
         }
     }
 

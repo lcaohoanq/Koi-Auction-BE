@@ -53,8 +53,11 @@ public class TokenService implements ITokenService{
     @Override
     public void deleteToken(String token, User user) throws DataNotFoundException {
         Token existingToken = tokenRepository.findByToken(token);
+        if(existingToken.isRevoked()){
+            throw new TokenNotFoundException("Token has been revoked");
+        }
         //check if token is attaching with user
-        if(existingToken == null || !Objects.equals(existingToken.getUser().getId(), user.getId())){
+        if(!Objects.equals(existingToken.getUser().getId(), user.getId())){
             throw new TokenNotFoundException("Token does not exist");
         }
         existingToken.setRevoked(true);
