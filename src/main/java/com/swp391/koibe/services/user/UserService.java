@@ -1,10 +1,12 @@
 package com.swp391.koibe.services.user;
 
 import com.swp391.koibe.components.JwtTokenUtils;
+import com.swp391.koibe.components.LocalizationUtils;
 import com.swp391.koibe.dtos.UpdateUserDTO;
 import com.swp391.koibe.dtos.UserRegisterDTO;
 import com.swp391.koibe.enums.ProviderName;
 import com.swp391.koibe.enums.UserStatus;
+import com.swp391.koibe.exceptions.ExpiredTokenException;
 import com.swp391.koibe.exceptions.InvalidPasswordException;
 import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
 import com.swp391.koibe.exceptions.PermissionDeniedException;
@@ -15,6 +17,7 @@ import com.swp391.koibe.repositories.RoleRepository;
 import com.swp391.koibe.repositories.SocialAccountRepository;
 import com.swp391.koibe.repositories.UserRepository;
 
+import com.swp391.koibe.utils.MessageKeys;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +43,7 @@ public class UserService implements IUserService {
     private final JwtTokenUtils jwtTokenUtils;
     private final RoleRepository roleRepository;
     private final SocialAccountRepository socialAccountRepository;
+    private final LocalizationUtils localizationUtils;
 
     @Override
     public User createUser(UserRegisterDTO userRegisterDTO) throws Exception {
@@ -84,7 +88,7 @@ public class UserService implements IUserService {
     public String login(String email, String password) throws Exception {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isEmpty()) {
-            throw new DataNotFoundException("User not found");
+            throw new DataNotFoundException(localizationUtils.getLocalizedMessage(MessageKeys.WRONG_PHONE_PASSWORD));
         }
         User existingUser = optionalUser.get();
         if (existingUser.getGoogleAccountId() == 0) {
@@ -92,6 +96,11 @@ public class UserService implements IUserService {
                 throw new BadCredentialsException("Wrong email or password");
             }
         }
+
+        if(!optionalUser.get().isActive()) {
+            throw new DataNotFoundException(localizationUtils.getLocalizedMessage(MessageKeys.USER_IS_LOCKED));
+        }
+
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(email, password, existingUser.getAuthorities());
         authenticationManager.authenticate(authenticationToken);
@@ -217,6 +226,22 @@ public class UserService implements IUserService {
         //existingUser.setRole(updatedRole);
         // Save the updated user
         return userRepository.save(existingUser);
+    }
+
+    //Token
+    @Override
+    public User getUserDetailsFromToken(String token) throws Exception {
+        if(jwtTokenUtils.isTokenExpired(token)) {
+            throw new ExpiredTokenException("Token is expired");
+        }
+        String email = jwtTokenUtils.extractEmail(token);
+        Optional<User> user = userRepository.findByEmail(email);
+
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw new Exception("User not found");
+        }
     }
 
     @Override

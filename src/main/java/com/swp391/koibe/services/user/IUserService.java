@@ -25,4 +25,7 @@ public interface IUserService {
 
     @Transactional
     User updateUser(Long userId, UpdateUserDTO updatedUserDTO) throws Exception;
+
+    //Token
+    User getUserDetailsFromToken(String token) throws Exception;
 }

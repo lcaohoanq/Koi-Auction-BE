@@ -4,26 +4,31 @@ import com.swp391.koibe.components.LocalizationUtils;
 import com.swp391.koibe.dtos.UpdateUserDTO;
 import com.swp391.koibe.dtos.UserLoginDTO;
 import com.swp391.koibe.dtos.UserRegisterDTO;
+import com.swp391.koibe.models.Token;
 import com.swp391.koibe.models.User;
 import com.swp391.koibe.responses.LoginResponse;
 import com.swp391.koibe.responses.RegisterResponse;
 import com.swp391.koibe.responses.UserResponse;
+import com.swp391.koibe.services.token.TokenService;
 import com.swp391.koibe.services.user.IUserService;
 import com.swp391.koibe.utils.DTOConverter;
 import com.swp391.koibe.utils.MessageKeys;
 import com.swp391.koibe.utils.ResponseUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,11 +40,13 @@ public class UserController {
 
     private final IUserService userService;
     private final LocalizationUtils localizationUtils;
+    private final TokenService tokenService;
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(
         @RequestBody @Valid UserLoginDTO userLoginDTO,
-        BindingResult result) {
+        BindingResult result,
+        HttpServletRequest request) {
 
         if (result.hasErrors()) {
             List<FieldError> fieldErrorList = result.getFieldErrors();
@@ -52,15 +59,43 @@ public class UserController {
                                                         .build());
         }
 
-        String token;
         try {
-            token = userService.login(userLoginDTO.getEmail(), userLoginDTO.getPassword());
+            String token = userService.login(userLoginDTO.getEmail(), userLoginDTO.getPassword());
+            String userAgent = request.getHeader("User-Agent");
+            User userDetail = userService.getUserDetailsFromToken(token);
+            Token jwtToken = tokenService.addToken(userDetail, token, isMobileDevice(userAgent));
             log.info("User logged in successfully");
-            return ResponseUtils.loginSuccess(localizationUtils.getLocalizedMessage(MessageKeys.LOGIN_SUCCESSFULLY), token);
+            return ResponseEntity.ok(LoginResponse.builder()
+                                         .message(localizationUtils.getLocalizedMessage(MessageKeys.LOGIN_SUCCESSFULLY))
+                                         .token(jwtToken.getToken())
+                                         .tokenType(jwtToken.getTokenType())
+                                         .refreshToken(jwtToken.getRefreshToken())
+                                         .username(userDetail.getUsername())
+                                         .roles(userDetail.getAuthorities().stream().map(item -> item.getAuthority()).toList())
+                                         .id(userDetail.getId())
+                                         .build());
         } catch (Exception e) {
             return ResponseUtils.loginFailed(localizationUtils.getLocalizedMessage(MessageKeys.LOGIN_FAILED, e.getMessage()));
         }
 
+    }
+
+    private boolean isMobileDevice(String userAgent) {
+        // Kiểm tra User-Agent header để xác định thiết bị di động
+        return userAgent.toLowerCase().contains("mobile");
+    }
+
+    @PostMapping("/details")
+    public ResponseEntity<UserResponse> getUserDetails(
+        @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        try {
+            String extractedToken = authorizationHeader.substring(7); // Loại bỏ "Bearer " từ chuỗi token
+            User user = userService.getUserDetailsFromToken(extractedToken);
+            return ResponseEntity.ok(DTOConverter.convertToUserDTO(user));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PostMapping("/register")
