@@ -1,8 +1,11 @@
 package com.swp391.koibe.services.user;
 
 import com.swp391.koibe.components.JwtTokenUtils;
+import com.swp391.koibe.dtos.UpdateUserDTO;
 import com.swp391.koibe.dtos.UserRegisterDTO;
 import com.swp391.koibe.enums.ProviderName;
+import com.swp391.koibe.enums.UserStatus;
+import com.swp391.koibe.exceptions.InvalidPasswordException;
 import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
 import com.swp391.koibe.exceptions.PermissionDeniedException;
 import com.swp391.koibe.models.Role;
@@ -17,11 +20,14 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -58,14 +64,15 @@ public class UserService implements IUserService {
                 .password(userRegisterDTO.getPassword())
                 .address(userRegisterDTO.getAddress())
                 .dob(userRegisterDTO.getDateOfBirth())
-                .avatarUrl("https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1677509740.jpg")
+                .avatarUrl(userRegisterDTO.getAvatarUrl())
                 .googleAccountId(userRegisterDTO.getGoogleAccountId())
                 .accountBalance(0L) //new user has 0 money when register
                 .build();
 
         newUser.setRole(role);
 
-        if (userRegisterDTO.getFacebookAccountId() == 0 && userRegisterDTO.getGoogleAccountId() == 0) {
+        // check if user are log in without google account, then encode password
+        if (userRegisterDTO.getGoogleAccountId() == 0) {
             String password = userRegisterDTO.getPassword();
             String encodedPassword = passwordEncoder.encode(password);
             newUser.setPassword(encodedPassword);
@@ -140,6 +147,92 @@ public class UserService implements IUserService {
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Transactional
+    @Override
+    public User updateUser(Long userId, UpdateUserDTO updatedUserDTO) throws Exception {
+        // Find the existing user by userId
+        User existingUser = userRepository.findById(userId)
+            .orElseThrow(() -> new DataNotFoundException("User not found"));
+
+        // Check if the email is being changed and if it already exists for another user
+        String newEmail = updatedUserDTO.getEmail();
+
+        if(newEmail != null && !newEmail.isEmpty()){
+            if (!existingUser.getEmail().equals(newEmail) &&
+                userRepository.existsByEmail(newEmail)) {
+                throw new DataIntegrityViolationException("Email already exists");
+            }
+            existingUser.setEmail(newEmail);
+        }
+
+        // Check if the phone number is being changed and if it already exists for another user
+        String newPhoneNumber = updatedUserDTO.getPhoneNumber();
+
+        if(newPhoneNumber != null && newPhoneNumber.isEmpty()){
+            if (!existingUser.getPhoneNumber().equals(newPhoneNumber) &&
+                userRepository.existsByPhoneNumber(newPhoneNumber)) {
+                throw new DataIntegrityViolationException("Phone number already exists");
+            }
+            existingUser.setPhoneNumber(newPhoneNumber);
+        }
+
+        // Update user information based on the DTO
+        if (updatedUserDTO.getFirstName() != null) {
+            existingUser.setFirstName(updatedUserDTO.getFirstName());
+        }
+        if (updatedUserDTO.getLastName() != null) {
+            existingUser.setLastName(updatedUserDTO.getLastName());
+        }
+        if (newPhoneNumber != null) {
+            existingUser.setPhoneNumber(newPhoneNumber);
+        }
+        if (updatedUserDTO.getAddress() != null) {
+            existingUser.setAddress(updatedUserDTO.getAddress());
+        }
+        if(updatedUserDTO.getStatus() != null){
+            existingUser.setStatus(UserStatus.valueOf(updatedUserDTO.getStatus()));
+        }
+        if (updatedUserDTO.getDob() != null) {
+            existingUser.setDob(updatedUserDTO.getDob());
+        }
+        if(updatedUserDTO.getAvatarUrl() != null){
+            existingUser.setAvatarUrl(updatedUserDTO.getAvatarUrl());
+        }
+        if (updatedUserDTO.getGoogleAccountId() > 0) {
+            existingUser.setGoogleAccountId(updatedUserDTO.getGoogleAccountId());
+        }
+
+        // Update the password if it is provided in the DTO
+        if (updatedUserDTO.getPassword() != null
+            && !updatedUserDTO.getPassword().isEmpty()) {
+            if(!updatedUserDTO.getPassword().equals(updatedUserDTO.getConfirmPassword())) {
+                throw new DataNotFoundException("Password and confirm password must be the same");
+            }
+            String newPassword = updatedUserDTO.getPassword();
+            String encodedPassword = passwordEncoder.encode(newPassword);
+            existingUser.setPassword(encodedPassword);
+        }
+        //existingUser.setRole(updatedRole);
+        // Save the updated user
+        return userRepository.save(existingUser);
+    }
+
+    @Override
+    public Page<User> findAll(String keyword, Pageable pageable) throws Exception {
+        return null;
+    }
+
+    @Override
+    public void resetPassword(Long userId, String newPassword)
+        throws InvalidPasswordException, DataNotFoundException {
+
+    }
+
+    @Override
+    public void blockOrEnable(Long userId, Boolean active) throws DataNotFoundException {
+
     }
 
 }

@@ -39,8 +39,8 @@ public class UserRegisterDTO {
     @JsonProperty("date_of_birth")
     private Date dateOfBirth;
 
-    @JsonProperty("facebook_account_id")
-    private int facebookAccountId;
+    @JsonProperty("avatar_url")
+    private String avatarUrl;
 
     @JsonProperty("google_account_id")
     private int googleAccountId;
