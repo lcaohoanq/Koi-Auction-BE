@@ -7,7 +7,6 @@ import com.swp391.koibe.models.User;
 import com.swp391.koibe.responses.AuctionKoiResponse;
 import com.swp391.koibe.responses.AuctionResponse;
 import com.swp391.koibe.responses.KoiResponse;
-import com.swp391.koibe.responses.UserPaginationResponse;
 import com.swp391.koibe.responses.UserResponse;
 
 public class DTOConverter {

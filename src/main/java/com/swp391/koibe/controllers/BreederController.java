@@ -1,9 +1,8 @@
 package com.swp391.koibe.controllers;
 
 import com.swp391.koibe.models.User;
-import com.swp391.koibe.responses.UserPaginationResponse;
+import com.swp391.koibe.responses.pagination.UserPaginationResponse;
 import com.swp391.koibe.responses.UserResponse;
-import com.swp391.koibe.responses.base.BasePaginationResponse;
 import com.swp391.koibe.services.user.breeder.IBreederService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

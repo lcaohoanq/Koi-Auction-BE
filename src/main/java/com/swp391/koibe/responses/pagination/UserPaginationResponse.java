@@ -1,6 +1,7 @@
-package com.swp391.koibe.responses;
+package com.swp391.koibe.responses.pagination;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.swp391.koibe.responses.UserResponse;
 import com.swp391.koibe.responses.base.BasePaginationResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

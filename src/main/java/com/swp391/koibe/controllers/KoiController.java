@@ -8,6 +8,7 @@ import com.swp391.koibe.models.Koi;
 import com.swp391.koibe.models.KoiImage;
 import com.swp391.koibe.repositories.KoiRepository;
 import com.swp391.koibe.responses.KoiResponse;
+import com.swp391.koibe.responses.pagination.KoiPaginationResponse;
 import com.swp391.koibe.services.koi.IKoiService;
 import com.swp391.koibe.utils.SampleDataStorage;
 import jakarta.validation.Valid;
@@ -85,14 +86,20 @@ public class KoiController {
 
     //pagination kois
     @GetMapping("") //kois/?page=0&limit=10
-    public ResponseEntity<List<KoiResponse>> getAllKois(
+    public ResponseEntity<KoiPaginationResponse> getAllKois(
         @RequestParam("page") int page,
         @RequestParam("limit") int limit
     ) {
+
+        KoiPaginationResponse response = new KoiPaginationResponse();
+
         try{
             PageRequest pageRequest = PageRequest.of(page, limit);
-            Page<KoiResponse> categories = koiService.getAllKois(pageRequest);
-            return ResponseEntity.ok(categories.getContent());
+            Page<KoiResponse> kois = koiService.getAllKois(pageRequest);
+            response.setItems(kois.getContent());
+            response.setTotalPage(kois.getTotalPages());
+            response.setTotalItem(kois.getTotalElements());
+            return ResponseEntity.ok(response);
         }catch (Exception e){
             return ResponseEntity.badRequest().body(null);
         }
