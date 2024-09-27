@@ -6,6 +6,7 @@ import com.swp391.koibe.models.User;
 import com.swp391.koibe.repositories.UserRepository;
 import com.swp391.koibe.responses.UserResponse;
 import com.swp391.koibe.utils.DTOConverter;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,15 @@ public class BreederService implements IBreederService {
     public Page<UserResponse> getAllBreeders(Pageable pageable) {
         Page<User> breeders = userRepository.findByRoleName("BREEDER", pageable);
         return breeders.map(DTOConverter::convertToUserDTO);
+    }
+
+    @Override
+    public List<UserResponse> getAllBreeders() {
+        return userRepository.findAll()
+            .stream()
+            .filter(breeder -> breeder.getRole().getId() == 3)
+            .map(DTOConverter::convertToUserDTO)
+            .toList();
     }
 
     @Override

@@ -35,6 +35,16 @@ public class BreederController {
         }
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<UserResponse>> getAllBreeders() {
+        try {
+            List<UserResponse> breeders = breederService.getAllBreeders();
+            return ResponseEntity.ok(breeders);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getBreeder(@PathVariable long id) {
         try {
