@@ -1,6 +1,7 @@
 package com.swp391.koibe.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.Date;
@@ -23,8 +24,8 @@ public class UserRegisterDTO {
     @NotBlank(message = "Last name is required")
     private String lastName;
 
-    @JsonProperty("emails")
-    @NotBlank(message = "Email is required")
+    @JsonProperty("email")
+    @Email(message = "Email is invalid")
     private String email;
 
     private String address;

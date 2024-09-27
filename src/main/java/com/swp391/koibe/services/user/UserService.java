@@ -67,8 +67,9 @@ public class UserService implements IUserService {
                 .email(userRegisterDTO.getEmail())
                 .password(userRegisterDTO.getPassword())
                 .address(userRegisterDTO.getAddress())
+                .status(UserStatus.UNVERIFIED)
                 .dob(userRegisterDTO.getDateOfBirth())
-                .avatarUrl(userRegisterDTO.getAvatarUrl())
+                .avatarUrl(userRegisterDTO.getAvatarUrl() == null ? "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1677509740.jpg" : userRegisterDTO.getAvatarUrl())
                 .googleAccountId(userRegisterDTO.getGoogleAccountId())
                 .accountBalance(0L) //new user has 0 money when register
                 .build();

@@ -123,8 +123,8 @@ public class UserController {
 
         try {
             User user = userService.createUser(userRegisterDTO);
-            registerResponse.setMessage("Đăng ký tài khoản thành công");
-            registerResponse.setUser(user);
+            registerResponse.setMessage(localizationUtils.getLocalizedMessage(MessageKeys.REGISTER_SUCCESSFULLY));
+            registerResponse.setUserResponse(DTOConverter.convertToUserDTO(user));
             log.info("New user registered successfully");
             return ResponseEntity.ok(registerResponse);
         } catch (Exception e) {
