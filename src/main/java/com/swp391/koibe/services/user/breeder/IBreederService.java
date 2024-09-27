@@ -2,6 +2,7 @@ package com.swp391.koibe.services.user.breeder;
 
 import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
 import com.swp391.koibe.models.User;
+import com.swp391.koibe.responses.UserPaginationResponse;
 import com.swp391.koibe.responses.UserResponse;
 import java.util.List;
 import org.springframework.data.domain.Page;

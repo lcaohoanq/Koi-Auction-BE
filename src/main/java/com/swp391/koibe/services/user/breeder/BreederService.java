@@ -4,6 +4,7 @@ import com.swp391.koibe.exceptions.notfound.BreederNotFoundException;
 import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
 import com.swp391.koibe.models.User;
 import com.swp391.koibe.repositories.UserRepository;
+import com.swp391.koibe.responses.UserPaginationResponse;
 import com.swp391.koibe.responses.UserResponse;
 import com.swp391.koibe.utils.DTOConverter;
 import java.util.List;
