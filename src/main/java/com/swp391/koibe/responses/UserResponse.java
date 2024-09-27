@@ -1,7 +1,6 @@
 package com.swp391.koibe.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.swp391.koibe.models.User;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +25,7 @@ public class UserResponse {
     @JsonProperty("phone_number")
     private String phoneNumber;
 
-    @JsonProperty("email")
+    @JsonProperty("emails")
     private String email;
 
     @JsonProperty("address")

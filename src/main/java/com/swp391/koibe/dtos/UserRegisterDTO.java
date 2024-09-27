@@ -23,7 +23,7 @@ public class UserRegisterDTO {
     @NotBlank(message = "Last name is required")
     private String lastName;
 
-    @JsonProperty("email")
+    @JsonProperty("emails")
     @NotBlank(message = "Email is required")
     private String email;
 

@@ -25,7 +25,7 @@ public class UserDTO {
     @JsonProperty("phone_number")
     private String phoneNumber;
 
-    @JsonProperty("email")
+    @JsonProperty("emails")
     @Email(message = "Email should be valid")
     private String email;
 

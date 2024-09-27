@@ -23,7 +23,7 @@ public class OAuth2Payload {
     @JsonProperty("azp")
     private String azp;
 
-    @JsonProperty("email")
+    @JsonProperty("emails")
     private String email;
 
     @JsonProperty("email_verified")

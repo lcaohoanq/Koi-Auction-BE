@@ -1,6 +1,5 @@
 package com.swp391.koibe.dtos;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -27,7 +26,7 @@ public class UpdateUserDTO {
     @JsonProperty("last_name")
     private String lastName;
 
-    @JsonProperty("email")
+    @JsonProperty("emails")
     private String email;
 
     @JsonProperty("phone_number")
