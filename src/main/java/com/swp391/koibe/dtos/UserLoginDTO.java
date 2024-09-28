@@ -16,7 +16,7 @@ public class UserLoginDTO {
 
     @Email(message = "Email is not valid")
     @NotBlank(message = "Email is required")
-    @JsonProperty("emails")
+    @JsonProperty("email")
     private String email;
 
     @NotBlank(message = "Password is required")
