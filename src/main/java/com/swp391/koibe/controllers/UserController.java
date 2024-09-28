@@ -9,6 +9,7 @@ import com.swp391.koibe.models.Token;
 import com.swp391.koibe.models.User;
 import com.swp391.koibe.responses.LoginResponse;
 import com.swp391.koibe.responses.LogoutResponse;
+import com.swp391.koibe.responses.OtpResponse;
 import com.swp391.koibe.responses.RegisterResponse;
 import com.swp391.koibe.responses.UpdateResponse;
 import com.swp391.koibe.responses.UserResponse;
@@ -182,6 +183,25 @@ public class UserController {
             return ResponseEntity.badRequest().body("User not found.");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/verify/{otp}")
+    public ResponseEntity<OtpResponse> verifiedUser(
+        @PathVariable int otp,
+        @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        OtpResponse otpResponse = new OtpResponse();
+        try {
+            String extractedToken = authorizationHeader.substring(7);
+            User user = userService.getUserDetailsFromToken(extractedToken);
+            userService.verifyOtp(user.getId(), otp);
+            otpResponse.setMessage(localizationUtils.getLocalizedMessage(MessageKeys.VERIFY_USER_SUCCESSFULLY));
+            return ResponseEntity.ok().body(otpResponse);
+        } catch (Exception e){
+            otpResponse.setMessage(localizationUtils.getLocalizedMessage(MessageKeys.VERIFY_USER_FAILED));
+            otpResponse.setReason(e.getMessage());
+            return ResponseEntity.badRequest().body(otpResponse);
         }
     }
 

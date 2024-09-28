@@ -9,8 +9,13 @@ public class MessageKeys {
     public static final String LOGIN_FAILED = "user.login.login_failed";
     public static final String PASSWORD_NOT_MATCH = "user.register.password_not_match";
     public static final String USER_IS_LOCKED = "user.login.user_is_locked";
+    public static final String USER_NOT_FOUND = "user.login.user_not_found";
 
     public static final String UPDATE_USER_SUCCESSFULLY = "user.update.update_successfully";
+    public static final String VERIFY_USER_SUCCESSFULLY = "user.verify.verify_successfully";
+    public static final String VERIFY_USER_FAILED = "user.verify.verify_failed";
+    public static final String USER_ALREADY_VERIFIED = "user.verify.user_already_verified";
+    public static final String OTP_EXPIRED = "user.verify.otp_expired";
 
     public static final String INSERT_CATEGORY_SUCCESSFULLY = "category.create_category.create_successfully";
     public static final String DELETE_CATEGORY_SUCCESSFULLY = "category.delete_category.delete_successfully";

@@ -4,6 +4,7 @@ import com.swp391.koibe.dtos.UpdateUserDTO;
 import com.swp391.koibe.dtos.UserRegisterDTO;
 import com.swp391.koibe.exceptions.InvalidPasswordException;
 import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
+import com.swp391.koibe.models.Otp;
 import com.swp391.koibe.models.User;
 
 import java.util.List;
@@ -28,4 +29,7 @@ public interface IUserService {
 
     //Token
     User getUserDetailsFromToken(String token) throws Exception;
+
+    //Otp
+    void verifyOtp(Long userId, int otp) throws Exception;
 }

@@ -4,12 +4,14 @@ import com.swp391.koibe.components.JwtTokenUtils;
 import com.swp391.koibe.components.LocalizationUtils;
 import com.swp391.koibe.dtos.UpdateUserDTO;
 import com.swp391.koibe.dtos.UserRegisterDTO;
+import com.swp391.koibe.enums.EmailCategoriesEnum;
 import com.swp391.koibe.enums.ProviderName;
 import com.swp391.koibe.enums.UserStatus;
 import com.swp391.koibe.exceptions.ExpiredTokenException;
 import com.swp391.koibe.exceptions.InvalidPasswordException;
 import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
 import com.swp391.koibe.exceptions.PermissionDeniedException;
+import com.swp391.koibe.models.Otp;
 import com.swp391.koibe.models.Role;
 import com.swp391.koibe.models.SocialAccount;
 import com.swp391.koibe.models.User;
@@ -17,7 +19,11 @@ import com.swp391.koibe.repositories.RoleRepository;
 import com.swp391.koibe.repositories.SocialAccountRepository;
 import com.swp391.koibe.repositories.UserRepository;
 
+import com.swp391.koibe.services.mail.MailSenderService;
+import com.swp391.koibe.services.otp.OtpService;
 import com.swp391.koibe.utils.MessageKeys;
+import com.swp391.koibe.utils.OTPUtils;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +37,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.context.Context;
 
 @Slf4j
 @Service
@@ -44,6 +51,8 @@ public class UserService implements IUserService {
     private final RoleRepository roleRepository;
     private final SocialAccountRepository socialAccountRepository;
     private final LocalizationUtils localizationUtils;
+    private final MailSenderService mailSenderService;
+    private final OtpService otpService;
 
     @Override
     public User createUser(UserRegisterDTO userRegisterDTO) throws Exception {
@@ -89,7 +98,33 @@ public class UserService implements IUserService {
             String encodedPassword = passwordEncoder.encode(password);
             newUser.setPassword(encodedPassword);
         }
-        return userRepository.save(newUser);
+
+        User savedUser = userRepository.save(newUser);
+
+        // send OTP email
+        String otp = OTPUtils.generateOTP();
+        Context context = new Context();
+        context.setVariable("name", savedUser.getFirstName());
+        context.setVariable("otp", otp);
+
+        mailSenderService.sendNewMail(
+            savedUser.getEmail(),
+            "Verify your email",
+            EmailCategoriesEnum.OTP.getType(),
+            context
+        );
+
+        Otp otpEntity = Otp.builder()
+            .email(savedUser.getEmail())
+            .otp(otp)
+            .expiredAt(LocalDateTime.now().plusMinutes(5))
+            .isUsed(false)
+            .isExpired(false)
+            .build();
+
+        otpService.createOtp(otpEntity);
+
+        return savedUser;
     }
 
     @Override
@@ -171,7 +206,9 @@ public class UserService implements IUserService {
     public User updateUser(Long userId, UpdateUserDTO updatedUserDTO) throws Exception {
         // Find the existing user by userId
         User existingUser = userRepository.findById(userId)
-            .orElseThrow(() -> new DataNotFoundException("User not found"));
+            .orElseThrow(() -> new DataNotFoundException(
+                localizationUtils.getLocalizedMessage(MessageKeys.USER_NOT_FOUND)
+            ));
 
         // Check if the email is being changed and if it already exists for another user
         String newEmail = updatedUserDTO.getEmail();
@@ -248,7 +285,49 @@ public class UserService implements IUserService {
         if (user.isPresent()) {
             return user.get();
         } else {
-            throw new Exception("User not found");
+            throw new Exception(
+                localizationUtils.getLocalizedMessage(MessageKeys.USER_NOT_FOUND)
+            );
+        }
+    }
+
+    @Override
+    public void verifyOtp(Long userId, int otp) throws Exception {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new DataNotFoundException(
+                localizationUtils.getLocalizedMessage(MessageKeys.USER_NOT_FOUND)
+            ));
+
+        if(user.getStatus() == UserStatus.VERIFIED){
+            throw new DataNotFoundException(
+                localizationUtils.getLocalizedMessage(MessageKeys.USER_ALREADY_VERIFIED)
+            );
+        }
+
+        if(user.getStatus() == UserStatus.BANNED){
+            throw new DataNotFoundException("User is banned");
+        }
+
+        Otp otpEntity = otpService.getOtpByEmail(user
+             .getEmail())
+            .orElseThrow(() -> new DataNotFoundException("OTP not found"));
+
+        //check the otp is expired or not
+        if (otpEntity.getExpiredAt().isBefore(LocalDateTime.now())) {
+            otpEntity.setExpired(true);
+            otpService.disableOtp(otpEntity.getId());
+            throw new DataNotFoundException(
+                localizationUtils.getLocalizedMessage(MessageKeys.OTP_EXPIRED)
+            );
+        }
+
+        if (otpEntity.getOtp().equals(String.valueOf(otp))) {
+            otpEntity.setUsed(true);
+            otpService.disableOtp(otpEntity.getId());
+            user.setStatus(UserStatus.VERIFIED);
+            userRepository.save(user);
+        } else {
+            throw new DataNotFoundException("Invalid OTP");
         }
     }
 
@@ -267,7 +346,9 @@ public class UserService implements IUserService {
     @Transactional
     public void blockOrEnable(Long userId, Boolean active) throws DataNotFoundException {
         User existingUser = userRepository.findById(userId)
-            .orElseThrow(() -> new DataNotFoundException("User not found"));
+            .orElseThrow(() -> new DataNotFoundException(
+                localizationUtils.getLocalizedMessage(MessageKeys.USER_NOT_FOUND)
+            ));
         existingUser.setActive(active);
         userRepository.save(existingUser);
     }
