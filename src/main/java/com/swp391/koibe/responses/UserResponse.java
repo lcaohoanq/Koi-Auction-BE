@@ -34,6 +34,12 @@ public class UserResponse {
     @JsonProperty("password")
     private String password;
 
+    @JsonProperty("is_active")
+    private int isActive;
+
+    @JsonProperty("is_subscription")
+    private int isSubscription;
+
     @JsonProperty("status_name")
     private String statusName;
 

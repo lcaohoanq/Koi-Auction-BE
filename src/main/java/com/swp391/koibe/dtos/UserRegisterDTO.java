@@ -1,5 +1,6 @@
 package com.swp391.koibe.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -27,6 +28,12 @@ public class UserRegisterDTO {
     @JsonProperty("email")
     @Email(message = "Email is invalid")
     private String email;
+
+    @JsonProperty("is_active")
+    private int isActive;
+
+    @JsonProperty("is_subscription")
+    private Integer isSubscription;
 
     private String address;
 

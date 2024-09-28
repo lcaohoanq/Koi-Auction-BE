@@ -65,6 +65,9 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name="is_active", columnDefinition = "TINYINT(1)")
     private boolean isActive;
 
+    @Column(name="is_subscription", columnDefinition = "TINYINT(1) DEFAULT 0")
+    private boolean isSubscription;
+
     @Enumerated(EnumType.STRING)
     @Column(name="status")
     private UserStatus status;

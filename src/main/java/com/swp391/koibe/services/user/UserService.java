@@ -61,12 +61,19 @@ public class UserService implements IUserService {
             throw new PermissionDeniedException("Cannot create manager account");
         }
 
+//        if(userRegisterDTO.getIsSubscription()==null){
+//            userRegisterDTO.setIsSubscription(0);
+//        }
+
         User newUser = User.builder()
                 .firstName(userRegisterDTO.getFirstName())
                 .lastName(userRegisterDTO.getLastName())
                 .email(userRegisterDTO.getEmail())
                 .password(userRegisterDTO.getPassword())
                 .address(userRegisterDTO.getAddress())
+                .isActive(true)
+                .isSubscription(((userRegisterDTO.getIsSubscription() == null ? 0 : 1) != 0)) //force
+            // subscription
                 .status(UserStatus.UNVERIFIED)
                 .dob(userRegisterDTO.getDateOfBirth())
                 .avatarUrl(userRegisterDTO.getAvatarUrl() == null ? "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1677509740.jpg" : userRegisterDTO.getAvatarUrl())
