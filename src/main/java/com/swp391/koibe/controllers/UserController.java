@@ -4,11 +4,13 @@ import com.swp391.koibe.components.LocalizationUtils;
 import com.swp391.koibe.dtos.UpdateUserDTO;
 import com.swp391.koibe.dtos.UserLoginDTO;
 import com.swp391.koibe.dtos.UserRegisterDTO;
+import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
 import com.swp391.koibe.models.Token;
 import com.swp391.koibe.models.User;
 import com.swp391.koibe.responses.LoginResponse;
 import com.swp391.koibe.responses.LogoutResponse;
 import com.swp391.koibe.responses.RegisterResponse;
+import com.swp391.koibe.responses.UpdateResponse;
 import com.swp391.koibe.responses.UserResponse;
 import com.swp391.koibe.services.token.TokenService;
 import com.swp391.koibe.services.user.IUserService;
@@ -18,6 +20,7 @@ import com.swp391.koibe.utils.ResponseUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -137,6 +140,7 @@ public class UserController {
     public ResponseEntity<?> updateUserDetails(
         @PathVariable Long userId,
         @Valid @RequestBody UpdateUserDTO updatedUserDTO,
+        @RequestHeader("Authorization") String authorizationHeader,
         BindingResult result
     ){
         if (result.hasErrors()) {
@@ -148,17 +152,36 @@ public class UserController {
             return ResponseEntity.badRequest().body(errorMessages);
         }
 
+        UpdateResponse updateResponse = new UpdateResponse();
         try{
-//            String extractedToken = authorizationHeader.substring(7);
-//            User user = userService.getUserDetailsFromToken(extractedToken);
-//            // Ensure that the user making the request matches the user being updated
-//            if (user.getId() != userId) {
-//                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-//            }
+            String extractedToken = authorizationHeader.substring(7);
+            User user = userService.getUserDetailsFromToken(extractedToken);
+            // Ensure that the user making the request matches the user being updated
+            if (!Objects.equals(user.getId(), userId)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
             User updatedUser = userService.updateUser(userId, updatedUserDTO);
-            return ResponseEntity.ok(DTOConverter.convertToUserDTO(updatedUser));
+            updateResponse.setMessage(localizationUtils.getLocalizedMessage(MessageKeys.UPDATE_USER_SUCCESSFULLY));
+            updateResponse.setUserResponse(DTOConverter.convertToUserDTO(updatedUser));
+            return ResponseEntity.ok(updateResponse);
         }catch (Exception e){
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PutMapping("/block/{userId}/{active}")
+    public ResponseEntity<String> blockOrEnable(
+        @Valid @PathVariable long userId,
+        @Valid @PathVariable int active
+    ) {
+        try {
+            userService.blockOrEnable(userId, active > 0);
+            String message = active > 0 ? "Successfully enabled the user." : "Successfully blocked the user.";
+            return ResponseEntity.ok().body(message);
+        } catch (DataNotFoundException e) {
+            return ResponseEntity.badRequest().body("User not found.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

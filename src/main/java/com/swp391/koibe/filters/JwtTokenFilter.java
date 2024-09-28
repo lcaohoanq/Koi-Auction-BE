@@ -93,6 +93,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/users/register", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/login", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/details", apiPrefix), "PUT"),
+                Pair.of(String.format("%s/users/block", apiPrefix), "PUT"),
                 Pair.of(String.format("%s/oauth2", apiPrefix), "POST"),
                 Pair.of(String.format("%s/oauth2/google-client-id", apiPrefix), "GET"),
                 Pair.of(String.format("%s/members", apiPrefix), "GET"),

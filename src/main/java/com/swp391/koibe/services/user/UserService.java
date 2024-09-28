@@ -264,8 +264,12 @@ public class UserService implements IUserService {
     }
 
     @Override
+    @Transactional
     public void blockOrEnable(Long userId, Boolean active) throws DataNotFoundException {
-
+        User existingUser = userRepository.findById(userId)
+            .orElseThrow(() -> new DataNotFoundException("User not found"));
+        existingUser.setActive(active);
+        userRepository.save(existingUser);
     }
 
 }
