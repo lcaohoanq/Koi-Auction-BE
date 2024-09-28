@@ -62,7 +62,7 @@ public class User extends BaseEntity implements UserDetails {
     @Transient //do not save to database, check if needed
     private String confirmPassword;
 
-    @Column(name="is_active", columnDefinition = "TINYINT(1)")
+    @Column(name="is_active", columnDefinition = "TINYINT(1) DEFAULT 1")
     private boolean isActive;
 
     @Column(name="is_subscription", columnDefinition = "TINYINT(1) DEFAULT 0")
