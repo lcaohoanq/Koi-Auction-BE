@@ -1,8 +1,8 @@
 package com.swp391.koibe.exceptions.notfound;
 
-public class MemberNotFoundException extends DataNotFoundException {
+public class RoleNotFoundException extends DataNotFoundException {
 
-    public MemberNotFoundException(String message) {
+    public RoleNotFoundException(String message) {
         super(message);
     }
 

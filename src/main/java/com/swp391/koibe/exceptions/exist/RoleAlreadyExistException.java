@@ -1,8 +1,8 @@
-package com.swp391.koibe.exceptions.notfound;
+package com.swp391.koibe.exceptions.exist;
 
-public class RoleNotFoundException extends DataNotFoundException {
+public class RoleAlreadyExistException extends DataAlreadyExistException{
 
-    public RoleNotFoundException(String message) {
+    public RoleAlreadyExistException(String message) {
         super(message);
     }
 
