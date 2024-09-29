@@ -5,52 +5,22 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Pattern;
 import java.util.Date;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
 @JsonInclude(Include.NON_NULL)
-public class UpdateUserDTO {
-    @JsonProperty("first_name")
-    private String firstName;
-
-    @JsonProperty("last_name")
-    private String lastName;
-
-    @JsonProperty("emails")
-    private String email;
-
-    @JsonProperty("phone_number")
-    private String phoneNumber;
-
-    @JsonProperty("password")
-    private String password;
-
-    @JsonProperty("confirm_password")
-    private String confirmPassword; //in case user want to change password
-
-    @JsonProperty("address")
-    private String address;
-
+public record UpdateUserDTO(
+    @JsonProperty("first_name") String firstName,
+    @JsonProperty("last_name") String lastName,
+    @JsonProperty("emails") String email,
+    @JsonProperty("phone_number") String phoneNumber,
+    @JsonProperty("password") String password,
+    @JsonProperty("confirm_password") String confirmPassword, // in case user wants to change password
+    @JsonProperty("address") String address,
     @JsonProperty("status")
-    @Pattern(regexp = "ACTIVE|INACTIVE|VERIFIED|UNVERIFIED|BANNED", message = "Status must be either ACTIVE, INACTIVE, VERIFIED, UNVERIFIED, BANNED") //will not throw exception if status is null
-    private String status;
-
-    @JsonProperty("date_of_birth")
-    private Date dob;
-
-    @JsonProperty("avatar_url")
-    private String avatarUrl;
-
-    @JsonProperty("google_account_id")
-    private int googleAccountId;
-}
+    @Pattern(regexp = "ACTIVE|INACTIVE|VERIFIED|UNVERIFIED|BANNED", message = "Status must be either ACTIVE, INACTIVE, VERIFIED, UNVERIFIED, BANNED")
+    String status,
+    @JsonProperty("date_of_birth") Date dob,
+    @JsonProperty("avatar_url") String avatarUrl,
+    @JsonProperty("google_account_id") int googleAccountId
+) {}

@@ -56,13 +56,13 @@ public class UserService implements IUserService {
 
     @Override
     public User createUser(UserRegisterDTO userRegisterDTO) throws Exception {
-        String email = userRegisterDTO.getEmail();
+        String email = userRegisterDTO.email();
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
             throw new DataIntegrityViolationException("Email already exists");
         }
 
-        Role role = roleRepository.findById(userRegisterDTO.getRoleId())
+        Role role = roleRepository.findById(userRegisterDTO.roleId())
                 .orElseThrow(() -> new DataNotFoundException("Role not found"));
 
         if(role.getName().toUpperCase().equals(Role.MANAGER)){
@@ -75,26 +75,26 @@ public class UserService implements IUserService {
 //        }
 
         User newUser = User.builder()
-                .firstName(userRegisterDTO.getFirstName())
-                .lastName(userRegisterDTO.getLastName())
-                .email(userRegisterDTO.getEmail())
-                .password(userRegisterDTO.getPassword())
-                .address(userRegisterDTO.getAddress())
+                .firstName(userRegisterDTO.firstName())
+                .lastName(userRegisterDTO.lastName())
+                .email(userRegisterDTO.email())
+                .password(userRegisterDTO.password())
+                .address(userRegisterDTO.address())
                 .isActive(true)
-                .isSubscription(((userRegisterDTO.getIsSubscription() == null ? 0 : 1) != 0)) //force
+                .isSubscription(((userRegisterDTO.isSubscription() == null ? 0 : 1) != 0)) //force
             // subscription
                 .status(UserStatus.UNVERIFIED)
-                .dob(userRegisterDTO.getDateOfBirth())
-                .avatarUrl(userRegisterDTO.getAvatarUrl() == null ? "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1677509740.jpg" : userRegisterDTO.getAvatarUrl())
-                .googleAccountId(userRegisterDTO.getGoogleAccountId())
+                .dob(userRegisterDTO.dateOfBirth())
+                .avatarUrl(userRegisterDTO.avatarUrl() == null ? "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1677509740.jpg" : userRegisterDTO.avatarUrl())
+                .googleAccountId(userRegisterDTO.googleAccountId())
                 .accountBalance(0L) //new user has 0 money when register
                 .build();
 
         newUser.setRole(role);
 
         // check if user are log in without google account, then encode password
-        if (userRegisterDTO.getGoogleAccountId() == 0) {
-            String password = userRegisterDTO.getPassword();
+        if (userRegisterDTO.googleAccountId() == 0) {
+            String password = userRegisterDTO.password();
             String encodedPassword = passwordEncoder.encode(password);
             newUser.setPassword(encodedPassword);
         }
@@ -211,7 +211,7 @@ public class UserService implements IUserService {
             ));
 
         // Check if the email is being changed and if it already exists for another user
-        String newEmail = updatedUserDTO.getEmail();
+        String newEmail = updatedUserDTO.email();
 
         if(newEmail != null && !newEmail.isEmpty()){
             if (!existingUser.getEmail().equals(newEmail) &&
@@ -222,7 +222,7 @@ public class UserService implements IUserService {
         }
 
         // Check if the phone number is being changed and if it already exists for another user
-        String newPhoneNumber = updatedUserDTO.getPhoneNumber();
+        String newPhoneNumber = updatedUserDTO.phoneNumber();
 
         if(newPhoneNumber != null && newPhoneNumber.isEmpty()){
             if (!existingUser.getPhoneNumber().equals(newPhoneNumber) &&
@@ -233,38 +233,38 @@ public class UserService implements IUserService {
         }
 
         // Update user information based on the DTO
-        if (updatedUserDTO.getFirstName() != null) {
-            existingUser.setFirstName(updatedUserDTO.getFirstName());
+        if (updatedUserDTO.firstName() != null) {
+            existingUser.setFirstName(updatedUserDTO.firstName());
         }
-        if (updatedUserDTO.getLastName() != null) {
-            existingUser.setLastName(updatedUserDTO.getLastName());
+        if (updatedUserDTO.lastName() != null) {
+            existingUser.setLastName(updatedUserDTO.lastName());
         }
         if (newPhoneNumber != null) {
             existingUser.setPhoneNumber(newPhoneNumber);
         }
-        if (updatedUserDTO.getAddress() != null) {
-            existingUser.setAddress(updatedUserDTO.getAddress());
+        if (updatedUserDTO.address() != null) {
+            existingUser.setAddress(updatedUserDTO.address());
         }
-        if(updatedUserDTO.getStatus() != null){
-            existingUser.setStatus(UserStatus.valueOf(updatedUserDTO.getStatus()));
+        if(updatedUserDTO.status() != null){
+            existingUser.setStatus(UserStatus.valueOf(updatedUserDTO.status()));
         }
-        if (updatedUserDTO.getDob() != null) {
-            existingUser.setDob(updatedUserDTO.getDob());
+        if (updatedUserDTO.dob() != null) {
+            existingUser.setDob(updatedUserDTO.dob());
         }
-        if(updatedUserDTO.getAvatarUrl() != null){
-            existingUser.setAvatarUrl(updatedUserDTO.getAvatarUrl());
+        if(updatedUserDTO.avatarUrl() != null){
+            existingUser.setAvatarUrl(updatedUserDTO.avatarUrl());
         }
-        if (updatedUserDTO.getGoogleAccountId() > 0) {
-            existingUser.setGoogleAccountId(updatedUserDTO.getGoogleAccountId());
+        if (updatedUserDTO.googleAccountId() > 0) {
+            existingUser.setGoogleAccountId(updatedUserDTO.googleAccountId());
         }
 
         // Update the password if it is provided in the DTO
-        if (updatedUserDTO.getPassword() != null
-            && !updatedUserDTO.getPassword().isEmpty()) {
-            if(!updatedUserDTO.getPassword().equals(updatedUserDTO.getConfirmPassword())) {
+        if (updatedUserDTO.password() != null
+            && !updatedUserDTO.password().isEmpty()) {
+            if(!updatedUserDTO.password().equals(updatedUserDTO.confirmPassword())) {
                 throw new DataNotFoundException("Password and confirm password must be the same");
             }
-            String newPassword = updatedUserDTO.getPassword();
+            String newPassword = updatedUserDTO.password();
             String encodedPassword = passwordEncoder.encode(newPassword);
             existingUser.setPassword(encodedPassword);
         }

@@ -7,8 +7,10 @@ import com.swp391.koibe.utils.SampleDataStorage;
 import com.swp391.koibe.utils.SampleDataStorage.KoiImage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -27,6 +29,19 @@ public class KoiImageController {
 
         }
         return ResponseEntity.ok("Fake koi images generated");
+    }
+
+    @GetMapping("")
+    public ResponseEntity<?> getAllKoiImages(
+        @RequestParam("page") int page,
+        @RequestParam("limit") int limit
+    ) {
+        return ResponseEntity.ok("All koi images");
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getKoiImageById() {
+        return ResponseEntity.ok("Koi image by id");
     }
 
 }

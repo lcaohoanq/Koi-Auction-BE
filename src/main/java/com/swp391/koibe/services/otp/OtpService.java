@@ -1,9 +1,7 @@
 package com.swp391.koibe.services.otp;
 
-import com.swp391.koibe.dtos.OtpDTO;
 import com.swp391.koibe.models.Otp;
 import com.swp391.koibe.repositories.OtpRepository;
-import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

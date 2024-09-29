@@ -15,6 +15,7 @@ import com.swp391.koibe.repositories.KoiRepository;
 import com.swp391.koibe.repositories.UserRepository;
 import com.swp391.koibe.responses.KoiResponse;
 import com.swp391.koibe.utils.DTOConverter;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +25,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class KoiService implements IKoiService {
+public class KoiService implements IKoiService<KoiResponse> {
 
     private final KoiRepository koiRepository;
     private final CategoryRepository categoryRepository;
@@ -34,24 +35,24 @@ public class KoiService implements IKoiService {
     @Override
     public Koi createKoi(KoiDTO koiDTO) throws DataNotFoundException {
 
-        User existedUser = userRepository.findById(koiDTO.getOwnerId())
+        User existedUser = userRepository.findById(koiDTO.ownerId())
             .orElseThrow(() ->
-                             new DataNotFoundException("User not found: " + koiDTO.getOwnerId()));
+                             new DataNotFoundException("User not found: " + koiDTO.ownerId()));
 
-        Category existedCategory = categoryRepository.findById(koiDTO.getCategoryId())
+        Category existedCategory = categoryRepository.findById(koiDTO.categoryId())
             .orElseThrow(() ->
-                             new DataNotFoundException("Category not found: " + koiDTO.getCategoryId()));
+                             new DataNotFoundException("Category not found: " + koiDTO.categoryId()));
 
         Koi newKoi = Koi.builder()
-            .name(koiDTO.getName())
-            .price(koiDTO.getPrice())
+            .name(koiDTO.name())
+            .price(koiDTO.price())
 //            .trackingStatus(koiDTO.getKoiTrackingStatus())
-            .isDisplay(koiDTO.getIsDisplay())
-            .thumbnail(koiDTO.getThumbnail())
-            .sex(koiDTO.getSex())
-            .length(koiDTO.getLength())
-            .age(koiDTO.getAge())
-            .description(koiDTO.getDescription())
+            .isDisplay(koiDTO.isDisplay())
+            .thumbnail(koiDTO.thumbnail())
+            .sex(koiDTO.sex())
+            .length(koiDTO.length())
+            .age(koiDTO.age())
+            .description(koiDTO.description())
             .owner(existedUser)
             .category(existedCategory)
             .build();
@@ -59,8 +60,12 @@ public class KoiService implements IKoiService {
     }
 
     @Override
-    public KoiResponse getKoiById(long id) {
-        return koiRepository.findById(id).map(DTOConverter::convertToKoiDTO).get();
+    public KoiResponse getKoiById(long id) throws DataNotFoundException {
+        Optional<Koi> existingKoi = koiRepository.findById(id);
+        if(existingKoi.isEmpty()){
+            throw new DataNotFoundException("Koi not found: " + id);
+        }
+        return DTOConverter.convertToKoiDTO(existingKoi.get());
     }
 
     @Override
@@ -94,11 +99,11 @@ public class KoiService implements IKoiService {
         Koi existingKoi = koiRepository
             .findById(koiId)
             .orElseThrow(() ->
-                             new DataNotFoundException("Category not found: " + koiImageDTO.getKoiId()));
+                             new DataNotFoundException("Category not found: " + koiImageDTO.koiId()));
 
         KoiImage newKoiImage = KoiImage.builder()
             .koi(existingKoi)
-            .imageUrl(koiImageDTO.getImageUrl())
+            .imageUrl(koiImageDTO.imageUrl())
             .build();
         //khong cho insert qua 5 anh cho mot san pham
         int size = koiImageRepository.findByKoiId(koiId).size();

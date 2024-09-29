@@ -48,7 +48,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class KoiController {
 
-    private final IKoiService koiService;
+    private final IKoiService<KoiResponse> koiService;
     private final KoiRepository koiRepository;
 
     @PostMapping("/generateFakeKois")
@@ -146,7 +146,7 @@ public class KoiController {
         @ModelAttribute("files") List<MultipartFile> files
     ) {
         try {
-            Koi existingKoi = koiRepository.getById(koiId);
+            KoiResponse existingKoi = koiService.getKoiById(koiId);
             files = files == null ? new ArrayList<>() : files;
             if (files.size() > KoiImage.MAXIMUM_IMAGES_PER_PRODUCT) {
                 return ResponseEntity.badRequest().body(

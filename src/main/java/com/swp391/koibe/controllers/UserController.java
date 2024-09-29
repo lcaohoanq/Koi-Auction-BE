@@ -65,7 +65,7 @@ public class UserController {
         }
 
         try {
-            String token = userService.login(userLoginDTO.getEmail(), userLoginDTO.getPassword());
+            String token = userService.login(userLoginDTO.email(), userLoginDTO.password());
             String userAgent = request.getHeader("User-Agent");
             User userDetail = userService.getUserDetailsFromToken(token);
             Token jwtToken = tokenService.addToken(userDetail, token, isMobileDevice(userAgent));
@@ -120,7 +120,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(registerResponse);
         }
 
-        if (!userRegisterDTO.getPassword().equals(userRegisterDTO.getConfirmPassword())) {
+        if (!userRegisterDTO.password().equals(userRegisterDTO.confirmPassword())) {
             registerResponse.setMessage(localizationUtils.getLocalizedMessage(MessageKeys.PASSWORD_NOT_MATCH));
             return ResponseEntity.badRequest().body(registerResponse);
         }
