@@ -8,8 +8,10 @@ import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
 import com.swp391.koibe.models.Auction;
 import com.swp391.koibe.models.AuctionKoi;
 import com.swp391.koibe.models.Koi;
+import com.swp391.koibe.models.User;
 import com.swp391.koibe.responses.AuctionKoiResponse;
 import com.swp391.koibe.responses.AuctionResponse;
+import com.swp391.koibe.responses.BidResponse;
 import com.swp391.koibe.services.auction.IAuctionService;
 import com.swp391.koibe.services.auctionkoi.IAuctionKoiService;
 import com.swp391.koibe.services.koi.IKoiService;
@@ -18,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,6 +47,16 @@ public class AuctionKoiController {
         }
     }
 
+    @GetMapping("/{aid}/{id}")
+    public ResponseEntity<?> getAuctionKoiByAuctionIdAndKoiId(@PathVariable Long aid, @PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(auctionKoiService.getAuctionKoiByAuctionIdAndKoiId(aid, id));
+        } catch (Exception e) {
+            log.error("Error getting auctionkoi by auction id and koi id: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Error getting auctionkoi by auction id and koi id: " + e.getMessage());
+        }
+    }
+
     @PostMapping("/generateFakeAuctionKois")
     public ResponseEntity<String> generateFakeAuctionKois() throws DataNotFoundException {
         List<Auction> auctions = auctionService.getAllAuctions();
@@ -66,52 +79,51 @@ public class AuctionKoiController {
                     bid = randomBid(randomKoi.getPrice());
                 }
 
-                    AuctionKoi auctionKoi = AuctionKoi.builder()
-                            .auction(auction)
-                            .koi(randomKoi)
-                            .basePrice(randomKoi.getPrice())
-                            .bidMethod(EBidMethod.ASCENDING_BID)
-                            .currentBid(isSold ? bid : 0)
-                            .currentBidderId(isSold ? random.nextLong(1, 16) : null)
-                            .isSold(isSold)
-                            .bidStep(isSold ? Math.floorDiv((int) (bid - randomKoi.getPrice()), 10) : 0)
-                            .build();
+                AuctionKoi auctionKoi = AuctionKoi.builder()
+                        .auction(auction)
+                        .koi(randomKoi)
+                        .basePrice(randomKoi.getPrice())
+                        .bidMethod(EBidMethod.ASCENDING_BID)
+                        .currentBid(isSold ? bid : 0)
+                        .currentBidderId(isSold ? random.nextLong(1, 16) : null)
+                        .isSold(isSold)
+                        .bidStep(isSold ? Math.floorDiv((int) (bid - randomKoi.getPrice()), 10) : 0)
+                        .build();
 
-                    // active the koi when it is in auction
-                    randomKoi.setStatus(EKoiStatus.VERIFIED);
+                // active the koi when it is in auction
+                randomKoi.setStatus(EKoiStatus.VERIFIED);
 
-                    if (isSold) {
-                        randomKoi.setStatus(EKoiStatus.SOLD);
-                        randomKoi.setOwner(userService.getUserById(auctionKoi.getCurrentBidderId()));
-                        kois.remove(randomKoi);
-                    }
+                if (isSold) {
+                    randomKoi.setStatus(EKoiStatus.SOLD);
+                    randomKoi.setOwner(userService.getUserById(auctionKoi.getCurrentBidderId()));
+                    kois.remove(randomKoi);
+                }
 
-                    // convert Koi to KoiDTO
-                    KoiDTO randomKoiDTO = KoiDTO.builder()
-                            .name(randomKoi.getName())
-                            .price(randomKoi.getPrice())
-                            .isDisplay(randomKoi.getIsDisplay())
-                            .thumbnail(randomKoi.getThumbnail())
-                            .sex(randomKoi.getSex())
-                            .length(randomKoi.getLength())
-                            .age(randomKoi.getAge())
-                            .isDisplay(randomKoi.getIsDisplay())
-                            .description(randomKoi.getDescription())
-                            .categoryId(randomKoi.getCategory().getId())
-                            .ownerId(randomKoi.getOwner().getId())
-                            .build();
+                // convert Koi to KoiDTO
+                KoiDTO randomKoiDTO = KoiDTO.builder()
+                        .name(randomKoi.getName())
+                        .price(randomKoi.getPrice())
+                        .isDisplay(randomKoi.getIsDisplay())
+                        .thumbnail(randomKoi.getThumbnail())
+                        .sex(randomKoi.getSex())
+                        .length(randomKoi.getLength())
+                        .age(randomKoi.getAge())
+                        .isDisplay(randomKoi.getIsDisplay())
+                        .description(randomKoi.getDescription())
+                        .categoryId(randomKoi.getCategory().getId())
+                        .ownerId(randomKoi.getOwner().getId())
+                        .build();
 
-                    try {
-                        koiService.updateKoi(randomKoi.getId(), randomKoiDTO);
-                        auctionKoiService.createAuctionKoi(auctionKoi);
-                    } catch (Exception e) {
-                        log.error("Error creating AuctionKoi or updating Koi: " + e.getMessage(), e);
-                        return ResponseEntity.status(500)
-                                .body("Error creating AuctionKoi or updating Koi: " + e.getMessage());
-                    }
+                try {
+                    koiService.updateKoi(randomKoi.getId(), randomKoiDTO);
+                    auctionKoiService.createAuctionKoi(auctionKoi);
+                } catch (Exception e) {
+                    log.error("Error creating AuctionKoi or updating Koi: " + e.getMessage(), e);
+                    return ResponseEntity.status(500)
+                            .body("Error creating AuctionKoi or updating Koi: " + e.getMessage());
                 }
             }
-
+        }
         return ResponseEntity.ok("Fake AuctionKoi data generated successfully");
     }
 
@@ -133,4 +145,15 @@ public class AuctionKoiController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<AuctionKoiResponse> getAuctionKoiDetails(@PathVariable Long id) {
+        try {
+            AuctionKoiResponse auctionKoiResponse = auctionKoiService.getAuctionKoiDetailsById(id);
+            return ResponseEntity.ok(auctionKoiResponse);
+        } catch (DataNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

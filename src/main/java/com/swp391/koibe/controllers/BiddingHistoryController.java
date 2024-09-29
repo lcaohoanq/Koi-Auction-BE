@@ -1,18 +1,19 @@
 package com.swp391.koibe.controllers;
 
+import com.swp391.koibe.dtos.BidDTO;
 import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
 import com.swp391.koibe.models.*;
 import com.swp391.koibe.repositories.AuctionParticipantRepository;
+import com.swp391.koibe.responses.BidResponse;
 import com.swp391.koibe.services.auctionkoi.IAuctionKoiService;
 import com.swp391.koibe.services.biddinghistory.IBiddingHistoryService;
 import com.swp391.koibe.services.user.IUserService;
+import com.swp391.koibe.utils.DTOConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -47,7 +48,7 @@ public class BiddingHistoryController {
                 Set<Long> participantIds = new HashSet<>();
 
                 for (AuctionKoi auctionKoi : auctionKoisForAuction) {
-                    List<BidHistory> bidHistories = new ArrayList<>();
+                    List<Bid> bidHistories = new ArrayList<>();
                     int numberOfBids = random.nextInt(5, 16); // Random number of bids between 5 and 15
                     int currentBidAmount = auctionKoi.getBasePrice().intValue();
 
@@ -59,35 +60,35 @@ public class BiddingHistoryController {
                                 .findFirst()
                                 .orElseThrow(() -> new DataNotFoundException("No suitable bidder found"));
 
-                        BidHistory bidHistory = new BidHistory();
-                        bidHistory.setAuctionKoi(auctionKoi);
-                        bidHistory.setBidder(bidder);
+                        Bid bid = new Bid();
+                        bid.setAuctionKoi(auctionKoi);
+                        bid.setBidder(bidder);
 
                         // Ensure each bid is higher than the previous one
                         currentBidAmount += auctionKoi.getBidStep();
-                        bidHistory.setBidAmount(Math.round(currentBidAmount));
+                        bid.setBidAmount(Math.round(currentBidAmount));
 
                         LocalDateTime bidTime = auctionKoi.getAuction().getStartTime().plusHours(i);
-                        bidHistory.setBidTime(bidTime);
+                        bid.setBidTime(bidTime);
 
-                        bidHistories.add(bidHistory);
+                        bidHistories.add(bid);
 
                         // Add participant if not already added for this auction
                         if (!participantIds.contains(bidder.getId())) {
                             AuctionParticipant participant = new AuctionParticipant();
                             participant.setAuction(auction);
                             participant.setUser(bidder);
-                            participant.setJoinTime(bidHistory.getBidTime());
+                            participant.setJoinTime(bid.getBidTime());
                             auctionParticipantRepository.save(participant);
                             participantIds.add(bidder.getId());
                         }
                     }
 
                     // Sort bid histories by time
-                    bidHistories.sort(Comparator.comparing(BidHistory::getBidTime));
+                    bidHistories.sort(Comparator.comparing(Bid::getBidTime));
 
                     // Set the last bid as the winning bid
-                    BidHistory winningBid = bidHistories.get(bidHistories.size() - 1);
+                    Bid winningBid = bidHistories.get(bidHistories.size() - 1);
                     auctionKoi.setCurrentBid(winningBid.getBidAmount());
                     auctionKoi.setCurrentBidderId(winningBid.getBidder().getId());
 
@@ -105,5 +106,19 @@ public class BiddingHistoryController {
                     .body("Error generating fake auction koi details: " + e.getMessage());
         }
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<List<BidResponse>> getBiddingHistoryByAuctionKoiId(@PathVariable long id) {
+        List<Bid> bidHistories = biddingHistoryService.getBidsByAuctionKoiId(id);
+        List<BidResponse> bidResponses = bidHistories.stream()
+                .map(DTOConverter::convertToBidDTO) // Convert Bid to BidResponse
+                .collect(Collectors.toList());
+        // by bid time newest to oldest
+        Comparator<BidResponse> byBidTime = Comparator.comparing(BidResponse::getBidTime).reversed();
+        bidResponses.sort(byBidTime);
+        return ResponseEntity.ok(bidResponses);
+    }
+
+
 
 }

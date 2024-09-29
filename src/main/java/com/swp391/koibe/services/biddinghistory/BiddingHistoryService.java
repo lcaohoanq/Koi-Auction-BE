@@ -1,13 +1,23 @@
 package com.swp391.koibe.services.biddinghistory;
 
+import com.swp391.koibe.dtos.BidDTO;
 import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
-import com.swp391.koibe.models.BidHistory;
+import com.swp391.koibe.models.AuctionKoi;
+import com.swp391.koibe.models.Bid;
+import com.swp391.koibe.models.User;
 import com.swp391.koibe.repositories.BidHistoryRepository;
+import com.swp391.koibe.responses.BidResponse;
+import com.swp391.koibe.services.auctionkoi.IAuctionKoiService;
+import com.swp391.koibe.services.user.IUserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -16,23 +26,32 @@ public class BiddingHistoryService implements IBiddingHistoryService {
 
     private final BidHistoryRepository bidHistoryRepository;
 
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
+    @Autowired
+    private IAuctionKoiService auctionKoiService;
+
+    @Autowired
+    private IUserService userService;
+
     @Override
-    public BidHistory createBidHistory(BidHistory bidHistory) throws DataNotFoundException {
-        return bidHistoryRepository.save(bidHistory);
+    public Bid createBidHistory(Bid bid) throws DataNotFoundException {
+        return bidHistoryRepository.save(bid);
     }
 
     @Override
-    public BidHistory getBidHistoryById(long id) {
+    public Bid getBidHistoryById(long id) {
         return null;
     }
 
     @Override
-    public Page<BidHistory> getAllBidHistories(Pageable pageable) {
+    public Page<Bid> getAllBidHistories(Pageable pageable) {
         return null;
     }
 
     @Override
-    public BidHistory updateBidHistory(long id, BidHistory bidHistory) {
+    public Bid updateBidHistory(long id, Bid bid) {
         return null;
     }
 
@@ -47,9 +66,51 @@ public class BiddingHistoryService implements IBiddingHistoryService {
     }
 
     @Override
-    public void createBidHistories(List<BidHistory> bidHistories) throws DataNotFoundException {
-        for (BidHistory bidHistory : bidHistories) {
-            createBidHistory(bidHistory);
+    public void createBidHistories(List<Bid> bidHistories) throws DataNotFoundException {
+        for (Bid bid : bidHistories) {
+            createBidHistory(bid);
         }
+    }
+
+
+    @Transactional
+    @Override
+    public BidResponse placeBid(BidDTO bidRequest) throws Exception {
+        AuctionKoi auctionKoi = auctionKoiService.getAuctionKoiById(bidRequest.getAuctionKoiId());
+        User bidder = userService.getUserById(bidRequest.getBidderId());
+
+        if (auctionKoi.getCurrentBid() >= bidRequest.getBidAmount()) {
+            throw new IllegalArgumentException("Bid amount must be higher than the current bid");
+        }
+
+        Bid bid = Bid.builder()
+                .auctionKoi(auctionKoi)
+                .bidder(bidder)
+                .bidAmount(bidRequest.getBidAmount())
+                .bidTime(LocalDateTime.now())
+                .build();
+
+        bidHistoryRepository.save(bid);
+
+        auctionKoi.setCurrentBid(bidRequest.getBidAmount());
+        auctionKoi.setCurrentBidderId(bidder.getId());
+        auctionKoiService.updateAuctionKoi(auctionKoi.getId(), auctionKoi);
+
+        BidResponse bidResponse = BidResponse.builder()
+                .auctionKoiId(auctionKoi.getId())
+                .bidderId(bidder.getId())
+                .bidAmount(bidRequest.getBidAmount())
+                .bidderName(bidder.getFirstName() + " " + bidder.getLastName())
+                .bidTime(bid.getBidTime())
+                .build();
+
+        messagingTemplate.convertAndSend("/topic/auction/" + auctionKoi.getId(), bidResponse);
+
+        return bidResponse;
+    }
+
+    @Override
+    public List<Bid> getBidsByAuctionKoiId(Long auctionKoiId) {
+        return bidHistoryRepository.findAllByAuctionKoiId(auctionKoiId);
     }
 }

@@ -27,13 +27,22 @@ public class AuctionKoiService implements IAuctionKoiService {
     }
 
     @Override
-    public AuctionKoi getAuctionKoiById(long id) {
-        return null;
+    public AuctionKoi getAuctionKoiById(long id) throws DataNotFoundException {
+        return auctionKoiRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Auction Koi not found"));
+    }
+
+    @Override
+    public AuctionKoiResponse getAuctionKoiResponeById(long id) throws DataNotFoundException {
+        AuctionKoi auctionKoi = auctionKoiRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Auction Koi not found"));
+        return DTOConverter.convertToAuctionKoiDTO(auctionKoi);
     }
 
     @Override
     public List<AuctionKoiResponse> getAuctionKoiByAuctionId(long id) {
-        return auctionKoiRepository.getAuctionKoiByAuctionId(id).stream().map(DTOConverter::convertToAuctionKoiDTO).toList();
+        return auctionKoiRepository.getAuctionKoiByAuctionId(id).stream().map(DTOConverter::convertToAuctionKoiDTO)
+                .toList();
     }
 
     @Override
@@ -61,5 +70,21 @@ public class AuctionKoiService implements IAuctionKoiService {
     public List<AuctionKoi> getAuctionIsSold() {
         // get all auction koi
         return auctionKoiRepository.findAll().stream().filter(auctionKoi -> auctionKoi.isSold()).toList();
+    }
+
+    @Override
+    public AuctionKoiResponse getAuctionKoiDetailsById(long id) throws DataNotFoundException {
+        AuctionKoi auctionKoi = auctionKoiRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Auction Koi not found"));
+        return DTOConverter.convertToAuctionKoiDTO(auctionKoi);
+    }
+
+    @Override
+    public AuctionKoiResponse getAuctionKoiByAuctionIdAndKoiId(long aid, long id) throws DataNotFoundException {
+        List<AuctionKoi> auctionKois = auctionKoiRepository.getAuctionKoiByAuctionId(aid);
+        AuctionKoi auctionKoi = auctionKois.stream()
+                .filter(auctionKoi1 -> auctionKoi1.getId() == id).findFirst()
+                .orElseThrow(() -> new DataNotFoundException("Auction Koi not found"));
+        return DTOConverter.convertToAuctionKoiDTO(auctionKoi);
     }
 }
