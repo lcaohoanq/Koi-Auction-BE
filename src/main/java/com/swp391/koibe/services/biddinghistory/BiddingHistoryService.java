@@ -1,4 +1,4 @@
-package com.swp391.koibe.services.auctionkoidetail;
+package com.swp391.koibe.services.biddinghistory;
 
 import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
 import com.swp391.koibe.models.BidHistory;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AuctionKoiDetailService implements IAuctionKoiDetailService {
+public class BiddingHistoryService implements IBiddingHistoryService {
 
     private final BidHistoryRepository bidHistoryRepository;
 
