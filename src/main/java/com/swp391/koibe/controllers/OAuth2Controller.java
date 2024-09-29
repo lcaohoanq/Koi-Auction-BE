@@ -41,7 +41,7 @@ public class OAuth2Controller {
                 .setAudience(Collections.singletonList(clientId))
                 .build();
 
-            GoogleIdToken idToken = verifier.verify(tokenRequest.getToken());
+            GoogleIdToken idToken = verifier.verify(tokenRequest.token());
             if (idToken == null) {
                 throw new InvalidParamException("Invalid token");
             }

@@ -3,9 +3,11 @@ package com.swp391.koibe.utils;
 import com.swp391.koibe.models.Auction;
 import com.swp391.koibe.models.AuctionKoi;
 import com.swp391.koibe.models.Koi;
+import com.swp391.koibe.models.KoiImage;
 import com.swp391.koibe.models.User;
 import com.swp391.koibe.responses.AuctionKoiResponse;
 import com.swp391.koibe.responses.AuctionResponse;
+import com.swp391.koibe.responses.KoiImageResponse;
 import com.swp391.koibe.responses.KoiResponse;
 import com.swp391.koibe.responses.UserResponse;
 
@@ -45,6 +47,15 @@ public class DTOConverter {
             .description(koi.getDescription())
             .ownerId(koi.getOwner().getId())
             .categoryId(koi.getCategory().getId())
+            .build();
+    }
+
+    public static KoiImageResponse convertToKoiImageDTO(KoiImage koiImage) {
+        return KoiImageResponse.builder()
+            .id(koiImage.getId())
+            .koiId(koiImage.getKoi().getId())
+            .imageUrl(koiImage.getImageUrl())
+            .videoUrl(koiImage.getVideoUrl())
             .build();
     }
 

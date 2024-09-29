@@ -20,12 +20,12 @@ public class CategoryService implements ICategoryService{
     @Override
     public Category createCategory(CategoryDTO category) throws DataAlreadyExistException {
 
-        if(categoryRepository.findByName(category.getName()) != null){
+        if(categoryRepository.findByName(category.name()) != null){
             throw new CategoryAlreadyExistException("Category already exists");
         }
         
         Category newCategory = Category.builder()
-            .name(category.getName())
+            .name(category.name())
             .build();
 
         return categoryRepository.save(newCategory);
@@ -46,7 +46,7 @@ public class CategoryService implements ICategoryService{
         throws DataNotFoundException {
 
         Category existingCategory = getById(categoryId);
-        existingCategory.setName(category.getName());
+        existingCategory.setName(category.name());
         return categoryRepository.save(existingCategory);
 
     }

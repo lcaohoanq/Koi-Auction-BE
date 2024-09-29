@@ -1,60 +1,49 @@
 package com.swp391.koibe.dtos;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.Date;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
 @Builder
-public class UserRegisterDTO {
+public record UserRegisterDTO(
 
     @JsonProperty("first_name")
-    @NotBlank(message = "First name is required")
-    private String firstName;
+    @NotBlank(message = "First name is required") String firstName,
 
     @JsonProperty("last_name")
-    @NotBlank(message = "Last name is required")
-    private String lastName;
+    @NotBlank(message = "Last name is required") String lastName,
 
     @JsonProperty("email")
-    @Email(message = "Email is invalid")
-    private String email;
+    @Email(message = "Email is invalid") String email,
 
     @JsonProperty("is_active")
-    private int isActive;
+    int isActive,
 
     @JsonProperty("is_subscription")
-    private Integer isSubscription;
+    Integer isSubscription,
 
-    private String address;
+    @JsonProperty("address")
+    String address,
 
-    @NotBlank(message = "Password is required")
-    private String password;
+    @JsonProperty("password")
+    @NotBlank(message = "Password is required") String password,
 
     @JsonProperty("confirm_password")
-    @NotBlank(message = "Confirm password is required")
-    private String confirmPassword;
+    @NotBlank(message = "Confirm password is required") String confirmPassword,
 
     @JsonProperty("date_of_birth")
-    private Date dateOfBirth;
+    Date dateOfBirth,
 
     @JsonProperty("avatar_url")
-    private String avatarUrl;
+    String avatarUrl,
 
     @JsonProperty("google_account_id")
-    private int googleAccountId;
+    int googleAccountId,
 
     @JsonProperty("role_id")
-    @NotNull(message = "Role ID is required")
-    private Long roleId;
+    @NotNull(message = "Role ID is required") Long roleId
 
-}
+){}
