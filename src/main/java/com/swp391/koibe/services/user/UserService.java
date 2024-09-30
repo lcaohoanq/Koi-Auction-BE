@@ -9,7 +9,7 @@ import com.swp391.koibe.enums.ProviderName;
 import com.swp391.koibe.enums.UserStatus;
 import com.swp391.koibe.exceptions.ExpiredTokenException;
 import com.swp391.koibe.exceptions.InvalidPasswordException;
-import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
+import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.exceptions.PermissionDeniedException;
 import com.swp391.koibe.models.Otp;
 import com.swp391.koibe.models.Role;

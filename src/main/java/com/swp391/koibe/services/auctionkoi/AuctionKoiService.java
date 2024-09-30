@@ -1,11 +1,10 @@
 package com.swp391.koibe.services.auctionkoi;
 
-import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
+import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.AuctionKoi;
 import com.swp391.koibe.repositories.AuctionKoiRepository;
 import com.swp391.koibe.repositories.AuctionRepository;
 import com.swp391.koibe.responses.AuctionKoiResponse;
-import com.swp391.koibe.responses.AuctionResponse;
 import com.swp391.koibe.utils.DTOConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

@@ -1,10 +1,10 @@
 package com.swp391.koibe.services.category;
 
 import com.swp391.koibe.dtos.CategoryDTO;
-import com.swp391.koibe.exceptions.exist.CategoryAlreadyExistException;
-import com.swp391.koibe.exceptions.exist.DataAlreadyExistException;
-import com.swp391.koibe.exceptions.notfound.CategoryNotFoundException;
-import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
+import com.swp391.koibe.exceptions.CategoryAlreadyExistException;
+import com.swp391.koibe.exceptions.base.DataAlreadyExistException;
+import com.swp391.koibe.exceptions.CategoryNotFoundException;
+import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.Category;
 import com.swp391.koibe.repositories.CategoryRepository;
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.swp391.koibe.services.biddinghistory;
 
 import com.swp391.koibe.dtos.BidDTO;
-import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
+import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.Bid;
 import com.swp391.koibe.responses.BidResponse;
 import org.springframework.data.domain.Page;

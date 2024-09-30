@@ -2,6 +2,7 @@ package com.swp391.koibe.controllers;
 
 import com.github.javafaker.Faker;
 import com.swp391.koibe.enums.EAuctionStatus;
+import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.Auction;
 import com.swp391.koibe.responses.AuctionResponse;
 import com.swp391.koibe.services.auction.IAuctionService;
@@ -72,7 +73,7 @@ public class AuctionController {
         }
         catch (Exception e) {
             log.error("Error getting auction by id: " + e.getMessage());
-            return ResponseEntity.badRequest().body(null);
+            throw new DataNotFoundException();
         }
     }
 

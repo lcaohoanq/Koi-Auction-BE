@@ -1,9 +1,9 @@
 package com.swp391.koibe.services.token;
 
 import com.swp391.koibe.components.JwtTokenUtils;
-import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
+import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.exceptions.ExpiredTokenException;
-import com.swp391.koibe.exceptions.notfound.TokenNotFoundException;
+import com.swp391.koibe.exceptions.TokenNotFoundException;
 import com.swp391.koibe.models.Token;
 import com.swp391.koibe.models.User;
 import com.swp391.koibe.repositories.TokenRepository;

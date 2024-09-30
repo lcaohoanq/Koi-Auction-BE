@@ -1,8 +1,8 @@
 package com.swp391.koibe.services.auction;
 
 //import com.swp391.koibe.dtos.AuctionDTO;
-import com.swp391.koibe.exceptions.exist.DataAlreadyExistException;
-import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
+import com.swp391.koibe.exceptions.base.DataAlreadyExistException;
+import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.Auction;
 import com.swp391.koibe.responses.AuctionResponse;
 import org.springframework.data.domain.Page;

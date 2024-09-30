@@ -4,7 +4,7 @@ import com.swp391.koibe.constants.ErrorMessage;
 import com.swp391.koibe.dtos.KoiDTO;
 import com.swp391.koibe.dtos.KoiImageDTO;
 import com.swp391.koibe.exceptions.InvalidParamException;
-import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
+import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.Category;
 import com.swp391.koibe.models.Koi;
 import com.swp391.koibe.models.KoiImage;

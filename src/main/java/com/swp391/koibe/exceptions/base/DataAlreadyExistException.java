@@ -1,4 +1,4 @@
-package com.swp391.koibe.exceptions.exist;
+package com.swp391.koibe.exceptions.base;
 
 public class DataAlreadyExistException extends Exception{
 

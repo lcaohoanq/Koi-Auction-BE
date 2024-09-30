@@ -3,8 +3,7 @@ package com.swp391.koibe.services.user;
 import com.swp391.koibe.dtos.UpdateUserDTO;
 import com.swp391.koibe.dtos.UserRegisterDTO;
 import com.swp391.koibe.exceptions.InvalidPasswordException;
-import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
-import com.swp391.koibe.models.Otp;
+import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.User;
 
 import java.util.List;
