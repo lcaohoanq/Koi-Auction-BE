@@ -118,6 +118,60 @@ public class BiddingHistoryController {
         return ResponseEntity.ok(bidResponses);
     }
 
+    @PostMapping("/auctionkois{auction_koi_id}/auction/{auction_id}")
+    //localhost:8080/api/v1/auctionkoidetails/auctionkois/1/auction/1
+    public ResponseEntity<?> createBiddingHistory(@PathVariable long auction_koi_id, @PathVariable long auction_id, @RequestBody Bid bid) {
+        try {
+            AuctionKoi auctionKoi = auctionKoiService.getAuctionKoiById(auction_koi_id);
+            if (auctionKoi.getAuction().getId() != auction_id) {
+                return ResponseEntity.badRequest()
+                    .body("Auction koi does not belong to the auction");
+            }
+
+            // Check if the bid amount is higher than the current bid
+            if (bid.getBidAmount() <= auctionKoi.getCurrentBid()) {
+                return ResponseEntity.badRequest()
+                    .body("Bid amount must be higher than the current bid");
+            }
+
+            // Check if the bid amount is a multiple of the bid step
+            if ((bid.getBidAmount() - auctionKoi.getCurrentBid()) % auctionKoi.getBidStep() != 0) {
+                return ResponseEntity.badRequest()
+                    .body("Bid amount must be a multiple of the bid step");
+            }
+
+            // Check if the auction is still ongoing
+            LocalDateTime now = LocalDateTime.now();
+            if (now.isBefore(auctionKoi.getAuction().getStartTime()) || now.isAfter(
+                auctionKoi.getAuction().getEndTime())) {
+                return ResponseEntity.badRequest().body("Auction is not ongoing");
+            }
+
+            // Check if the bidder is the owner of the koi
+            if (bid.getBidder().getId() == auctionKoi.getKoi().getOwner().getId()) {
+                return ResponseEntity.badRequest().body("Owner of the koi cannot bid");
+            }
+
+            // Check if the bidder has already placed a bid
+            if (biddingHistoryService.hasBid(auction_koi_id, bid.getBidder().getId())) {
+                return ResponseEntity.badRequest().body("Bidder has already placed a bid");
+            }
+
+            // Create the bidding history
+            bid.setAuctionKoi(auctionKoi);
+            biddingHistoryService.createBidHistory(bid);
+
+            // Update the current bid and current bidder of the auction koi
+            auctionKoi.setCurrentBid(bid.getBidAmount());
+            auctionKoi.setCurrentBidderId(bid.getBidder().getId());
+            auctionKoiService.updateAuctionKoi(auction_koi_id, auctionKoi);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body("Bid created successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+    }
 
 
 }
