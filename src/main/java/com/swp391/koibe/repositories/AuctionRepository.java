@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface AuctionRepository extends JpaRepository<Auction, Long> {
     List<AuctionKoi> findAllByStatus(String status);
-
+    boolean existsByTitle(String title);
 }

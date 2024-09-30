@@ -140,7 +140,7 @@ public class BiddingHistoryController {
             AuctionKoi auctionKoi = auctionKoiService.getAuctionKoiById(auction_koi_id);
             Auction auction = auctionKoi.getAuction();
             //check auction is close or not
-            if(!DateTimeUtils.isAuctionActive(auction.getStartTime(), auction.getEndTime(), DateTimeUtils.parseBidTime(bid.bidTime()))){
+            if(!DateTimeUtils.isAuctionActive(auction.getStartTime(), auction.getEndTime(), DateTimeUtils.parseTime(bid.bidTime()))){
                 return ResponseEntity.badRequest().body("Auction is closed");
             }
 
