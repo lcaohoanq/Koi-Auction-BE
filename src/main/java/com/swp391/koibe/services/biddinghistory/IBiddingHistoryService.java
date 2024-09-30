@@ -21,4 +21,5 @@ public interface IBiddingHistoryService {
     @Transactional
     BidResponse placeBid(BidDTO bidDTO) throws Exception;
     List<Bid> getBidsByAuctionKoiId(Long auctionKoiId);
+    boolean hasBid(Long auctionKoiId, Long bidderId);
 }

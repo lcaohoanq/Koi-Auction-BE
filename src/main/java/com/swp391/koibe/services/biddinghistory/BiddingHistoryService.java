@@ -113,4 +113,10 @@ public class BiddingHistoryService implements IBiddingHistoryService {
     public List<Bid> getBidsByAuctionKoiId(Long auctionKoiId) {
         return bidHistoryRepository.findAllByAuctionKoiId(auctionKoiId);
     }
+
+    @Override
+    //(biddingHistoryService.hasBid(auction_koi_id, bid.getBidder().getId()))
+    public boolean hasBid(Long auctionKoiId, Long bidderId) {
+        return bidHistoryRepository.existsByAuctionKoiIdAndBidderId(auctionKoiId, bidderId);
+    }
 }
