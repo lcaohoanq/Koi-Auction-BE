@@ -67,7 +67,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private boolean isBypassToken(@NonNull HttpServletRequest request) {
         final List<Pair<String, String>> bypassTokens = Arrays.asList(
+                //RoleController
                 Pair.of(String.format("%s/roles", apiPrefix), "GET"),
+                Pair.of(String.format("%s/roles", apiPrefix), "POST"),
+                Pair.of(String.format("%s/roles", apiPrefix), "PUT"),
+                Pair.of(String.format("%s/roles", apiPrefix), "DELETE"),
 
                 //KoiController
                 Pair.of(String.format("%s/kois", apiPrefix), "GET"),

@@ -76,30 +76,30 @@ public class BiddingHistoryService implements IBiddingHistoryService {
     @Transactional
     @Override
     public BidResponse placeBid(BidDTO bidRequest) throws Exception {
-        AuctionKoi auctionKoi = auctionKoiService.getAuctionKoiById(bidRequest.getAuctionKoiId());
-        User bidder = userService.getUserById(bidRequest.getBidderId());
+        AuctionKoi auctionKoi = auctionKoiService.getAuctionKoiById(bidRequest.auctionKoiId());
+        User bidder = userService.getUserById(bidRequest.bidderId());
 
-        if (auctionKoi.getCurrentBid() >= bidRequest.getBidAmount()) {
+        if (auctionKoi.getCurrentBid() >= bidRequest.bidAmount()) {
             throw new IllegalArgumentException("Bid amount must be higher than the current bid");
         }
 
         Bid bid = Bid.builder()
                 .auctionKoi(auctionKoi)
                 .bidder(bidder)
-                .bidAmount(bidRequest.getBidAmount())
+                .bidAmount(bidRequest.bidAmount())
                 .bidTime(LocalDateTime.now())
                 .build();
 
         bidHistoryRepository.save(bid);
 
-        auctionKoi.setCurrentBid(bidRequest.getBidAmount());
+        auctionKoi.setCurrentBid(bidRequest.bidAmount());
         auctionKoi.setCurrentBidderId(bidder.getId());
         auctionKoiService.updateAuctionKoi(auctionKoi.getId(), auctionKoi);
 
         BidResponse bidResponse = BidResponse.builder()
                 .auctionKoiId(auctionKoi.getId())
                 .bidderId(bidder.getId())
-                .bidAmount(bidRequest.getBidAmount())
+                .bidAmount(bidRequest.bidAmount())
                 .bidderName(bidder.getFirstName() + " " + bidder.getLastName())
                 .bidTime(bid.getBidTime())
                 .build();

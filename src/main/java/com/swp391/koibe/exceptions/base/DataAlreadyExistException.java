@@ -1,6 +1,9 @@
 package com.swp391.koibe.exceptions.base;
 
-public class DataAlreadyExistException extends Exception{
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+public class DataAlreadyExistException extends RuntimeException{
 
     public DataAlreadyExistException(String message) {
         super(message);

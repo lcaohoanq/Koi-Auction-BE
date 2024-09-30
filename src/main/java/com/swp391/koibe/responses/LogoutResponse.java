@@ -6,6 +6,6 @@ import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
 @NoArgsConstructor
-public class LogoutResponse extends BaseResponse {
+public class LogoutResponse extends BaseResponse<Object> {
 
 }
