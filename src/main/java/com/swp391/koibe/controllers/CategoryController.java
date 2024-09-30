@@ -67,9 +67,6 @@ public class CategoryController {
         @Valid @RequestBody CategoryDTO categoryDTO,
         BindingResult result) {
 
-        if (result.hasErrors()) {
-            throw new MethodArgumentNotValidException(result);
-        }
 
         try {
             CategoryResponse response = CategoryResponse.builder()
