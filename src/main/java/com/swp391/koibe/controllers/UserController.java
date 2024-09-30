@@ -11,7 +11,7 @@ import com.swp391.koibe.responses.LoginResponse;
 import com.swp391.koibe.responses.LogoutResponse;
 import com.swp391.koibe.responses.OtpResponse;
 import com.swp391.koibe.responses.RegisterResponse;
-import com.swp391.koibe.responses.UpdateResponse;
+import com.swp391.koibe.responses.UpdateUserResponse;
 import com.swp391.koibe.responses.UserResponse;
 import com.swp391.koibe.services.token.TokenService;
 import com.swp391.koibe.services.user.IUserService;
@@ -152,7 +152,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(errorMessages);
         }
 
-        UpdateResponse updateResponse = new UpdateResponse();
+        UpdateUserResponse updateUserResponse = new UpdateUserResponse();
         try{
             String extractedToken = authorizationHeader.substring(7);
             User user = userService.getUserDetailsFromToken(extractedToken);
@@ -161,9 +161,9 @@ public class UserController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
             User updatedUser = userService.updateUser(userId, updatedUserDTO);
-            updateResponse.setMessage(localizationUtils.getLocalizedMessage(MessageKeys.UPDATE_USER_SUCCESSFULLY));
-            updateResponse.setUserResponse(DTOConverter.convertToUserDTO(updatedUser));
-            return ResponseEntity.ok(updateResponse);
+            updateUserResponse.setMessage(localizationUtils.getLocalizedMessage(MessageKeys.UPDATE_USER_SUCCESSFULLY));
+            updateUserResponse.setUserResponse(DTOConverter.convertToUserDTO(updatedUser));
+            return ResponseEntity.ok(updateUserResponse);
         }catch (Exception e){
             return ResponseEntity.badRequest().build();
         }

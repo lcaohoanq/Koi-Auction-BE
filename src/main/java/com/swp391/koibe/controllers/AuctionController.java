@@ -2,6 +2,7 @@ package com.swp391.koibe.controllers;
 
 import com.github.javafaker.Faker;
 import com.swp391.koibe.enums.EAuctionStatus;
+import com.swp391.koibe.exceptions.GenerateDataException;
 import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.Auction;
 import com.swp391.koibe.responses.AuctionResponse;
@@ -45,6 +46,7 @@ public class AuctionController {
                  auctionService.createAuction(auction);
             } catch (Exception e) {
                 log.error("Error creating auction: " + e.getMessage());
+                throw new GenerateDataException();
             }
         }
     }
@@ -61,7 +63,7 @@ public class AuctionController {
         }
         catch (Exception e) {
             log.error("Error getting all auctions: " + e.getMessage());
-            return ResponseEntity.badRequest().body(null);
+            throw new DataNotFoundException();
         }
     }
 

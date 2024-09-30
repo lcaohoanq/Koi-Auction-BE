@@ -3,6 +3,7 @@ package com.swp391.koibe.controllers;
 import com.swp391.koibe.dtos.KoiDTO;
 import com.swp391.koibe.enums.EBidMethod;
 import com.swp391.koibe.enums.EKoiStatus;
+import com.swp391.koibe.exceptions.GenerateDataException;
 import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.Auction;
 import com.swp391.koibe.models.AuctionKoi;
@@ -39,7 +40,7 @@ public class AuctionKoiController {
             return ResponseEntity.ok(auctionKoiService.getAuctionKoiByAuctionId(id));
         } catch (Exception e) {
             log.error("Error getting auctionkois by auction id: " + e.getMessage());
-            return ResponseEntity.badRequest().body(null);
+            throw new DataNotFoundException();
         }
     }
 
@@ -49,7 +50,7 @@ public class AuctionKoiController {
             return ResponseEntity.ok(auctionKoiService.getAuctionKoiByAuctionIdAndKoiId(aid, id));
         } catch (Exception e) {
             log.error("Error getting auctionkoi by auction id and koi id: " + e.getMessage());
-            return ResponseEntity.badRequest().body("Error getting auctionkoi by auction id and koi id: " + e.getMessage());
+            throw new DataNotFoundException("Error getting auctionkoi by auction id and koi id: " + e.getMessage());
         }
     }
 
@@ -115,8 +116,7 @@ public class AuctionKoiController {
                     auctionKoiService.createAuctionKoi(auctionKoi);
                 } catch (Exception e) {
                     log.error("Error creating AuctionKoi or updating Koi: " + e.getMessage(), e);
-                    return ResponseEntity.status(500)
-                            .body("Error creating AuctionKoi or updating Koi: " + e.getMessage());
+                    throw new GenerateDataException("Error creating AuctionKoi or updating Koi: " + e.getMessage());
                 }
             }
         }
@@ -137,7 +137,7 @@ public class AuctionKoiController {
             return ResponseEntity.ok(auctionKois.getContent());
         } catch (Exception e) {
             log.error("Error getting all auctionkois    : " + e.getMessage());
-            return ResponseEntity.badRequest().body(null);
+            throw new DataNotFoundException(e.getMessage());
         }
     }
 
@@ -149,7 +149,8 @@ public class AuctionKoiController {
         } catch (DataNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            log.error("Error getting auctionkoi by id: " + e.getMessage());
+            throw new DataNotFoundException("Error getting auctionkoi by id: " + e.getMessage());
         }
     }
 }
