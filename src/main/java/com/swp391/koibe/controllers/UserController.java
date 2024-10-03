@@ -4,14 +4,16 @@ import com.swp391.koibe.components.LocalizationUtils;
 import com.swp391.koibe.dtos.UpdateUserDTO;
 import com.swp391.koibe.dtos.UserLoginDTO;
 import com.swp391.koibe.dtos.UserRegisterDTO;
-import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
+import com.swp391.koibe.dtos.VerifyUserDTO;
+import com.swp391.koibe.exceptions.MethodArgumentNotValidException;
+import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.Token;
 import com.swp391.koibe.models.User;
 import com.swp391.koibe.responses.LoginResponse;
 import com.swp391.koibe.responses.LogoutResponse;
 import com.swp391.koibe.responses.OtpResponse;
 import com.swp391.koibe.responses.RegisterResponse;
-import com.swp391.koibe.responses.UpdateResponse;
+import com.swp391.koibe.responses.UpdateUserResponse;
 import com.swp391.koibe.responses.UserResponse;
 import com.swp391.koibe.services.token.TokenService;
 import com.swp391.koibe.services.user.IUserService;
@@ -26,7 +28,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,19 +54,12 @@ public class UserController {
         BindingResult result,
         HttpServletRequest request) {
 
-        if (result.hasErrors()) {
-            List<FieldError> fieldErrorList = result.getFieldErrors();
-            List<String> errorMessages = fieldErrorList
-                .stream()
-                .map(FieldError::getDefaultMessage)
-                .toList();
-            return ResponseEntity.badRequest().body(LoginResponse.builder()
-                                                        .message(errorMessages.toString())
-                                                        .build());
+        if(result.hasErrors()){
+            throw new MethodArgumentNotValidException(result);
         }
 
         try {
-            String token = userService.login(userLoginDTO.email(), userLoginDTO.password());
+            String token = userService.login(userLoginDTO.getEmail(), userLoginDTO.getPassword());
             String userAgent = request.getHeader("User-Agent");
             User userDetail = userService.getUserDetailsFromToken(token);
             Token jwtToken = tokenService.addToken(userDetail, token, isMobileDevice(userAgent));
@@ -153,7 +147,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(errorMessages);
         }
 
-        UpdateResponse updateResponse = new UpdateResponse();
+        UpdateUserResponse updateUserResponse = new UpdateUserResponse();
         try{
             String extractedToken = authorizationHeader.substring(7);
             User user = userService.getUserDetailsFromToken(extractedToken);
@@ -162,9 +156,9 @@ public class UserController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
             User updatedUser = userService.updateUser(userId, updatedUserDTO);
-            updateResponse.setMessage(localizationUtils.getLocalizedMessage(MessageKeys.UPDATE_USER_SUCCESSFULLY));
-            updateResponse.setUserResponse(DTOConverter.convertToUserDTO(updatedUser));
-            return ResponseEntity.ok(updateResponse);
+            updateUserResponse.setMessage(localizationUtils.getLocalizedMessage(MessageKeys.UPDATE_USER_SUCCESSFULLY));
+            updateUserResponse.setUserResponse(DTOConverter.convertToUserDTO(updatedUser));
+            return ResponseEntity.ok(updateUserResponse);
         }catch (Exception e){
             return ResponseEntity.badRequest().build();
         }
@@ -195,7 +189,29 @@ public class UserController {
         try {
             String extractedToken = authorizationHeader.substring(7);
             User user = userService.getUserDetailsFromToken(extractedToken);
-            userService.verifyOtp(user.getId(), otp);
+            userService.verifyOtp(user.getId(), String.valueOf(otp));
+            otpResponse.setMessage(localizationUtils.getLocalizedMessage(MessageKeys.VERIFY_USER_SUCCESSFULLY));
+            return ResponseEntity.ok().body(otpResponse);
+        } catch (Exception e){
+            otpResponse.setMessage(localizationUtils.getLocalizedMessage(MessageKeys.VERIFY_USER_FAILED));
+            otpResponse.setReason(e.getMessage());
+            return ResponseEntity.badRequest().body(otpResponse);
+        }
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<OtpResponse> verifiedUserNotLogin(
+        @Valid @RequestBody VerifyUserDTO verifyUserDTO,
+        BindingResult result
+    ) {
+        if(result.hasErrors()){
+            throw new MethodArgumentNotValidException(result);
+        }
+
+        OtpResponse otpResponse = new OtpResponse();
+        try {
+            User user = userService.getUserByEmail(verifyUserDTO.email());
+            userService.verifyOtp(user.getId(), verifyUserDTO.otp());
             otpResponse.setMessage(localizationUtils.getLocalizedMessage(MessageKeys.VERIFY_USER_SUCCESSFULLY));
             return ResponseEntity.ok().body(otpResponse);
         } catch (Exception e){

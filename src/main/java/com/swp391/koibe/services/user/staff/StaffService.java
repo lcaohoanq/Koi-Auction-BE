@@ -1,8 +1,7 @@
 package com.swp391.koibe.services.user.staff;
 
-import com.swp391.koibe.exceptions.notfound.BreederNotFoundException;
-import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
-import com.swp391.koibe.exceptions.notfound.StaffNotFoundException;
+import com.swp391.koibe.exceptions.base.DataNotFoundException;
+import com.swp391.koibe.exceptions.StaffNotFoundException;
 import com.swp391.koibe.models.User;
 import com.swp391.koibe.repositories.UserRepository;
 import com.swp391.koibe.responses.UserResponse;

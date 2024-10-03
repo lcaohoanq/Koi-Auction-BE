@@ -67,11 +67,17 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private boolean isBypassToken(@NonNull HttpServletRequest request) {
         final List<Pair<String, String>> bypassTokens = Arrays.asList(
+                //RoleController
                 Pair.of(String.format("%s/roles", apiPrefix), "GET"),
+                Pair.of(String.format("%s/roles", apiPrefix), "POST"),
+                Pair.of(String.format("%s/roles", apiPrefix), "PUT"),
+                Pair.of(String.format("%s/roles", apiPrefix), "DELETE"),
 
                 //KoiController
                 Pair.of(String.format("%s/kois", apiPrefix), "GET"),
                 Pair.of(String.format("%s/kois", apiPrefix), "POST"),
+                Pair.of(String.format("%s/kois", apiPrefix), "PUT"),
+                Pair.of(String.format("%s/kois", apiPrefix), "DELETE"),
 
                 //KoiImageController
                 Pair.of(String.format("%s/koiimage", apiPrefix), "GET"),
@@ -95,10 +101,16 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/managers", apiPrefix), "PUT"),
                 Pair.of(String.format("%s/managers", apiPrefix), "DELETE"),
 
+                //UserController
                 Pair.of(String.format("%s/users/register", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/login", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/details", apiPrefix), "PUT"),
                 Pair.of(String.format("%s/users/block", apiPrefix), "PUT"),
+
+                //Verify OTP
+                Pair.of(String.format("%s/users/verify", apiPrefix), "PUT"),
+                Pair.of(String.format("%s/users/verify", apiPrefix), "POST"),
+
                 Pair.of(String.format("%s/oauth2", apiPrefix), "POST"),
                 Pair.of(String.format("%s/oauth2/google-client-id", apiPrefix), "GET"),
                 Pair.of(String.format("%s/members", apiPrefix), "GET"),
@@ -132,7 +144,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/auctionkoidetails", apiPrefix), "GET"),
                 Pair.of(String.format("%s/auctionkoidetails", apiPrefix), "POST"),
                 Pair.of(String.format("%s/auctionkoidetails", apiPrefix), "PUT"),
-                Pair.of(String.format("%s/auctionkoidetails", apiPrefix), "DELETE")
+                Pair.of(String.format("%s/auctionkoidetails", apiPrefix), "DELETE"),
+
+                //AuctionKoiWebsocket
+                Pair.of("/auction-websocket", "GET"),
+                Pair.of("/topic", "GET"),
+                Pair.of("/auction-websocket", "POST"),
+                Pair.of("/topic", "POST")
 
         // Pair.of(String.format("%s/products/test/view", apiPrefix), "GET")
         );

@@ -1,6 +1,6 @@
 package com.swp391.koibe.services.token;
 
-import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
+import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.Token;
 import com.swp391.koibe.models.User;
 import org.springframework.stereotype.Service;

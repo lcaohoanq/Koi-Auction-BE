@@ -2,9 +2,8 @@ package com.swp391.koibe.aop;
 
 import com.swp391.koibe.enums.UserStatus;
 import com.swp391.koibe.models.User;
-import com.swp391.koibe.enums.UserStatusEnum;
 import com.swp391.koibe.exceptions.UserHasBeenBannedException;
-import com.swp391.koibe.exceptions.notfound.UserNotFoundException;
+import com.swp391.koibe.exceptions.UserNotFoundException;
 import com.swp391.koibe.repositories.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

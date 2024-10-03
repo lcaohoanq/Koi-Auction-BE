@@ -1,15 +1,21 @@
 package com.swp391.koibe.controllers;
 
 import com.github.javafaker.Faker;
+import com.swp391.koibe.dtos.AuctionDTO;
 import com.swp391.koibe.enums.EAuctionStatus;
+import com.swp391.koibe.exceptions.GenerateDataException;
+import com.swp391.koibe.exceptions.MethodArgumentNotValidException;
+import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.Auction;
 import com.swp391.koibe.responses.AuctionResponse;
 import com.swp391.koibe.services.auction.IAuctionService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -34,16 +40,17 @@ public class AuctionController {
             LocalDateTime endTime = LocalDateTime.ofInstant(faker.date().past(30, TimeUnit.DAYS).toInstant(), ZoneId.systemDefault());
             LocalDateTime startTime = endTime.minusDays(faker.number().numberBetween(1, 20));
 
-            Auction auction = Auction.builder()
-                    .status(EAuctionStatus.ENDED)
-                    .endTime(endTime)
-                    .startTime(startTime)
+            AuctionDTO auction = AuctionDTO.builder()
+                    .statusName(String.valueOf(EAuctionStatus.ENDED))
+                    .endTime(String.valueOf(endTime))
+                    .startTime(String.valueOf(startTime))
                     .title(" Auction #" + i)
                     .build();
             try {
                  auctionService.createAuction(auction);
             } catch (Exception e) {
                 log.error("Error creating auction: " + e.getMessage());
+                throw new GenerateDataException();
             }
         }
     }
@@ -60,7 +67,7 @@ public class AuctionController {
         }
         catch (Exception e) {
             log.error("Error getting all auctions: " + e.getMessage());
-            return ResponseEntity.badRequest().body(null);
+            throw new DataNotFoundException();
         }
     }
 
@@ -72,7 +79,76 @@ public class AuctionController {
         }
         catch (Exception e) {
             log.error("Error getting auction by id: " + e.getMessage());
-            return ResponseEntity.badRequest().body(null);
+            throw new DataNotFoundException();
+        }
+    }
+
+    @PostMapping("")
+    public ResponseEntity<AuctionResponse> createAuction(
+        @Valid @RequestBody AuctionDTO auctionDTO,
+        BindingResult result
+    ) {
+
+        if(result.hasErrors()) {
+            throw new MethodArgumentNotValidException(result);
+        }
+
+        AuctionResponse response = new AuctionResponse();
+        try {
+            Auction newAuction = auctionService.createAuction(auctionDTO);
+            response.setId(newAuction.getId());
+            response.setTitle(newAuction.getTitle());
+            response.setStartTime(String.valueOf(newAuction.getStartTime()));
+            response.setEndTime(String.valueOf(newAuction.getEndTime()));
+            response.setStatus(newAuction.getStatus().getStatus());
+            return ResponseEntity.status(201).body(response);
+        }
+        catch (Exception e) {
+            log.error("Error creating auction: " + e.getMessage());
+            response.setMessage(e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<AuctionResponse> updateAuction(
+        @PathVariable long id,
+        @Valid @RequestBody AuctionDTO auctionDTO,
+        BindingResult result)
+    {
+        if(result.hasErrors()) {
+            throw new MethodArgumentNotValidException(result);
+        }
+
+        AuctionResponse response = new AuctionResponse();
+
+        try {
+            Auction updatedAuction = auctionService.update(id, auctionDTO);
+            response.setId(updatedAuction.getId());
+            response.setTitle(updatedAuction.getTitle());
+            response.setStartTime(String.valueOf(updatedAuction.getStartTime()));
+            response.setEndTime(String.valueOf(updatedAuction.getEndTime()));
+            response.setStatus(updatedAuction.getStatus().getStatus());
+            return ResponseEntity.ok(response);
+        }
+        catch (Exception e) {
+            log.error("Error updating auction: " + e.getMessage());
+            response.setMessage(e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<AuctionResponse> deleteAuction(@PathVariable long id) {
+        AuctionResponse response = new AuctionResponse();
+        try {
+            auctionService.delete(id);
+            return ResponseEntity.noContent().build();
+        }
+        catch (Exception e) {
+            log.error("Error deleting auction: " + e.getMessage());
+            response.setMessage(e.getMessage());
+            return ResponseEntity.badRequest().body(response);
         }
     }
 

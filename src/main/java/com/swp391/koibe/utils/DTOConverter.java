@@ -1,15 +1,7 @@
 package com.swp391.koibe.utils;
 
-import com.swp391.koibe.models.Auction;
-import com.swp391.koibe.models.AuctionKoi;
-import com.swp391.koibe.models.Koi;
-import com.swp391.koibe.models.KoiImage;
-import com.swp391.koibe.models.User;
-import com.swp391.koibe.responses.AuctionKoiResponse;
-import com.swp391.koibe.responses.AuctionResponse;
-import com.swp391.koibe.responses.KoiImageResponse;
-import com.swp391.koibe.responses.KoiResponse;
-import com.swp391.koibe.responses.UserResponse;
+import com.swp391.koibe.models.*;
+import com.swp391.koibe.responses.*;
 
 public class DTOConverter {
 
@@ -40,7 +32,7 @@ public class DTOConverter {
             .sex(koi.getSex())
             .length(koi.getLength())
             .age(koi.getAge())
-            //.basePrice(koi.getBasePrice())
+            .price(koi.getPrice())
             .statusName(koi.getStatus() != null ? koi.getStatus().getStatus() : null)
             .idDisplay(koi.getIsDisplay())
             .thumbnail(koi.getThumbnail())
@@ -63,8 +55,8 @@ public class DTOConverter {
         return AuctionResponse.builder()
             .id(auction.getId())
             .title(auction.getTitle())
-            .startTime(auction.getStartTime())
-            .endTime(auction.getEndTime())
+            .startTime(String.valueOf(auction.getStartTime()))
+            .endTime(String.valueOf(auction.getEndTime()))
             .status(auction.getStatus() != null ? auction.getStatus().getStatus() : null)
             .build();
     }
@@ -76,9 +68,19 @@ public class DTOConverter {
             .koiId(auctionKoi.getKoi().getId())
             .basePrice(auctionKoi.getBasePrice())
             .bidMethod(auctionKoi.getBidMethod() != null ? auctionKoi.getBidMethod().getType() : null)
-            .currentBid(auctionKoi.getCurrentBid())
-            .currentBidderId(auctionKoi.getCurrentBidderId())
+            .currentBid(auctionKoi.getCurrentBid() == null ? 0 : auctionKoi.getCurrentBid())
+            .currentBidderId(auctionKoi.getCurrentBidderId() == null ? 0 : auctionKoi.getCurrentBidderId())
             .isSold(auctionKoi.isSold())
+            .build();
+    }
+
+    public static BidResponse convertToBidDTO(Bid bid) {
+        return BidResponse.builder()
+            .auctionKoiId(bid.getAuctionKoi().getId())
+            .bidderId(bid.getBidder().getId())
+            .bidAmount(bid.getBidAmount())
+            .bidTime(bid.getBidTime().toString())
+            .bidderName(String.format("%s %s", bid.getBidder().getFirstName(),bid.getBidder().getLastName()))
             .build();
     }
 

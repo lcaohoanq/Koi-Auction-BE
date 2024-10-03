@@ -4,11 +4,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.swp391.koibe.dtos.CategoryDTO;
-import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
+import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.Category;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 

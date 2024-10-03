@@ -1,7 +1,7 @@
 package com.swp391.koibe.services.user.member;
 
-import com.swp391.koibe.exceptions.notfound.DataNotFoundException;
-import com.swp391.koibe.exceptions.notfound.MemberNotFoundException;
+import com.swp391.koibe.exceptions.base.DataNotFoundException;
+import com.swp391.koibe.exceptions.MemberNotFoundException;
 import com.swp391.koibe.models.User;
 import com.swp391.koibe.repositories.UserRepository;
 import com.swp391.koibe.responses.UserResponse;
