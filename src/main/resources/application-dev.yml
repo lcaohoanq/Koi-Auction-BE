@@ -25,6 +25,10 @@ spring:
             clientId: 1093656938461-fod9qlmrd68m0otn7mhrggi pp15b8cnj.apps.googleusercontent.com
             clientSecret: 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
 
+alert:
+  manager:
+    emails: "hoangclw@gmail.com,manhduonglhp4@gmail.com"
+
 server:
   port: 4000
 
