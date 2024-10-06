@@ -25,6 +25,13 @@ spring:
             clientId: 1093656938461-fod9qlmrd68m0otn7mhrggi pp15b8cnj.apps.googleusercontent.com
             clientSecret: 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
 
+  data:
+    redis:
+      #spring.data.redis.use-redis-cache
+      use-redis-cache: false
+      host: ${REDIS_HOST:localhost} # Default to 'localhost' if not provided
+      port: ${REDIS_PORT:6379}      # Default to 6379 if not provided
+
 alert:
   manager:
     emails: "hoangclw@gmail.com,manhduonglhp4@gmail.com"
