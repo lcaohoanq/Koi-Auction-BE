@@ -29,7 +29,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `auctions` (
   `id` bigint NOT NULL,
-  `status` enum('ACTIVE','ENDED','ONGOING') COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `status` enum('ONGOING','ENDED','ONGOING') COLLATE utf8mb4_general_ci DEFAULT NULL,
   `end_time` datetime(6) DEFAULT NULL,
   `start_time` datetime(6) DEFAULT NULL,
   `title` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL
@@ -2418,7 +2418,7 @@ CREATE TABLE `users` (
   `last_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `password` varchar(200) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `phone_number` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `status` enum('ACTIVE','BANNED','INACTIVE','UNVERIFIED','VERIFIED') COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `status` enum('ONGOING','BANNED','INACTIVE','UNVERIFIED','VERIFIED') COLLATE utf8mb4_general_ci DEFAULT NULL,
   `role_id` bigint DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
