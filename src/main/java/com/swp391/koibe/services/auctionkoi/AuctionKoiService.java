@@ -14,6 +14,7 @@ import com.swp391.koibe.responses.AuctionKoiResponse;
 import com.swp391.koibe.services.auction.AuctionService;
 import com.swp391.koibe.utils.DTOConverter;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -107,6 +108,25 @@ public class AuctionKoiService implements IAuctionKoiService {
     }
 
     @Override
+    public List<AuctionKoi> getAuctionKoiByAuctionIdV2(long id) {
+        return auctionKoiRepository.getAuctionKoiByAuctionId(id);
+    }
+
+    @Override
+    public void updateDescendAuctionKoiPrice(long auctionKoiId, AuctionKoi auctionKoi) {
+        AuctionKoi auctionKoiToUpdate = auctionKoiRepository.findById(auctionKoiId)
+                .orElseThrow(() -> new DataNotFoundException("Auction Koi not found"));
+
+        if (auctionKoiToUpdate.getBidMethod().equals(EBidMethod.DESCENDING_BID)) {
+            if (auctionKoiToUpdate.getCurrentBid() > auctionKoiToUpdate.getBasePrice()) {
+                auctionKoiToUpdate.setCurrentBid(auctionKoiToUpdate.getCurrentBid() - auctionKoiToUpdate.getBidStep());
+            } else {
+                auctionKoiToUpdate.setCurrentBid(auctionKoiToUpdate.getBasePrice());
+            }
+        }
+    }
+
+    @Override
     public List<AuctionKoiResponse> getAuctionKoiByAuctionId(long id) {
         return auctionKoiRepository.getAuctionKoiByAuctionId(id).stream().map(DTOConverter::convertToAuctionKoiDTO)
                 .toList();
@@ -179,4 +199,23 @@ public class AuctionKoiService implements IAuctionKoiService {
                 .orElseThrow(() -> new DataNotFoundException("Auction Koi not found"));
         return DTOConverter.convertToAuctionKoiDTO(auctionKoi);
     }
+
+    @Override
+    public List<AuctionKoi> getAuctionKoiIsNotSold() {
+        return auctionKoiRepository.findAll().stream().filter(auctionKoi -> !auctionKoi.isSold()).toList();
+    }
+
+    @Override
+    public void updateAuctionKoiStatus(long auctionKoiId, AuctionKoi auctionKoi) {
+        AuctionKoi auctionKoiToUpdate = auctionKoiRepository.findById(auctionKoiId)
+                .orElseThrow(() -> new DataNotFoundException("Auction not found"));
+
+        if (auctionKoiToUpdate.getAuction().getStatus().equals(EAuctionStatus.ENDED)) {
+            if (auctionKoiToUpdate.getCurrentBid() != null || auctionKoiToUpdate.getCurrentBidderId() != null) {
+                auctionKoiToUpdate.setSold(true);
+                auctionKoiRepository.save(auctionKoiToUpdate);
+            }
+        }
+    }
+
 }

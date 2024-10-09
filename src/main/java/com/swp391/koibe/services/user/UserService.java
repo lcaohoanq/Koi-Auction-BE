@@ -297,7 +297,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void updateAccountBalance(Long userId, Long payment) throws Exception {
+    public void updateAccountBalance(Long userId, Long payment) throws DataNotFoundException {
         User existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new DataNotFoundException(
                         localizationUtils.getLocalizedMessage(MessageKeys.USER_NOT_FOUND)

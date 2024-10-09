@@ -32,4 +32,8 @@ public interface IAuctionService {
         void delete(long id);
 
         List<Auction> getAllAuctions();
+
+        List<Auction> getAuctionByStatus(String status);
+
+        Auction updateAuctionStatus(long auctionId, Auction auction) throws DataNotFoundException;
 }

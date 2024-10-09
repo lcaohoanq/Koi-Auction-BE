@@ -36,7 +36,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `auctions` (
   `id` bigint NOT NULL,
-  `status` enum('ACTIVE','ENDED','ONGOING') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `status`  enum('ONGOING','ENDED','UPCOMING') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `end_time` datetime(6) DEFAULT NULL,
   `start_time` datetime(6) DEFAULT NULL,
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL
@@ -147,10 +147,10 @@ INSERT INTO `auctions` (`id`, `status`, `end_time`, `start_time`, `title`) VALUE
 (98, 'ENDED', '2024-08-29 20:36:38.716000', '2024-08-11 20:36:38.716000', ' Auction #97'),
 (99, 'ENDED', '2024-09-03 04:52:31.691000', '2024-08-27 04:52:31.691000', ' Auction #98'),
 (100, 'ENDED', '2024-09-06 17:57:01.524000', '2024-08-29 17:57:01.524000', ' Auction #99'),
-(102, 'ACTIVE', '2024-10-15 14:41:38.679000', '2024-10-12 14:41:38.679000', 'Auction #123'),
-(103, 'ACTIVE', '2024-10-30 14:41:38.679000', '2024-10-06 14:41:38.679000', 'Desc Auction'),
-(104, 'ACTIVE', '2024-10-30 14:41:38.679000', '2024-10-06 14:41:38.679000', 'Fixed Price Auction'),
-(105, 'ACTIVE', '2024-10-30 14:41:38.679000', '2024-10-06 14:41:38.679000', 'Sealed Price Auction');
+(102, 'ONGOING', '2024-10-15 14:41:38.679000', '2024-10-12 14:41:38.679000', 'Auction #123'),
+(103, 'ONGOING', '2024-10-30 14:41:38.679000', '2024-10-06 14:41:38.679000', 'Desc Auction'),
+(104, 'ONGOING', '2024-10-30 14:41:38.679000', '2024-10-06 14:41:38.679000', 'Fixed Price Auction'),
+(105, 'ONGOING', '2024-10-30 14:41:38.679000', '2024-10-06 14:41:38.679000', 'Sealed Price Auction');
 
 -- --------------------------------------------------------
 
@@ -10136,7 +10136,7 @@ CREATE TABLE `users` (
   `last_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `password` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `phone_number` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `status` enum('ACTIVE','BANNED','INACTIVE','UNVERIFIED','VERIFIED') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `status` enum('ONGOING','BANNED','INACTIVE','UNVERIFIED','VERIFIED') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `role_id` bigint DEFAULT NULL,
   `account_balance` bigint DEFAULT '0',
   `is_active` tinyint(1) DEFAULT NULL,

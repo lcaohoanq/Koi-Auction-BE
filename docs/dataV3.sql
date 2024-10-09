@@ -47,7 +47,7 @@ CREATE TABLE `users` (
   `address` varchar(200) DEFAULT NULL,
   `password` varchar(200) DEFAULT NULL,
   `avatar_url` varchar(255) DEFAULT NULL,
-  `status` enum('ACTIVE','BANNED','INACTIVE','UNVERIFIED','VERIFIED') DEFAULT NULL
+  `status` enum('ONGOING','BANNED','INACTIVE','UNVERIFIED','VERIFIED') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
