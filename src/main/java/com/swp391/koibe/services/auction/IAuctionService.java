@@ -2,10 +2,12 @@ package com.swp391.koibe.services.auction;
 
 //import com.swp391.koibe.dtos.AuctionDTO;
 import com.swp391.koibe.dtos.AuctionDTO;
+import com.swp391.koibe.enums.EAuctionStatus;
 import com.swp391.koibe.exceptions.base.DataAlreadyExistException;
 import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.Auction;
 import com.swp391.koibe.responses.AuctionResponse;
+import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -36,4 +38,6 @@ public interface IAuctionService {
         List<Auction> getAuctionByStatus(String status);
 
         Auction updateAuctionStatus(long auctionId, Auction auction) throws DataNotFoundException;
+        Set<Auction> getAuctionOnCondition(String condition);
+        Set<Auction> getAuctionOnStatus(EAuctionStatus status);
 }

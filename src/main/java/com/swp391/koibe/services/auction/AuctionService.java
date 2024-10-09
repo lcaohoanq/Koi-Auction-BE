@@ -13,7 +13,7 @@ import com.swp391.koibe.utils.DateTimeUtils;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -152,5 +152,20 @@ public class AuctionService implements IAuctionService {
         }
 
         return auctionRepository.save(auctionToUpdate);
+    public Set<Auction> getAuctionOnCondition(String condition) {
+//        return switch (condition) {
+//            case "ACTIVE" -> auctionRepository.getAuctionsByStartTimeAfter(LocalDateTime.now());
+//            case "ONGOING" ->
+//                auctionRepository.getAuctionsByStartTimeBeforeAndEndTimeAfter(LocalDateTime.now(),
+//                                                                              LocalDateTime.now());
+//            case "ENDED" -> auctionRepository.getAuctionsByEndTimeBefore(LocalDateTime.now());
+//            default -> null;
+//        };
+        return null;
+    }
+
+    @Override
+    public Set<Auction> getAuctionOnStatus(EAuctionStatus status) {
+        return auctionRepository.getAuctionsByStatus(status);
     }
 }
