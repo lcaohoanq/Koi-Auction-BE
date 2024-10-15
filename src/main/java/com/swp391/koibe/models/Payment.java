@@ -39,7 +39,7 @@ public class Payment {
     @Column(name = "payment_status", nullable = false)
     private EPaymentStatus paymentStatus; // e.g., SUCCESS, PENDING, REFUNDED
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id")
     private Order order;
 

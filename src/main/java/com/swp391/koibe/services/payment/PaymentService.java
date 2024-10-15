@@ -183,15 +183,18 @@ public class PaymentService implements IPaymentService {
         }
     }
 
-    private void processOrderPayment(Map<String, Object> result, long amount, Payment payment) {
-        result.put("message", "Order payment successful");
-        result.put("amount", amount);
-        result.put("paymentType", "order");
-        String orderId = payment.getOrder().getId().toString();
-        payment.setOrder(orderRepository.findById(Long.parseLong(orderId))
-                .orElseThrow(() -> new MalformDataException("Order not found")));
+   private void processOrderPayment(Map<String, Object> result, long amount, Payment payment) {
+    result.put("message", "Order payment successful");
+    result.put("amount", amount);
+    result.put("paymentType", "order");
+    String orderId = payment.getOrder().getId().toString();
+    orderRepository.findById(Long.parseLong(orderId)).ifPresent(order -> {
+        orderService.updateOrderStatus(order.getId(), OrderStatus.PROCESSING);
+        orderRepository.save(order);
+        payment.setOrder(order);
         paymentRepository.save(payment);
-    }
+    });
+}
 
     @Override
     public Payment createPayment(PaymentDTO paymentDTO) {

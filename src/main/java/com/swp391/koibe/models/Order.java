@@ -79,7 +79,4 @@ public class Order {
     @JsonManagedReference
     private List<OrderDetail> orderDetails = new ArrayList<>();
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
-    private Payment payment;
-
  }

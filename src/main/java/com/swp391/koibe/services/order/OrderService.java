@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.swp391.koibe.responses.order.OrderResponse;
-import com.swp391.koibe.services.payment.PaymentService;
 import com.swp391.koibe.utils.DTOConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -154,8 +153,7 @@ public class OrderService implements IOrderService {
 
         // Tạo một luồng bảng ánh xạ riêng để kiểm soát việc ánh xạ
         modelMapper.typeMap(OrderDTO.class, Order.class)
-                .addMappings(mapper -> mapper.skip(Order::setId))
-                .addMappings(mapper -> mapper.skip(Order::setPayment));
+                .addMappings(mapper -> mapper.skip(Order::setId));
         // Cập nhật các trường của đơn hàng từ orderDTO
         modelMapper.map(orderDTO, order);
         order.setUser(existingUser);
@@ -171,19 +169,12 @@ public class OrderService implements IOrderService {
         User existingUser = userRepository.findById(
                 orderDTO.getUserId()).orElseThrow(() -> new DataNotFoundException("Cannot find user with id: " + id));
 
+        // Tạo một luồng bảng ánh xạ riêng để kiểm soát việc ánh xạ
+        modelMapper.typeMap(OrderDTO.class, Order.class)
+                .addMappings(mapper -> mapper.skip(Order::setId));
+        // Cập nhật các trường của đơn hàng từ orderDTO
+        modelMapper.map(orderDTO, order);
         order.setUser(existingUser);
-        order.setFirstName(orderDTO.getFirstName());
-        order.setLastName(orderDTO.getLastName());
-        order.setEmail(orderDTO.getEmail());
-        order.setPhoneNumber(orderDTO.getPhoneNumber());
-        order.setAddress(orderDTO.getAddress());
-        order.setNote(orderDTO.getNote());
-        order.setTotalMoney(orderDTO.getTotalMoney());
-        order.setShippingMethod(orderDTO.getShippingMethod());
-        order.setShippingAddress(orderDTO.getShippingAddress());
-        order.setShippingDate(orderDTO.getShippingDate());
-        order.setPaymentMethod(orderDTO.getPaymentMethod());
-
         return orderRepository.save(order);
     }
 
