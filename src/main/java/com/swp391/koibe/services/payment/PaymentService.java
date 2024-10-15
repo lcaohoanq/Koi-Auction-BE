@@ -5,6 +5,8 @@ import com.swp391.koibe.dtos.PaymentDTO;
 import com.swp391.koibe.enums.EPaymentStatus;
 import com.swp391.koibe.enums.EPaymentType;
 import com.swp391.koibe.enums.OrderStatus;
+import com.swp391.koibe.exceptions.MalformDataException;
+import com.swp391.koibe.models.Order;
 import com.swp391.koibe.models.Payment;
 import com.swp391.koibe.repositories.OrderRepository;
 import com.swp391.koibe.repositories.PaymentRepository;
@@ -154,6 +156,14 @@ public class PaymentService implements IPaymentService {
                 .paymentDate(LocalDateTime.now())
                 .paymentType(orderInfo.startsWith("Deposit") ? EPaymentType.DEPOSIT : EPaymentType.ORDER)
                 .paymentStatus(EPaymentStatus.SUCCESS)
+                .user(orderInfo.startsWith("Deposit")
+                        ? userRepository.findById(Long.parseLong(orderInfo.split(":")[1])).orElse(null)
+                        : orderRepository.findById(Long.parseLong(orderInfo.split(":")[1]))
+                        .orElseThrow(() -> new MalformDataException("Order not found")).getUser())
+                .order(orderInfo.startsWith("Payment for order")
+                        ? orderRepository.findById(Long.parseLong(orderInfo.split(":")[1]))
+                        .orElseThrow(() -> new MalformDataException("Order not found"))
+                        : null)
                 .build();
     }
 
@@ -178,7 +188,8 @@ public class PaymentService implements IPaymentService {
         result.put("amount", amount);
         result.put("paymentType", "order");
         String orderId = payment.getOrder().getId().toString();
-        payment.setOrder(orderRepository.getById(Long.parseLong(orderId)));
+        payment.setOrder(orderRepository.findById(Long.parseLong(orderId))
+                .orElseThrow(() -> new MalformDataException("Order not found")));
         paymentRepository.save(payment);
     }
 
@@ -188,7 +199,9 @@ public class PaymentService implements IPaymentService {
                 .paymentAmount(paymentDTO.getPaymentAmount())
                 .paymentMethod(paymentDTO.getPaymentMethod())
                 .paymentType(EPaymentType.valueOf(paymentDTO.getPaymentType()))
-                .order(paymentDTO.getOrderId() != null ? orderRepository.getById(paymentDTO.getOrderId()) : null)
+                .order(paymentDTO.getOrderId() != null ?
+                        orderRepository.findById(paymentDTO.getOrderId())
+                                .orElseThrow(() -> new MalformDataException("Order not found")) : null)
                 .user(userRepository.findById(paymentDTO.getUserId()).orElse(null))
                 .paymentStatus(EPaymentStatus.valueOf(paymentDTO.getPaymentStatus()))
                 .paymentDate(LocalDateTime.now())
@@ -197,13 +210,18 @@ public class PaymentService implements IPaymentService {
     }
 
     @Override
-    public Payment getPaymentByOrderID(Long id) {
-        return paymentRepository.findByOrderId(id);
+    public Optional<Payment> getPaymentByOrderID(Long id) {
+        Order existingOrder = orderRepository.findById(id).orElse(null);
+        return paymentRepository.findByOrder(existingOrder);
     }
 
     @Override
     @Transactional
     public Map<String, Object> createPaymentAndUpdateOrder(PaymentDTO paymentDTO) throws Exception {
+        if (getPaymentByOrderID(paymentDTO.getOrderId()).isPresent()) {
+            throw new Exception("Payment already exists for order");
+        }
+
         paymentDTO.setPaymentStatus(EPaymentStatus.PENDING.toString());
         Payment payment = createPayment(paymentDTO);
         if (payment == null) {
