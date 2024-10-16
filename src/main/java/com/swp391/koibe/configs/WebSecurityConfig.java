@@ -135,6 +135,15 @@ public class WebSecurityConfig {
                     .hasAnyRole(Role.MANAGER)
                     //******************************8
 
+                    //AuctionKoiController******************
+                    .requestMatchers(GET,
+                                     String.format("%s/auctionkois**", apiPrefix))
+                    .permitAll()
+                    .requestMatchers(DELETE,
+                                     String.format("%s/auctionkois**", apiPrefix))
+                    .hasAnyRole(Role.BREEDER, Role.MANAGER, Role.STAFF)
+
+
                     .requestMatchers(GET,
                                      String.format("%s/orders**", apiPrefix))
                     .permitAll()
@@ -190,8 +199,15 @@ public class WebSecurityConfig {
                     .requestMatchers(GET, String.format("%s/payment**", apiPrefix))
                     .hasAnyRole(Role.MEMBER, Role.BREEDER)
 
+                    //forgot-password
+                    .requestMatchers(GET, String.format("%s/forgot-password**", apiPrefix)).permitAll()
+                    .requestMatchers(PUT, String.format("%s/forgot-password**", apiPrefix)).permitAll()
 //                            .requestMatchers(GET, "/api/v1/payment/vnpay/payment_return")
 //                            .permitAll()
+
+                    //OtpController
+                    .requestMatchers(GET, String.format("%s/otp/send", apiPrefix)).permitAll()
+                    .requestMatchers(POST, String.format("%s/otp/verify", apiPrefix)).permitAll()
 
                     .anyRequest().authenticated();
 

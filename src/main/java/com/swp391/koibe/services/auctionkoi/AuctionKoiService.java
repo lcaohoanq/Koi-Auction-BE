@@ -42,8 +42,9 @@ public class AuctionKoiService implements IAuctionKoiService {
     public AuctionKoi createAuctionKoi(AuctionKoiDTO auctionKoiDTO)
             throws DataNotFoundException, MessagingException {
 
-        // check if the auction is already include this koi
-        List<AuctionKoi> auctionKois = auctionKoiRepository.getAuctionKoiByAuctionId(auctionKoiDTO.auctionId());
+        //check if the auction is already include this koi
+        List<AuctionKoi> auctionKois = auctionKoiRepository.findAuctionKoiByAuctionId(
+            auctionKoiDTO.auctionId());
         for (AuctionKoi auctionKoi : auctionKois) {
             if (Objects.equals(auctionKoi.getKoi().getId(), auctionKoiDTO.koiId())) {
                 throw new MalformDataException("This koi is already in this auction");
@@ -56,7 +57,7 @@ public class AuctionKoiService implements IAuctionKoiService {
 
         // check if auction exists
         auctionRepository.findById(auctionKoiDTO.auctionId())
-                .orElseThrow(() -> new DataNotFoundException("Auction not found"));
+            .orElseThrow(() -> new DataNotFoundException("Auction not found"));
 
         // check auction status is not ended
         Auction auction = auctionService.findAuctionById(auctionKoiDTO.auctionId());
@@ -84,18 +85,26 @@ public class AuctionKoiService implements IAuctionKoiService {
 
         }
 
+        Long currentBidValue = auctionKoiDTO.currentBid() != null ? auctionKoiDTO.currentBid() : 0L;
+
+        if (auctionKoiDTO.bidMethod().equals("DESCENDING_BID")) {
+            currentBidValue = validCeilPrice;
+        }
+
         // save auction koi
         AuctionKoi newAuctionKoi = AuctionKoi.builder()
-                .basePrice(auctionKoiDTO.basePrice())
-                .bidStep(auctionKoiDTO.bidStep())
-                .bidMethod(EBidMethod.valueOf(auctionKoiDTO.bidMethod()))
-                .ceilPrice(validCeilPrice)
-                .isSold(false) // default is false when add new koi to auction (if sold, update later)
-                .currentBid(auctionKoiDTO.currentBid() != null ? auctionKoiDTO.currentBid() : 0L)
-                .currentBidderId(auctionKoiDTO.currentBidderId() != null ? auctionKoiDTO.currentBidderId() : 0L)
-                .auction(auctionService.findAuctionById(auctionKoiDTO.auctionId()))
-                .koi(existingKoi.get())
-                .build();
+            .basePrice(auctionKoiDTO.basePrice())
+            .bidStep(auctionKoiDTO.bidStep())
+            .bidMethod(EBidMethod.valueOf(auctionKoiDTO.bidMethod()))
+            .ceilPrice(validCeilPrice)
+            .isSold(false) // default is false when add new koi to auction (if sold, update later)
+            .currentBid(currentBidValue)
+            .currentBidderId(
+                auctionKoiDTO.currentBidderId() != null ? auctionKoiDTO.currentBidderId() : 0L)
+            .revoked(0) //default is 0 when add new koi to auction
+            .auction(auctionService.findAuctionById(auctionKoiDTO.auctionId()))
+            .koi(existingKoi.get())
+            .build();
 
         User owner = existingKoi.get().getOwner();
 
@@ -120,29 +129,30 @@ public class AuctionKoiService implements IAuctionKoiService {
     @Override
     public AuctionKoi getAuctionKoiById(long id) throws DataNotFoundException {
         return auctionKoiRepository.findById(id)
-                .orElseThrow(() -> new DataNotFoundException("Auction Koi not found"));
+            .orElseThrow(() -> new DataNotFoundException("Auction Koi not found"));
     }
 
     @Override
     public AuctionKoiResponse getAuctionKoiResponeById(long id) throws DataNotFoundException {
         AuctionKoi auctionKoi = auctionKoiRepository.findById(id)
-                .orElseThrow(() -> new DataNotFoundException("Auction Koi not found"));
+            .orElseThrow(() -> new DataNotFoundException("Auction Koi not found"));
         return DTOConverter.convertToAuctionKoiDTO(auctionKoi);
     }
 
     @Override
     public List<AuctionKoi> getAuctionKoiByAuctionIdV2(long id) {
-        return auctionKoiRepository.getAuctionKoiByAuctionId(id);
+        return auctionKoiRepository.findAuctionKoiByAuctionId(id);
     }
 
     @Override
     public void updateDescendAuctionKoiPrice(long auctionKoiId, AuctionKoi auctionKoi) {
         AuctionKoi auctionKoiToUpdate = auctionKoiRepository.findById(auctionKoiId)
-                .orElseThrow(() -> new DataNotFoundException("Auction Koi not found"));
+            .orElseThrow(() -> new DataNotFoundException("Auction Koi not found"));
 
         if (auctionKoiToUpdate.getBidMethod().equals(EBidMethod.DESCENDING_BID)) {
             if (auctionKoiToUpdate.getCurrentBid() > auctionKoiToUpdate.getBasePrice()) {
-                auctionKoiToUpdate.setCurrentBid(auctionKoiToUpdate.getCurrentBid() - auctionKoiToUpdate.getBidStep());
+                auctionKoiToUpdate.setCurrentBid(
+                    auctionKoiToUpdate.getCurrentBid() - auctionKoiToUpdate.getBidStep());
             } else {
                 auctionKoiToUpdate.setCurrentBid(auctionKoiToUpdate.getBasePrice());
             }
@@ -151,9 +161,23 @@ public class AuctionKoiService implements IAuctionKoiService {
     }
 
     @Override
+    public AuctionKoi revokeKoiInAuction(long koiId, long auctionId) {
+        AuctionKoi auctionKoi = auctionKoiRepository.findAuctionKoiByAuctionId(auctionId).stream()
+            .filter(auctionKoi1 -> auctionKoi1.getKoi().getId() == koiId).findFirst()
+            .orElseThrow(() -> new DataNotFoundException(String.format("""
+                                                                           KoiId %d not found in auctionId "%d"
+                                                                           """, koiId, auctionId)));
+        auctionKoi.setRevoked(1); //soft delete
+        auctionKoiRepository.save(auctionKoi);
+
+        return auctionKoi;
+    }
+
+    @Override
     public List<AuctionKoiResponse> getAuctionKoiByAuctionId(long id) {
-        return auctionKoiRepository.getAuctionKoiByAuctionId(id).stream().map(DTOConverter::convertToAuctionKoiDTO)
-                .toList();
+        return auctionKoiRepository.findAuctionKoiByAuctionId(id).stream()
+            .map(DTOConverter::convertToAuctionKoiDTO)
+            .toList();
     }
 
     @Override
@@ -163,10 +187,11 @@ public class AuctionKoiService implements IAuctionKoiService {
     }
 
     @Override
-    public AuctionKoiResponse updateAuctionKoi(long auctionKoiId, UpdateAuctionKoiDTO updateAuctionKoiDTO) {
+    public AuctionKoiResponse updateAuctionKoi(long auctionKoiId,
+                                               UpdateAuctionKoiDTO updateAuctionKoiDTO) {
         // find auctionKoi
         AuctionKoi updateAuctionKoi = auctionKoiRepository.findById(auctionKoiId)
-                .orElseThrow(() -> new DataNotFoundException("auctionKoi not found: " + auctionKoiId));
+            .orElseThrow(() -> new DataNotFoundException("auctionKoi not found: " + auctionKoiId));
 
         if (updateAuctionKoi.getBidMethod() == EBidMethod.DESCENDING_BID) {
             if (updateAuctionKoi.getCeilPrice() == null) {
@@ -186,6 +211,7 @@ public class AuctionKoiService implements IAuctionKoiService {
         updateAuctionKoi.setCeilPrice(updateAuctionKoiDTO.ceilPrice());
         updateAuctionKoi.setCurrentBid(updateAuctionKoiDTO.currentBid());
         updateAuctionKoi.setCurrentBidderId(updateAuctionKoiDTO.currentBidderId());
+        updateAuctionKoi.setRevoked(updateAuctionKoiDTO.revoked());
         updateAuctionKoi.setSold(updateAuctionKoiDTO.isSold());
 
         return DTOConverter.convertToAuctionKoiDTO(auctionKoiRepository.save(updateAuctionKoi));
@@ -193,7 +219,8 @@ public class AuctionKoiService implements IAuctionKoiService {
 
     @Override
     public void deleteAuctionKoi(long id) {
-        auctionKoiRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Auction Koi not found"));
+        auctionKoiRepository.findById(id)
+            .orElseThrow(() -> new DataNotFoundException("Auction Koi not found"));
         auctionKoiRepository.deleteById(id);
     }
 
@@ -205,34 +232,37 @@ public class AuctionKoiService implements IAuctionKoiService {
     @Override
     public List<AuctionKoi> getAuctionIsSold() {
         // get all auction koi
-        return auctionKoiRepository.findAll().stream().filter(auctionKoi -> auctionKoi.isSold()).toList();
+        return auctionKoiRepository.findAll().stream().filter(auctionKoi -> auctionKoi.isSold())
+            .toList();
     }
 
     @Override
     public AuctionKoiResponse getAuctionKoiDetailsById(long id) throws DataNotFoundException {
         AuctionKoi auctionKoi = auctionKoiRepository.findById(id)
-                .orElseThrow(() -> new DataNotFoundException("Auction Koi not found"));
+            .orElseThrow(() -> new DataNotFoundException("Auction Koi not found"));
         return DTOConverter.convertToAuctionKoiDTO(auctionKoi);
     }
 
     @Override
-    public AuctionKoiResponse getAuctionKoiByAuctionIdAndKoiId(long aid, long id) throws DataNotFoundException {
-        List<AuctionKoi> auctionKois = auctionKoiRepository.getAuctionKoiByAuctionId(aid);
+    public AuctionKoiResponse getAuctionKoiByAuctionIdAndKoiId(long aid, long id)
+        throws DataNotFoundException {
+        List<AuctionKoi> auctionKois = auctionKoiRepository.findAuctionKoiByAuctionId(aid);
         AuctionKoi auctionKoi = auctionKois.stream()
-                .filter(auctionKoi1 -> auctionKoi1.getId() == id).findFirst()
-                .orElseThrow(() -> new DataNotFoundException("Auction Koi not found"));
+            .filter(auctionKoi1 -> auctionKoi1.getId() == id).findFirst()
+            .orElseThrow(() -> new DataNotFoundException("Auction Koi not found"));
         return DTOConverter.convertToAuctionKoiDTO(auctionKoi);
     }
 
     @Override
     public List<AuctionKoi> getAuctionKoiIsNotSold() {
-        return auctionKoiRepository.findAll().stream().filter(auctionKoi -> !auctionKoi.isSold()).toList();
+        return auctionKoiRepository.findAll().stream().filter(auctionKoi -> !auctionKoi.isSold())
+            .toList();
     }
 
     @Override
     public void updateAuctionKoiStatus(long auctionKoiId, AuctionKoi auctionKoi) {
         AuctionKoi auctionKoiToUpdate = auctionKoiRepository.findById(auctionKoiId)
-                .orElseThrow(() -> new DataNotFoundException("Auction not found"));
+            .orElseThrow(() -> new DataNotFoundException("Auction not found"));
 
         if (auctionKoiToUpdate.getAuction().getStatus().equals(EAuctionStatus.ENDED)) {
             if (auctionKoiToUpdate.getCurrentBid() != 0 && auctionKoiToUpdate.getCurrentBidderId() != 0) {

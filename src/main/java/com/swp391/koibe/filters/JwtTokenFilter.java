@@ -118,6 +118,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
                 // Otp
                 Pair.of(String.format("%s/otp/send", apiPrefix), "GET"),
+                Pair.of(String.format("%s/otp/verify", apiPrefix), "POST"),
 
                 Pair.of(String.format("%s/auction-participant", apiPrefix), "GET"),
                 Pair.of(String.format("%s/auction-participant", apiPrefix), "POST"),
@@ -160,7 +161,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/auctionkois", apiPrefix), "GET"),
                 Pair.of(String.format("%s/auctionkois", apiPrefix), "POST"),
                 Pair.of(String.format("%s/auctionkois", apiPrefix), "PUT"),
-                Pair.of(String.format("%s/auctionkois", apiPrefix), "DELETE"),
 
                 // AuctionKoiDetail
                 Pair.of(String.format("%s/bidding", apiPrefix), "GET"),
@@ -176,7 +176,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
                 // 3rd payment
                 Pair.of(String.format("%s/payment", apiPrefix), "GET"),
-                Pair.of(String.format("%s/payment", apiPrefix), "POST")
+                Pair.of(String.format("%s/payment", apiPrefix), "POST"),
+
+                //ForgotPassword
+                Pair.of(String.format("%s/forgot-password", apiPrefix), "GET"),
+                Pair.of(String.format("%s/forgot-password", apiPrefix), "PUT")
 
         // Pair.of(String.format("%s/products/test/view", apiPrefix), "GET")
         );
