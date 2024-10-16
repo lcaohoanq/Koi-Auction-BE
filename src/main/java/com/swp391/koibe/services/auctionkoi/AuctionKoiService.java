@@ -40,24 +40,25 @@ public class AuctionKoiService implements IAuctionKoiService {
 
     @Override
     public AuctionKoi createAuctionKoi(AuctionKoiDTO auctionKoiDTO)
-        throws DataNotFoundException, MessagingException {
+            throws DataNotFoundException, MessagingException {
 
-        //check if the auction is already include this koi
+        // check if the auction is already include this koi
         List<AuctionKoi> auctionKois = auctionKoiRepository.getAuctionKoiByAuctionId(auctionKoiDTO.auctionId());
         for (AuctionKoi auctionKoi : auctionKois) {
             if (Objects.equals(auctionKoi.getKoi().getId(), auctionKoiDTO.koiId())) {
                 throw new MalformDataException("This koi is already in this auction");
             }
-            //this will ensure that if the koi are in auction (already defined it) then
-            //it will not be added to the auction again
-            //prevent duplicate koi in auction and different bid method on the same koi in the same auction
+            // this will ensure that if the koi are in auction (already defined it) then
+            // it will not be added to the auction again
+            // prevent duplicate koi in auction and different bid method on the same koi in
+            // the same auction
         }
 
         // check if auction exists
         auctionRepository.findById(auctionKoiDTO.auctionId())
                 .orElseThrow(() -> new DataNotFoundException("Auction not found"));
 
-        //check auction status is not ended
+        // check auction status is not ended
         Auction auction = auctionService.findAuctionById(auctionKoiDTO.auctionId());
         if (auction.getStatus() == EAuctionStatus.ENDED) {
             throw new MalformDataException("Auction is ended");
@@ -77,7 +78,7 @@ public class AuctionKoiService implements IAuctionKoiService {
             }
             validCeilPrice = auctionKoiDTO.ceilPrice(); // Set the provided ceil price
 
-            if(validCeilPrice <= auctionKoiDTO.basePrice()) {
+            if (validCeilPrice <= auctionKoiDTO.basePrice()) {
                 throw new MalformDataException("Ceil price must be greater than base price");
             }
 
@@ -103,11 +104,10 @@ public class AuctionKoiService implements IAuctionKoiService {
         context.setVariable("koiName", existingKoi.get().getName());
 
         mailService.sendMail(
-            owner.getEmail(),
-            "Your koi has been added to an auction",
-            EmailCategoriesEnum.KOI_ADDED_TO_AUCTION.getType(),
-            context
-        );
+                owner.getEmail(),
+                "Your koi has been added to an auction",
+                EmailCategoriesEnum.KOI_ADDED_TO_AUCTION.getType(),
+                context);
 
         return auctionKoiRepository.save(newAuctionKoi);
     }
@@ -146,6 +146,7 @@ public class AuctionKoiService implements IAuctionKoiService {
             } else {
                 auctionKoiToUpdate.setCurrentBid(auctionKoiToUpdate.getBasePrice());
             }
+            auctionKoiRepository.save(auctionKoiToUpdate);
         }
     }
 
@@ -167,14 +168,14 @@ public class AuctionKoiService implements IAuctionKoiService {
         AuctionKoi updateAuctionKoi = auctionKoiRepository.findById(auctionKoiId)
                 .orElseThrow(() -> new DataNotFoundException("auctionKoi not found: " + auctionKoiId));
 
-        if(updateAuctionKoi.getBidMethod() == EBidMethod.DESCENDING_BID){
-            if(updateAuctionKoi.getCeilPrice() == null){
+        if (updateAuctionKoi.getBidMethod() == EBidMethod.DESCENDING_BID) {
+            if (updateAuctionKoi.getCeilPrice() == null) {
                 throw new MalformDataException("Ceil price is required for DESCENDING_BID");
             }
-            if(updateAuctionKoi.getCurrentBid() > updateAuctionKoi.getCeilPrice()){
+            if (updateAuctionKoi.getCurrentBid() > updateAuctionKoi.getCeilPrice()) {
                 throw new MalformDataException("Current bid must be less than ceil price");
             }
-            if(updateAuctionKoi.getCurrentBid() <= updateAuctionKoi.getBasePrice()){
+            if (updateAuctionKoi.getCurrentBid() <= updateAuctionKoi.getBasePrice()) {
                 throw new MalformDataException("Current bid must be greater than base price");
             }
         }
@@ -234,7 +235,7 @@ public class AuctionKoiService implements IAuctionKoiService {
                 .orElseThrow(() -> new DataNotFoundException("Auction not found"));
 
         if (auctionKoiToUpdate.getAuction().getStatus().equals(EAuctionStatus.ENDED)) {
-            if (auctionKoiToUpdate.getCurrentBid() != null || auctionKoiToUpdate.getCurrentBidderId() != null) {
+            if (auctionKoiToUpdate.getCurrentBid() != 0 && auctionKoiToUpdate.getCurrentBidderId() != 0) {
                 auctionKoiToUpdate.setSold(true);
                 auctionKoiRepository.save(auctionKoiToUpdate);
             }
