@@ -1,44 +1,4 @@
 variety,image_url,breeder,length,sex,age,price
-Sanke,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/21cm%20torazo%20sanke%20tosai.png,Torazo,21cm,Unknown,Tosai (1y),$150 
-Showa,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/ISA%2018cm%20Tosai%20Showa.png?t=2023-07-22T14%3A51%3A55.194Z,Isa,18cm,Unknown,Tosai (1y),$150 
-Showa,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/ISA%2019cm%20Showa%20Tosai.png?t=2023-07-22T14%3A53%3A01.267Z,Isa,19cm,Unknown,Tosai (1y),$150 
-Showa,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/ISA%2020cm%20Showa%20tosai.png?t=2023-07-22T14%3A53%3A47.947Z,Isa,20cm,Unknown,Tosai (1y),$150 
-Showa,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/ISA%2022cm%20Showa%20tosai.png?t=2023-07-22T14%3A55%3A25.054Z,Isa,22cm,Unknown,Tosai (1y),$150 
-Showa,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/ISA%2023cm%20Showa%20Tosai.png?t=2023-07-22T14%3A56%3A45.071Z,Isa,23cm,Unknown,Tosai (1y),$150 
-Yamabuki,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/NND%2019cm%20Tosai%20Yamabuki%20.png?t=2023-07-22T14%3A58%3A07.915Z,NND,19cm,Unknown,Tosai (1y),$150 
-Shiro Utsuri,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/NND%2020cm%20Shiro%20Utsuri%20Tosai(1).png?t=2023-07-22T14%3A59%3A34.301Z,NND,20cm,Unknown,Tosai (1y),$150 
-Shiro Utsuri,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/NND%2020cm%20Shiro%20Utsuri%20Tosai.png?t=2023-07-22T15%3A00%3A31.466Z,NND,20cm,Unknown,Tosai (1y),$150 
-Shiro Utsuri,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/NND%20Shiro%20utsuri%2019cm%20tosai.png?t=2023-07-22T15%3A01%3A58.222Z,NND,19cm,Unknown,Tosai (1y),$150 
-Tancho Showa,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/NND%20Tancho%20Showa%2019cm%20Tosai.png?t=2023-07-22T15%3A02%3A50.695Z,NND,19cm,Unknown,Tosai (1y),$150 
-Doitsu Sanke,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/Shinoda%20Doitsu%20Sanke%2026cm%20Tosai(1).png?t=2023-07-22T15%3A04%3A24.313Z,Shinoda,26cm,Unknown,Tosai (1y),$150 
-Doitsu Sanke,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/Shinoda%20Doitsu%20Sanke%2026cm%20Tosai.png?t=2023-07-22T15%3A05%3A26.861Z,Shinoda,26cm,Unknown,Tosai (1y),$150 
-Ginrin Tancho Showa,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/Shinoda%20Ginrin%20Tancho%20Showa%2029cm.png?t=2023-07-22T15%3A06%3A33.850Z,Shinoda,29cm,Unknown,Tosai (1y),$150 
-Hi Utsuri,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/Shinoda%20Hi%20Utsuri%2031cm%20Nisai%20.png?t=2023-07-22T15%3A08%3A11.840Z,Shinoda,31cm,Unknown,Tosai (1y),$150 
-Hi Utsuri,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/Shinoda%20Hi%20Utsuri%20Tosai%2024cm.png?t=2023-07-22T15%3A09%3A01.955Z,Shinoda,24cm,Unknown,Tosai (1y),$150 
-Tancho Sanke,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/Shinoda%20tosai%20Tancho%20Sanke%2016cm%20tosai.png?t=2023-07-22T15%3A10%3A11.026Z,Shinoda,16cm,Unknown,Tosai (1y),$150 
-Kohaku,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/Torazo%2016cm%20Tosai%20Kohaku.png?t=2023-07-22T15%3A11%3A21.869Z,Torazo,16cm,Unknown,Tosai (1y),$150 
-Kohaku,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/Torazo%2018cm%20Kohaku%20Tosai.png?t=2023-07-22T15%3A12%3A26.241Z,Torazo,18cm,Unknown,Tosai (1y),$150 
-Kohaku,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/Torazo%2019cm%20Kohaku%20tosai.png?t=2023-07-22T15%3A13%3A00.390Z,Torazo,19cm,Unknown,Tosai (1y),$150 
-Showa,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/ISA%2019cm%20Showa%20Tosai.png?t=2023-07-22T14%3A53%3A01.267Z,Isa,19cm,Unknown,Tosai (1y),$150 
-Showa,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/ISA%2020cm%20Showa%20tosai.png?t=2023-07-22T14%3A53%3A47.947Z,Isa,20cm,Unknown,Tosai (1y),$150 
-Showa,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/ISA%2022cm%20Showa%20tosai.png?t=2023-07-22T14%3A55%3A25.054Z,Isa,22cm,Unknown,Tosai (1y),$150 
-Yamabuki,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/NND%2019cm%20Tosai%20Yamabuki%20.png?t=2023-07-22T14%3A58%3A07.915Z,NND,19cm,Unknown,Tosai (1y),$150 
-Shiro Utsuri,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/NND%2020cm%20Shiro%20Utsuri%20Tosai(1).png?t=2023-07-22T14%3A59%3A34.301Z,NND,20cm,Unknown,Tosai (1y),$150 
-Tancho Showa,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/NND%20Tancho%20Showa%2019cm%20Tosai.png?t=2023-07-22T15%3A02%3A50.695Z,NND,19cm,Unknown,Tosai (1y),Unknown
-Doitsu Sanke,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/Shinoda%20Doitsu%20Sanke%2026cm%20Tosai(1).png?t=2023-07-22T15%3A04%3A24.313Z,Shinoda,26cm,Unknown,Tosai (1y),Unknown
-Doitsu Sanke,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/Shinoda%20Doitsu%20Sanke%2026cm%20Tosai.png?t=2023-07-22T15%3A05%3A26.861Z,Shinoda,26cm,Unknown,Tosai (1y),Unknown
-Hi Utsuri,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/Shinoda%20Hi%20Utsuri%2031cm%20Nisai%20.png?t=2023-07-22T15%3A08%3A11.840Z,Shinoda,31cm,Unknown,Tosai (1y),$150 
-Hi Utsuri,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/Shinoda%20Hi%20Utsuri%20Tosai%2024cm.png?t=2023-07-22T15%3A09%3A01.955Z,Shinoda,24cm,Unknown,Tosai (1y),$150 
-Tancho Sanke,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/Shinoda%20tosai%20Tancho%20Sanke%2016cm%20tosai.png?t=2023-07-22T15%3A10%3A11.026Z,Shinoda,16cm,Unknown,Tosai (1y),Unknown
-Shiro Utsuri,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/NND%20Shiro%20utsuri%2019cm%20tosai.png?t=2023-07-22T15%3A01%3A58.222Z,NND,19cm,Unknown,Tosai (1y),$150 
-Kohaku,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/Torazo%2018cm%20Kohaku%20Tosai.png?t=2023-07-22T15%3A12%3A26.241Z,Torazo,18cm,Unknown,Tosai (1y),$150 
-Sanke,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/21cm%20torazo%20sanke%20tosai.png,Torazo,21cm,Unknown,Tosai (1y),$150 
-Showa,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/ISA%2018cm%20Tosai%20Showa.png?t=2023-07-22T14%3A51%3A55.194Z,Isa,18cm,Unknown,Tosai (1y),$150 
-Showa,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/ISA%2023cm%20Showa%20Tosai.png?t=2023-07-22T14%3A56%3A45.071Z,Isa,23cm,Unknown,Tosai (1y),Unknown
-Shiro Utsuri,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/NND%2020cm%20Shiro%20Utsuri%20Tosai.png?t=2023-07-22T15%3A00%3A31.466Z,NND,20cm,Unknown,Tosai (1y),$150 
-Ginrin Tancho Showa,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/Shinoda%20Ginrin%20Tancho%20Showa%2029cm.png?t=2023-07-22T15%3A06%3A33.850Z,Shinoda,29cm,Unknown,Tosai (1y),Unknown
-Kohaku,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/Torazo%2016cm%20Tosai%20Kohaku.png?t=2023-07-22T15%3A11%3A21.869Z,Torazo,16cm,Unknown,Tosai (1y),$150 
-Kohaku,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/1/photos/Torazo%2019cm%20Kohaku%20tosai.png?t=2023-07-22T15%3A13%3A00.390Z,Torazo,19cm,Unknown,Tosai (1y),$150 
 Doitsu Showa,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/3/photos/Shinoda%20Doitsu%20Showa%2026cm%20tosai.png,Shinoda,26cm,Unknown,Tosai (1y),Unknown
 Showa,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/3/photos/Isa%20Showa%20Tosai%2026cm.png,Isa,26cm,Unknown,Tosai (1y),Unknown
 Showa,https://mjjlqhnswgbzvxfujauo.supabase.co/storage/v1/object/public/auctions/3/photos/Isa%20Showa%20Tosai%2027cm.png,Isa,27cm,Unknown,Tosai (1y),Unknown

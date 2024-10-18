@@ -36,6 +36,16 @@ CREATE TABLE `auctions` (
   `auctioneer_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Đang đổ dữ liệu cho bảng `auctions`
+--
+
+INSERT INTO `auctions` (`id`, `status`, `end_time`, `start_time`, `title`, `auctioneer_id`) VALUES
+(1, 'ONGOING', '2024-10-30 14:41:38.679000', '2024-10-06 14:41:38.679000', 'Fixed Price Auction', 23),
+(2, 'ONGOING', '2024-10-30 14:41:38.679000', '2024-10-06 14:41:38.679000', 'Sealed Price Auction', 23),
+(3, 'ONGOING', '2024-10-17 14:35:00.000000', '2024-10-15 14:35:00.000000', 'Test Auction', 21),
+(4, 'ONGOING', '2024-10-17 16:50:00.000000', '2024-10-15 16:50:00.000000', 'Decs Auction Test', 21);
+
 -- --------------------------------------------------------
 
 --
@@ -55,6 +65,37 @@ CREATE TABLE `auction_kois` (
   `ceil_price` bigint(20) DEFAULT NULL,
   `revoked` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `auction_kois`
+--
+
+INSERT INTO `auction_kois` (`id`, `base_price`, `bid_step`, `bid_method`, `current_bid`, `current_bidder_id`, `is_sold`, `auction_id`, `koi_id`, `ceil_price`) VALUES
+(1, 200000, 0, 'FIXED_PRICE', 0, 0, 0, 1, 117, 0),
+(2, 200000, 0, 'FIXED_PRICE', 0, 0, 0, 1, 324, NULL),
+(3, 200000, 0, 'FIXED_PRICE', 0, 0, 0, 1, 123, 0),
+(4, 200000, 0, 'FIXED_PRICE', 0, 0, 0, 1, 333, NULL),
+(5, 200000, 0, 'FIXED_PRICE', 0, 0, 0, 1, 222, 0),
+(6, 200000, 0, 'FIXED_PRICE', 0, 0, 0, 1, 165, NULL),
+(7, 200000, 0, 'FIXED_PRICE', 0, 0, 0, 1, 334, 0),
+(8, 200000, 0, 'FIXED_PRICE', 0, 0, 0, 1, 97, NULL),
+(9, 200000, 0, 'FIXED_PRICE', 0, 0, 0, 1, 66, NULL),
+(10, 200000, 0, 'FIXED_PRICE', 0, 0, 0, 1, 61, 0),
+(11, 300000, 0, 'SEALED_BID', 0, 0, 0, 2, 281, 500000),
+(12, 300000, 0, 'SEALED_BID', 0, 0, 0, 2, 63, 500000),
+(13, 300000, 0, 'SEALED_BID', 0, 1, 0, 2, 291, 500000),
+(14, 300000, 0, 'SEALED_BID', 0, 13, 0, 2, 238, 500000),
+(15, 300000, 0, 'SEALED_BID', 0, NULL, 0, 2, 160, 500000),
+(16, 300000, 0, 'SEALED_BID', 0, 11, 0, 2, 275, 500000),
+(17, 300000, 0, 'SEALED_BID', 0, 13, 0, 2, 93, 500000),
+(18, 300000, 0, 'SEALED_BID', 0, NULL, 0, 2, 286, 500000),
+(19, 300000, 0, 'SEALED_BID', 0, 3, 0, 2, 65, 500000),
+(20, 300000, 0, 'SEALED_BID', 0, NULL, 0, 2, 35, 500000),
+(21, 200000, 50, 'ASCENDING_BID', 0, 0, 0, 3, 201, 500000),
+(22, 100000, 50, 'DESCENDING_BID', 0, 0, 0, 4, 7, 500000),
+(23, 200000, 50, 'DESCENDING_BID', 0, 0, 0, 4, 8, 500000),
+(24, 150000, 50, 'DESCENDING_BID', 0, 0, 0, 4, 12, 500000),
+(25, 300000, 50, 'SEALED_BID', 0, 0, 0, 3, 5, 500000);
 
 -- --------------------------------------------------------
 
