@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1:3306
--- Thời gian đã tạo: Th10 18, 2024 lúc 12:08 PM
+-- Thời gian đã tạo: Th10 18, 2024 lúc 06:39 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -81,7 +81,7 @@ INSERT INTO `auction_kois` (`id`, `base_price`, `bid_step`, `bid_method`, `curre
 (8, 200000, 0, 'FIXED_PRICE', 0, 0, 0, 1, 97, NULL, 0),
 (9, 200000, 0, 'FIXED_PRICE', 0, 0, 0, 1, 66, NULL, 0),
 (10, 200000, 0, 'FIXED_PRICE', 0, 0, 0, 1, 61, 0, 0),
-(11, 300000, 0, 'SEALED_BID', 0, 0, 0, 2, 281, 500000, 0),
+(11, 300000, 0, 'SEALED_BID', 300000, 19, 0, 2, 281, NULL, 0),
 (12, 300000, 0, 'SEALED_BID', 300000, 19, 0, 2, 63, NULL, 0),
 (13, 300000, 0, 'SEALED_BID', 0, 1, 0, 2, 291, 500000, 0),
 (14, 300000, 0, 'SEALED_BID', 0, 13, 0, 2, 238, 500000, 0),
@@ -121,7 +121,8 @@ INSERT INTO `auction_kois_details` (`id`, `bid_amount`, `bid_time`, `auction_koi
 (3, 300000, '2024-10-18 04:58:43.000000', 12, 19),
 (4, 200000, '2024-10-18 04:59:37.000000', 3, 19),
 (5, 200000, '2024-10-18 05:01:01.000000', 4, 19),
-(6, 200000, '2024-10-18 05:02:31.000000', 2, 2);
+(6, 200000, '2024-10-18 05:02:31.000000', 2, 2),
+(7, 300000, '2024-10-18 12:53:56.000000', 11, 19);
 
 -- --------------------------------------------------------
 
@@ -182,6 +183,28 @@ INSERT INTO `categories` (`id`, `name`) VALUES
 (18, 'Kin Kikokuryu'),
 (19, 'Kumonryu'),
 (20, 'Ochiba Shigure');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `feedbacks`
+--
+
+CREATE TABLE `feedbacks` (
+  `id` bigint(20) NOT NULL,
+  `content` varchar(255) DEFAULT NULL,
+  `created_at` datetime(6) DEFAULT NULL,
+  `rating` int(11) DEFAULT NULL,
+  `order_id` bigint(20) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `feedbacks`
+--
+
+INSERT INTO `feedbacks` (`id`, `content`, `created_at`, `rating`, `order_id`, `user_id`) VALUES
+(2, 'vai ca cho', '2024-10-18 16:34:28.000000', 3, 2, 19);
 
 -- --------------------------------------------------------
 
@@ -892,7 +915,7 @@ INSERT INTO `users` (`id`, `created_at`, `updated_at`, `address`, `avatar_url`, 
 (16, '2024-10-01 02:40:15.418332', '2024-10-01 02:40:15.418334', 'Tra Bong', 'https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1677509740.jpg', NULL, 'testetet@gmail.com', 'Hoang', 0, 'Luu', '$2a$10$NaE3c0NGEZGS.ZritlyvD.pcff84D8e.0Y0opMYdQZsOUXUcJYUvC', NULL, 'UNVERIFIED', 1, 0, 1, 0),
 (17, '2024-10-01 02:41:55.837629', '2024-10-01 02:41:55.837632', 'Thai Sau', 'https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1677509740.jpg', NULL, 'hehe@gmail.com', 'Hoang', 0, 'Luu', '$2a$10$v/I9kSV3sH35xejKElfedOWBrgDBqN922.AetAs5ae3sTRRU8CmxW', NULL, 'UNVERIFIED', 1, 0, 1, 0),
 (18, '2024-10-01 02:46:13.663828', '2024-10-01 02:48:20.669047', 'Can Gio', 'https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1677509740.jpg', NULL, 'luukaohoang1604@gmail.com', 'Hoang', 0, 'Luu', '$2a$10$t5Gsz29f8N9.zV21DRGM0OMyDqaxRjClIJSiv9liA36Ff8atzdrAC', NULL, 'VERIFIED', 1, 0, 1, 0),
-(19, '2024-10-05 16:11:14.000000', '2024-10-18 05:01:01.000000', 'Da Nang, Viet Nam', 'https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1677509740.jpg', '1979-10-13 00:00:00.000000', 'duongnmse181515@fpt.edu.vn', 'Duong', 0, 'Duong', '$2a$10$pXEzC6NCd9r2e6kXNV9PFe9ZJKyyxL/yniNwUl6xpZUy/iQguZQU6', NULL, 'UNVERIFIED', 1, 248660537, 1, 0),
+(19, '2024-10-05 16:11:14.000000', '2024-10-18 12:53:56.000000', 'Da Nang, Viet Nam', 'https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1677509740.jpg', '1979-10-13 00:00:00.000000', 'duongnmse181515@fpt.edu.vn', 'Duong', 0, 'Duong', '$2a$10$pXEzC6NCd9r2e6kXNV9PFe9ZJKyyxL/yniNwUl6xpZUy/iQguZQU6', NULL, 'UNVERIFIED', 1, 248360537, 1, 0),
 (20, '2024-10-05 16:11:30.574401', '2024-10-05 16:11:30.574405', 'Da Nang, Viet Nam', 'https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1677509740.jpg', '1979-10-13 00:00:00.000000', 'manhduonglhp4@gmail.com', 'Duong', 0, 'Duong', '$2a$10$s/ICX1aEukr/V7Iz7G/TbOus5yAaayCqKc6DPS9AwrZLf5nbjqAOW', NULL, 'UNVERIFIED', 1, 0, 1, 0),
 (21, '2024-09-22 06:56:15.470639', '2024-09-28 07:53:03.281172', 'Ha Tinh, Viet Nam', 'https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1677509740.jpg', '1979-10-13 00:00:00.000000', 'vy@gmail.com', 'Vy', 0, 'Ky Nguyen', '$2a$10$FGoLrPd5YESJhA7iiE3Jf.vnZU1BcxR3N5xtMxOJMKUjknCQ.iK7O', NULL, 'UNVERIFIED', 2, 0, 0, 0),
 (22, '2024-09-22 06:57:39.672269', '2024-09-22 06:57:39.672273', 'Ha Nam, Viet Nam', 'https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1677509740.jpg', '1979-10-13 00:00:00.000000', 'baovu@gmail.com', 'Bao', 0, 'Van Vu', '$2a$10$rP7CU.wmF3SaP4lzNHNA6uUQr27JBAJr2Uoot1toTKmRlmGWcg7su', NULL, 'UNVERIFIED', 2, 0, 1, 0),
@@ -953,6 +976,14 @@ ALTER TABLE `auction_participants`
 --
 ALTER TABLE `categories`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Chỉ mục cho bảng `feedbacks`
+--
+ALTER TABLE `feedbacks`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FKbdhoov2mv332ks2m84owt5tv3` (`order_id`),
+  ADD KEY `FK312drfl5lquu37mu4trk8jkwx` (`user_id`);
 
 --
 -- Chỉ mục cho bảng `kois`
@@ -1053,7 +1084,7 @@ ALTER TABLE `auction_kois`
 -- AUTO_INCREMENT cho bảng `auction_kois_details`
 --
 ALTER TABLE `auction_kois_details`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT cho bảng `auction_participants`
@@ -1066,6 +1097,12 @@ ALTER TABLE `auction_participants`
 --
 ALTER TABLE `categories`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT cho bảng `feedbacks`
+--
+ALTER TABLE `feedbacks`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT cho bảng `kois`
@@ -1163,6 +1200,13 @@ ALTER TABLE `auction_kois_details`
 ALTER TABLE `auction_participants`
   ADD CONSTRAINT `FK9jnbjd50w43dg3vtc4b1th1fw` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `FKoueiq28cuki5mhu0i7udc8q9b` FOREIGN KEY (`auction_id`) REFERENCES `auctions` (`id`);
+
+--
+-- Các ràng buộc cho bảng `feedbacks`
+--
+ALTER TABLE `feedbacks`
+  ADD CONSTRAINT `FK312drfl5lquu37mu4trk8jkwx` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `FKbdhoov2mv332ks2m84owt5tv3` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`);
 
 --
 -- Các ràng buộc cho bảng `kois`
