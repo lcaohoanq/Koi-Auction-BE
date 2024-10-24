@@ -41,7 +41,7 @@ public class AuctionKoi {
     @Min(0)
     private Long basePrice;
 
-    @Column(name = "bid_step", columnDefinition = "int default 0")
+    @Column(name = "bid_step", columnDefinition = "BIGINT default 0")
     private long bidStep; // Track the bid step
 
     @Enumerated(EnumType.STRING)
@@ -57,6 +57,9 @@ public class AuctionKoi {
 
     @Column(name = "current_bidder_id") // Nullable since no bidder initially
     private Long currentBidderId; // Track the highest bidder
+
+    @Column(name = "revoked", nullable = false, columnDefinition = "int default 0")
+    private int revoked; // Track if the item has been revoked
 
     @ManyToOne
     @JoinColumn(name = "auction_id")

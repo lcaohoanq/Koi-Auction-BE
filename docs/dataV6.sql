@@ -39,7 +39,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `auctions` (
   `id` bigint NOT NULL,
-  `status` enum('ACTIVE','ENDED','ONGOING') DEFAULT NULL,
+  `status` enum('ONGOING','ENDED','ONGOING') DEFAULT NULL,
   `end_time` datetime(6) DEFAULT NULL,
   `start_time` datetime(6) DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL
@@ -2322,7 +2322,7 @@ CREATE TABLE `users` (
   `last_name` varchar(100) DEFAULT NULL,
   `password` varchar(200) DEFAULT NULL,
   `phone_number` varchar(20) DEFAULT NULL,
-  `status` enum('ACTIVE','BANNED','INACTIVE','UNVERIFIED','VERIFIED') DEFAULT NULL,
+  `status` enum('ONGOING','BANNED','INACTIVE','UNVERIFIED','VERIFIED') DEFAULT NULL,
   `role_id` bigint DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

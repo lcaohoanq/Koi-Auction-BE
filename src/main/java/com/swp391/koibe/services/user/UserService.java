@@ -2,16 +2,14 @@ package com.swp391.koibe.services.user;
 
 import com.swp391.koibe.components.JwtTokenUtils;
 import com.swp391.koibe.components.LocalizationUtils;
+import com.swp391.koibe.dtos.UpdatePasswordDTO;
 import com.swp391.koibe.dtos.UpdateUserDTO;
 import com.swp391.koibe.dtos.UserRegisterDTO;
 import com.swp391.koibe.enums.EmailCategoriesEnum;
 import com.swp391.koibe.enums.ProviderName;
 import com.swp391.koibe.enums.UserStatus;
-import com.swp391.koibe.exceptions.ExpiredTokenException;
-import com.swp391.koibe.exceptions.InsufficientFundsException;
-import com.swp391.koibe.exceptions.InvalidPasswordException;
+import com.swp391.koibe.exceptions.*;
 import com.swp391.koibe.exceptions.base.DataNotFoundException;
-import com.swp391.koibe.exceptions.PermissionDeniedException;
 import com.swp391.koibe.models.Otp;
 import com.swp391.koibe.models.Role;
 import com.swp391.koibe.models.SocialAccount;
@@ -19,21 +17,21 @@ import com.swp391.koibe.models.User;
 import com.swp391.koibe.repositories.RoleRepository;
 import com.swp391.koibe.repositories.SocialAccountRepository;
 import com.swp391.koibe.repositories.UserRepository;
-
-import com.swp391.koibe.services.mail.MailService;
+import com.swp391.koibe.services.mail.IMailService;
 import com.swp391.koibe.services.otp.OtpService;
 import com.swp391.koibe.utils.MessageKeys;
 import com.swp391.koibe.utils.OTPUtils;
-
+import jakarta.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -54,7 +52,7 @@ public class UserService implements IUserService {
     private final RoleRepository roleRepository;
     private final SocialAccountRepository socialAccountRepository;
     private final LocalizationUtils localizationUtils;
-    private final MailService mailService;
+    private final IMailService mailService;
     private final OtpService otpService;
 
     @Override
@@ -196,7 +194,8 @@ public class UserService implements IUserService {
     @Override
     public User getUserById(long id) throws DataNotFoundException {
         return userRepository.findById(id)
-                .orElseThrow(() -> new DataNotFoundException("User not found: " + id));
+                .orElseThrow(() -> new DataNotFoundException(
+                    localizationUtils.getLocalizedMessage(MessageKeys.USER_NOT_FOUND)));
     }
 
     @Override
@@ -291,22 +290,44 @@ public class UserService implements IUserService {
                 ));
 
         if (user.getAccountBalance() < payment) {
-            throw new InsufficientFundsException("Not enough money");
+            throw new BiddingRuleException("Not enough money to make payment");
         }
 
         user.setAccountBalance(user.getAccountBalance() - payment);
-//        log.info("User {} balance updated. New balance: {}", userId, user.getAccountBalance());
 
         return userRepository.save(user);
     }
 
+    @Transactional
+    @Retryable(
+        retryFor = { MessagingException.class },  // Retry only for specific exceptions
+        maxAttempts = 3,                       // Maximum retry attempts
+        backoff = @Backoff(delay = 2000)       // 2 seconds delay between retries
+    )
     @Override
     public void updateAccountBalance(Long userId, Long payment) throws Exception {
         User existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new DataNotFoundException(
-                        localizationUtils.getLocalizedMessage(MessageKeys.USER_NOT_FOUND)
-                ));
+            .orElseThrow(() -> new DataNotFoundException(
+                localizationUtils.getLocalizedMessage(MessageKeys.USER_NOT_FOUND)
+            ));
         existingUser.setAccountBalance(existingUser.getAccountBalance() + payment);
+
+        Context context = new Context();
+        context.setVariable("name", existingUser.getFirstName());
+        context.setVariable("amount", payment);
+
+        try {
+            mailService.sendMail(
+                existingUser.getEmail(),
+                "Account balance updated",
+                EmailCategoriesEnum.BALANCE_FLUCTUATION.getType(),
+                context
+            );
+        } catch (MessagingException e) {
+            log.error("Failed to send email to {}", existingUser.getEmail(), e);
+            throw new MessagingException(String.format("Failed to send email to %s", existingUser.getEmail()));
+        }
+
         log.info("User {} balance updated. New balance: {}", userId, existingUser.getAccountBalance());
         userRepository.save(existingUser);
     }
@@ -329,8 +350,9 @@ public class UserService implements IUserService {
         }
     }
 
+    @Transactional
     @Override
-    public void verifyOtp(Long userId, String otp) throws Exception {
+    public void verifyOtpToVerifyUser(Long userId, String otp) throws Exception {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new DataNotFoundException(
                         localizationUtils.getLocalizedMessage(MessageKeys.USER_NOT_FOUND)
@@ -346,10 +368,7 @@ public class UserService implements IUserService {
             throw new DataNotFoundException("User is banned");
         }
 
-        Otp otpEntity = otpService.getOtpByEmailOtp(
-                        user.getEmail(),
-                        otp)
-                .orElseThrow(() -> new DataNotFoundException("OTP not found"));
+        Otp otpEntity = getOtpByEmailOtp(user.getEmail(), otp);
 
         //check the otp is expired or not
         if (otpEntity.getExpiredAt().isBefore(LocalDateTime.now())) {
@@ -360,14 +379,39 @@ public class UserService implements IUserService {
             );
         }
 
-        if (otpEntity.getOtp().equals(String.valueOf(otp))) {
-            otpEntity.setUsed(true);
+        if (!otpEntity.getOtp().equals(String.valueOf(otp))) throw new DataNotFoundException("Invalid OTP");
+
+        otpEntity.setUsed(true);
+        otpService.disableOtp(otpEntity.getId());
+        user.setStatus(UserStatus.VERIFIED);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    @Override
+    public void verifyOtpIsCorrect(Long userId, String otp) throws Exception {
+        User user = getUserById(userId);
+
+        Otp otpEntity = getOtpByEmailOtp(user.getEmail(), otp);
+
+        //check the otp is expired or not
+        if (otpEntity.getExpiredAt().isBefore(LocalDateTime.now())) {
+            otpEntity.setExpired(true);
             otpService.disableOtp(otpEntity.getId());
-            user.setStatus(UserStatus.VERIFIED);
-            userRepository.save(user);
-        } else {
-            throw new DataNotFoundException("Invalid OTP");
+            throw new DataNotFoundException(
+                localizationUtils.getLocalizedMessage(MessageKeys.OTP_EXPIRED)
+            );
         }
+
+        if (!otpEntity.getOtp().equals(String.valueOf(otp))) throw new DataNotFoundException("Invalid OTP");
+
+        otpEntity.setUsed(true);
+        otpService.disableOtp(otpEntity.getId());
+    }
+
+    private Otp getOtpByEmailOtp(String email, String otp) {
+        return otpService.getOtpByEmailOtp(email, otp)
+            .orElseThrow(() -> new DataNotFoundException("OTP not found"));
     }
 
     @Override
@@ -382,14 +426,32 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public Page<User> findAll(String keyword, Pageable pageable) throws Exception {
-        return null;
+    @Transactional
+    public void updatePassword(UpdatePasswordDTO updatePasswordDTO) throws Exception {
+        User existingUser = userRepository.findByEmail(updatePasswordDTO.email())
+                .orElseThrow(() -> new DataNotFoundException(
+                        localizationUtils.getLocalizedMessage(MessageKeys.USER_NOT_FOUND)
+                ));
+
+        if(existingUser.getRole().getId() == 4){
+            throw new PermissionDeniedException("Cannot change password for this account");
+        }
+
+        existingUser.setPassword(passwordEncoder.encode(updatePasswordDTO.newPassword()));
+
+        mailService.sendMail(
+                existingUser.getEmail(),
+                "Password updated successfully",
+                EmailCategoriesEnum.RESET_PASSWORD.getType(),
+                new Context()
+        );
+
+        userRepository.save(existingUser);
     }
 
     @Override
-    public void resetPassword(Long userId, String newPassword)
-            throws InvalidPasswordException, DataNotFoundException {
-
+    public Page<User> findAll(String keyword, Pageable pageable) throws Exception {
+        return null;
     }
 
     @Override

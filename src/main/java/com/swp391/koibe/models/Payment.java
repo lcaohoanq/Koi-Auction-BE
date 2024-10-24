@@ -1,15 +1,9 @@
 package com.swp391.koibe.models;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.swp391.koibe.enums.EPaymentStatus;
+import com.swp391.koibe.enums.EPaymentType;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -17,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
 
 @Entity
 @Table(name = "payments")
@@ -40,13 +35,22 @@ public class Payment {
     @Column(name = "payment_method", nullable = false)
     private String paymentMethod;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "payment_status", nullable = false)
-    private String paymentStatus; // e.g., COMPLETED, PENDING, REFUNDED
+    private EPaymentStatus paymentStatus; // e.g., SUCCESS, PENDING, REFUNDED
 
-    @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "order_id")
     private Order order;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_type", nullable = false)
+    private EPaymentType paymentType; // e.g., 'DEPOSIT', 'ORDER', 'DRAW_OUT'
+    
     // Track refunds related to this payment
 //    @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL)
 //    private List<Refund> refunds;

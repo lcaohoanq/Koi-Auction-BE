@@ -10,14 +10,15 @@ import com.swp391.koibe.responses.BidResponse;
 import com.swp391.koibe.services.Biddable;
 import com.swp391.koibe.services.auctionkoi.IAuctionKoiService;
 import com.swp391.koibe.services.auctionparticipant.IAuctionParticipantService;
-import com.swp391.koibe.services.token.ITokenService;
+import com.swp391.koibe.services.order.IOrderMailService;
+import com.swp391.koibe.services.order.IOrderService;
+import com.swp391.koibe.services.orderdetail.IOrderDetailService;
 import com.swp391.koibe.services.user.IUserService;
 import com.swp391.koibe.utils.DTOConverter;
 import com.swp391.koibe.utils.DateTimeUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,9 +37,13 @@ public class BiddingHistoryService implements IBiddingHistoryService, Biddable {
 
     private final IUserService userService;
 
-    private final ITokenService tokenService;
-
     private final IAuctionParticipantService auctionParticipantService;
+
+    private final IOrderService orderService;
+
+    private final IOrderDetailService orderDetailService;
+
+    private final IOrderMailService orderMailService;
 
     @Override
     public Bid createBidHistory(Bid bid) throws DataNotFoundException {
@@ -68,7 +73,7 @@ public class BiddingHistoryService implements IBiddingHistoryService, Biddable {
         return bidHistoryRepository.save(bidHistory);
     }
 
-    @Override   
+    @Override
     public void deleteBidHistory(long id) {
         bidHistoryRepository.deleteById(id);
     }
@@ -96,22 +101,43 @@ public class BiddingHistoryService implements IBiddingHistoryService, Biddable {
     }
 
     @Override
-public Bid getBidderLatestBid(Long auctionKoiId, Long bidderId) {
-    ArrayList<Bid> bids = getBidsByAuctionKoiId(auctionKoiId);
-    if (bids.isEmpty()) {
-        return null;
-    } else {
-        return bids.stream()
-                .filter(bid -> bid.getBidder().getId().equals(bidderId))
-                .max(Comparator.comparing(Bid::getBidTime))
-                .orElse(null);
+    public Bid getBidderLatestBid(Long auctionKoiId, Long bidderId) {
+        ArrayList<Bid> bids = getBidsByAuctionKoiId(auctionKoiId);
+        if (bids.isEmpty()) {
+            return null;
+        } else {
+            return bids.stream()
+                    .filter(bid -> bid.getBidder().getId().equals(bidderId))
+                    .max(Comparator.comparing(Bid::getBidTime))
+                    .orElse(null);
         }
     }
 
     @Override
-    public AuctionKoi ascending(AuctionKoi auctionKoi, User bidder, Bid bid, Long latestBid) throws Exception {
-        // 8.1 with Ascending Bid (going from floor to ceiling) (ceiling price is not
-        // public)
+    public BidResponse getBidderHighestBid(Long auctionKoiId, Long bidderId) {
+        ArrayList<Bid> bids = getBidsByAuctionKoiId(auctionKoiId);
+        Bid highestBid;
+        if (bids.isEmpty()) {
+            return null;
+        } else {
+            highestBid = bids.stream()
+                    .filter(bid -> bid.getBidder().getId().equals(bidderId))
+                    .max(Comparator.comparing(Bid::getBidTime))
+                    .orElse(null);
+            if (highestBid == null) {
+                return BidResponse.builder()
+                        .bidderId(bidderId)
+                        .auctionKoiId(auctionKoiId)
+                        .bidAmount(0)
+                        .build();
+            }
+        }
+        return DTOConverter.convertToBidDTO(highestBid);
+    }
+
+    @Override
+    public AuctionKoi ascending(AuctionKoi auctionKoi, User bidder, Bid bid) throws Exception {
+        // 8.1 with Ascending Bid (going from floor to ceiling) (ceiling price is not public)
 
         // 8.1.1 check the Bid_Amount and Current_Price + Bid_Step
         if (bid.getBidAmount() < auctionKoi.getCurrentBid() + auctionKoi.getBidStep()) {
@@ -119,15 +145,12 @@ public Bid getBidderLatestBid(Long auctionKoiId, Long bidderId) {
         }
 
         // 8.1.2 check Bidder Balance => calculate the cost if bidder already bid before
-        // calculate bidder payment
-        Long paymentAmount = bid.getBidAmount() - latestBid;
 
-        // 8.1.4 update wallet balance if successful
-        // userService.updateUserBalance(bidder.getId(), paymentAmount);
-
+        //handle if ceil price is null (example data error)
         if (auctionKoi.getCeilPrice() == null) {
-            auctionKoi.setCeilPrice(1000000000L);
+            auctionKoi.setCeilPrice(100000L);
         }
+
         // 8.1.5 if Bid_amount is higher than ceiling price, set is_sold true
         if (bid.getBidAmount() >= auctionKoi.getCeilPrice()) {
             auctionKoi.setSold(true);
@@ -141,20 +164,15 @@ public Bid getBidderLatestBid(Long auctionKoiId, Long bidderId) {
         // 8.4 with Bid Descending (going from ceiling price to floor price) (floor
         // price is not public)
 
-        // 8.4.2 check Bidder Balance
-        //userService.updateUserBalance(bidder.getId(), bid.getBidAmount());
-
         // 8.4.5 set is_sold true
         auctionKoi.setSold(true);
+
         return auctionKoi;
     }
 
     @Override
     public AuctionKoi fixedPrice(AuctionKoi auctionKoi, User bidder, Bid bid) throws Exception {
         // 8.2 with Bid Fixed Price (floor price)
-
-        // 8.2.2 check Bidder Balance
-        // userService.updateUserBalance(bidder.getId(), bid.getBidAmount());
 
         // 8.2.5 set is_sold true
         auctionKoi.setSold(true);
@@ -167,11 +185,9 @@ public Bid getBidderLatestBid(Long auctionKoiId, Long bidderId) {
 
         // 8.3.1 check if bidder has been placed before
         if (getBidderLatestBid(auctionKoi.getId(), bidder.getId()) != null) {
-            throw new BiddingRuleException("Bidder has already placed a bid");
+            throw new BiddingRuleException("You can only bid once in sealed bid");
         }
 
-        // 8.3.3 check Bidder Balance
-        // userService.updateUserBalance(bidder.getId(), bid.getBidAmount());
         return auctionKoi;
     }
 
@@ -181,7 +197,7 @@ public Bid getBidderLatestBid(Long auctionKoiId, Long bidderId) {
         // 1. get the auction koi by id
         AuctionKoi auctionKoi = auctionKoiService.getAuctionKoiById(bidRequest.auctionKoiId());
         // 2. get the bidder by token
-        User bidder = tokenService.findUserByToken(bidRequest.bidderToken()).getUser();
+        User bidder = userService.getUserById(bidRequest.bidderId());
         // 3. get the auction by auction koi
         Auction auction = auctionKoi.getAuction();
 
@@ -195,16 +211,23 @@ public Bid getBidderLatestBid(Long auctionKoiId, Long bidderId) {
         validateBid(auction, auctionKoi, bid, bidder);
 
         // get bidder Latest Bid
-        Long latestBid = getBidderLatestBid(auctionKoi.getId(), bidder.getId()) != null ? getBidderLatestBid(auctionKoi.getId(), bidder.getId()).getBidAmount() : 0;
+        Long latestBid = getBidderLatestBid(auctionKoi.getId(), bidder.getId()) != null ?
+                getBidderLatestBid(auctionKoi.getId(), bidder.getId()).getBidAmount() : 0;
 
         // 9. check the bid method and call the corresponding method
         auctionKoi = switch (auctionKoi.getBidMethod()) {
-            case ASCENDING_BID -> ascending(auctionKoi, bidder, bid, latestBid);
+            case ASCENDING_BID -> ascending(auctionKoi, bidder, bid);
             case DESCENDING_BID -> descending(auctionKoi, bidder, bid);
             case FIXED_PRICE -> fixedPrice(auctionKoi, bidder, bid);
             case SEALED_BID -> sealed(auctionKoi, bidder, bid);
             default -> throw new BiddingRuleException("Invalid bid method");
         };
+
+        // calculate bidder payment
+        Long paymentAmount = bid.getBidAmount() - latestBid;
+
+        // 8.1.4 update wallet balance if successful
+        userService.updateUserBalance(bidder.getId(), paymentAmount);
 
         updateAuctionParticipant(auction, bidder, bid, latestBid);
 
@@ -229,6 +252,10 @@ public Bid getBidderLatestBid(Long auctionKoiId, Long bidderId) {
                 .bidderName(bidder.getFirstName() + " " + bidder.getLastName())
                 .bidTime(bid.getBidTime().toString())
                 .build();
+
+        if (auctionKoi.isSold()) {
+            orderService.createOrderForAuctionKoi(auctionKoi, bidder);
+        }
 
         return bidResponse;
     }

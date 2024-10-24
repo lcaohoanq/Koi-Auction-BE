@@ -10,6 +10,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -17,6 +19,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
@@ -25,6 +28,7 @@ import lombok.Setter;
 @Builder
 @Entity
 @Table(name = "auctions")
+@ToString
 //@EntityListeners(AuctionListener.class)
 public class Auction {
 
@@ -44,6 +48,10 @@ public class Auction {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private EAuctionStatus status;
+
+    @ManyToOne
+    @JoinColumn(name = "auctioneer_id")
+    private User auctioneer;
 
 //    @OneToMany(mappedBy = "auction")
 //    private List<AuctionKoi> auctionKoisk;

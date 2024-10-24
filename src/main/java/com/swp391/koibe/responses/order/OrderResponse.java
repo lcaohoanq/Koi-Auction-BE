@@ -1,10 +1,13 @@
 package com.swp391.koibe.responses.order;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.swp391.koibe.models.Order;
 import com.swp391.koibe.models.OrderDetail;
 import java.time.LocalDate;
 import java.util.List;
+
+import com.swp391.koibe.responses.base.BaseResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,8 +25,11 @@ public class OrderResponse {
     @JsonProperty("user_id")
     private Long userId;
 
-    @JsonProperty("fullname")
-    private String fullName;
+    @JsonProperty("first_name")
+    private String firstName;
+
+    @JsonProperty("last_name")
+    private String lastName;
 
     @JsonProperty("phone_number")
     private String phoneNumber;
@@ -59,28 +65,10 @@ public class OrderResponse {
     @JsonProperty("payment_method")
     private String paymentMethod;
 
-    @JsonProperty("order_details")
-    private List<OrderDetail> orderDetails;
+    @JsonProperty("tracking_number")
+    private String trackingNumber;
 
-    public static OrderResponse fromOrder(Order order) {
-        OrderResponse orderResponse =  OrderResponse
-                .builder()
-                .id(order.getId())
-                .userId(order.getUser().getId())
-                .fullName(order.getFullName())
-                .phoneNumber(order.getPhoneNumber())
-                .email(order.getEmail())
-                .address(order.getAddress())
-                .note(order.getNote())
-                .orderDate(order.getOrderDate())
-                .status(String.valueOf(order.getStatus()))
-                .totalMoney(order.getTotalMoney())
-                .shippingMethod(order.getShippingMethod())
-                .shippingAddress(order.getShippingAddress())
-                .shippingDate(order.getShippingDate())
-                .paymentMethod(order.getPaymentMethod())
-                .orderDetails(order.getOrderDetails())
-                .build();
-        return orderResponse;
-    }
+    @JsonProperty("order_details")
+    @JsonIgnore
+    private List<OrderDetail> orderDetails;
 }
