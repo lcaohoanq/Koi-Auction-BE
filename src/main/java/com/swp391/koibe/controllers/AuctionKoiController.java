@@ -101,6 +101,8 @@ public class AuctionKoiController {
         if (user.getAccountBalance() < Math.floorDiv(auctionKoiDTO.basePrice(),10)){
             throw new MalformDataException("You dont have enough money to register Koi to Auction");
         }
+        //update breeder account balance
+        userService.updateAccountBalance(user.getId(), user.getAccountBalance() - Math.floorDiv(auctionKoiDTO.basePrice(),10));
 
         AuctionKoiResponse response = new AuctionKoiResponse();
         try {
