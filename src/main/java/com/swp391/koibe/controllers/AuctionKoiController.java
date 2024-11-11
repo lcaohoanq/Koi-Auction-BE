@@ -101,8 +101,6 @@ public class AuctionKoiController {
         if (user.getAccountBalance() < Math.floorDiv(auctionKoiDTO.basePrice(),10)){
             throw new MalformDataException("You dont have enough money to register Koi to Auction");
         }
-        //update breeder account balance
-        userService.updateAccountBalance(user.getId(), user.getAccountBalance() - Math.floorDiv(auctionKoiDTO.basePrice(),10));
 
         AuctionKoiResponse response = new AuctionKoiResponse();
         try {
@@ -118,6 +116,8 @@ public class AuctionKoiController {
             response.setKoiId(newAuctionKoi.getKoi().getId());
             response.setAuctionId(newAuctionKoi.getAuction().getId());
             response.setBidStep(newAuctionKoi.getBidStep());
+            //update breeder account balance
+            userService.updateUserBalance(user.getId(), -Math.floorDiv(auctionKoiDTO.basePrice(),10));
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             log.error("Error creating auctionkoi: " + e.getMessage());
