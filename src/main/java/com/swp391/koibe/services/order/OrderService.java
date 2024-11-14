@@ -165,6 +165,7 @@ public class OrderService implements IOrderService {
         existingOrder.setShippingMethod(orderDTO.getShippingMethod());
         existingOrder.setShippingAddress(orderDTO.getShippingAddress());
         existingOrder.setPaymentMethod(orderDTO.getPaymentMethod());
+        existingOrder.setTotalMoney(orderDTO.getTotalMoney());
         existingOrder.setNote(orderDTO.getNote());
 
         return orderRepository.save(existingOrder);
