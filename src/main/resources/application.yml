@@ -61,6 +61,9 @@ logging:
     org.springframework: DEBUG
     springframework.security: DEBUG
     org.hibernate: DEBUG
+  file:
+    path: ${LOG_PATH:logs}
+    name: ${LOG_PATH:logs}/application.log
 
 # swagger-ui custom path
 springdoc:
