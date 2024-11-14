@@ -43,7 +43,7 @@ spring:
   data:
     redis:
       #spring.data.redis.use-redis-cache
-      use-redis-cache: true
+      use-redis-cache: false
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
 
