@@ -32,7 +32,6 @@ public record KoiDTO(
 
     @NotNull(message = "Koi year born is required when create a new koi")
     @Min(value = 1, message = "Koi year born must be greater than 0")
-    @Max(value = 230, message = "Koi year born must be less than 230")
     @JsonProperty("year_born") Integer yearBorn,
 
     @JsonProperty("description") String description,
