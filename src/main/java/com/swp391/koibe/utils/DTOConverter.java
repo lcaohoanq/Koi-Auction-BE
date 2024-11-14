@@ -36,7 +36,7 @@ public class DTOConverter {
                 .name(koi.getName())
                 .sex(koi.getSex().toUpperCase())
                 .length(koi.getLength())
-                .age(koi.getAge())
+                .yearBorn(koi.getYearBorn())
                 .price(koi.getPrice())
                 .statusName(koi.getStatus() != null ? koi.getStatus().getStatus() : null)
                 .idDisplay(koi.getIsDisplay())
@@ -145,6 +145,7 @@ public class DTOConverter {
                 .user(DTOConverter.convertToUserDTO(payment.getUser()))
                 .paymentType(payment.getPaymentType().getType())
                 .bankNumber(payment.getBankNumber())
+                .bankName(payment.getBankName())
                 .build();
     }
 
