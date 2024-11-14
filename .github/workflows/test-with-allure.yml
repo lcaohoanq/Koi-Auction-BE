@@ -2,7 +2,7 @@ name: CI with Allure Report for Koi-Auction-BE-Prod
 
 on:
   push:
-    branches: [ "preview" ]
+    branches: [ "main", "develop" ]
 
 jobs:
   build:
