@@ -244,7 +244,9 @@ public class WebSecurityConfig {
                 "https://*.lt", // Localtunnel domains
                 "https://www.koiauction88.me", // Your domain
                 "https://koiauction88.me", // Non-www version
-                "https://*.ngrok-free.app" // ngrok domains
+                "https://*.ngrok-free.app", // ngrok domains
+                "https://koi-auction-production.vercel.app", // Vercel domain
+                "https://www.fkoi88.me" // Your domain
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList(
