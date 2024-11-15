@@ -89,7 +89,7 @@ public class User extends BaseEntity implements UserDetails {
     @JsonProperty("date_of_birth")
     private Date dob;
 
-    @Column(name="avatar_url")
+    @Column(name="avatar_url", length=1024)
     @JsonProperty("avatar_url")
     private String avatarUrl;
 

@@ -204,7 +204,9 @@ public class UserController {
             updateUserResponse.setUserResponse(DTOConverter.convertToUserDTO(updatedUser));
             return ResponseEntity.ok(updateUserResponse);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            updateUserResponse.setMessage("Fail to update user details");
+            updateUserResponse.setReason(e.getMessage());
+            return ResponseEntity.badRequest().body(updateUserResponse);
         }
     }
 
