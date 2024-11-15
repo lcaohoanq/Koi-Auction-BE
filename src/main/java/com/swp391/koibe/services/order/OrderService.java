@@ -303,14 +303,14 @@ public class OrderService implements IOrderService {
         context.setVariable("order_id", order.getId());
         context.setVariable("order_status", order.getStatus());
         context.setVariable("order_date", order.getOrderDate());
-        if (user.getRole().equals(Role.BREEDER)) {
+        if (user.getRole().getName().equals(Role.BREEDER.toLowerCase())) {
             context.setVariable("koi_id", order.getOrderDetails().get(0).getKoi().getId());
             context.setVariable("koi_name", order.getOrderDetails().get(0).getKoi().getName());
             context.setVariable("koi_price", order.getOrderDetails().get(0).getPrice());
-            orderMailService.sendOrderCancelledToUser(order, "Order Cancelled", EmailCategoriesEnum.ORDER_CANCELLED_BREEDER.getType(), context);
-        } else if (user.getRole().equals(Role.MEMBER)) {
+            orderMailService.sendOrderCancelledToUser(user, "Order Cancelled", EmailCategoriesEnum.ORDER_CANCELLED_BREEDER.getType().toString(), context);
+        } else if (user.getRole().getName().equals(Role.MEMBER.toLowerCase())) {
             context.setVariable("total_money", order.getTotalMoney());
-            orderMailService.sendOrderCancelledToUser(order, "Order Cancelled", EmailCategoriesEnum.ORDER_CANCELLED.getType(), context);
+            orderMailService.sendOrderCancelledToUser(user, "Order Cancelled", EmailCategoriesEnum.ORDER_CANCELLED.getType().toString(), context);
         }
     }
 

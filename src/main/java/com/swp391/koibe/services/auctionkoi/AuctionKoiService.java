@@ -223,7 +223,7 @@ public class AuctionKoiService implements IAuctionKoiService {
             if (updateAuctionKoi.getCurrentBid() > updateAuctionKoi.getCeilPrice()) {
                 throw new MalformDataException("Current bid must be less than ceil price");
             }
-            if (updateAuctionKoi.getCurrentBid() <= updateAuctionKoi.getBasePrice()) {
+            if (updateAuctionKoi.getCurrentBid() < updateAuctionKoi.getBasePrice()) {
                 throw new MalformDataException("Current bid must be greater than base price");
             }
         }

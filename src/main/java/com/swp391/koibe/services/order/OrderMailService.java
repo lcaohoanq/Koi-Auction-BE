@@ -1,7 +1,6 @@
 package com.swp391.koibe.services.order;
 
 import com.swp391.koibe.models.Order;
-import com.swp391.koibe.models.OrderDetail;
 import com.swp391.koibe.models.User;
 import com.swp391.koibe.services.auction.IAuctionService;
 import com.swp391.koibe.services.auctionparticipant.IAuctionParticipantService;
@@ -14,9 +13,6 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
-
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 
 @Service
@@ -58,7 +54,7 @@ public class OrderMailService implements IOrderMailService {
     )
     @Async
     @Override
-    public void sendOrderCancelledToUser(Order order, String subject, String templateName, Context context) throws MessagingException {
-        mailService.sendMail(order.getUser().getEmail(), "Order Cancelled", templateName, context);
+    public void sendOrderCancelledToUser(User user, String subject, String templateName, Context context) throws MessagingException {
+        mailService.sendMail(user.getEmail(), "Order Cancelled", templateName, context);
     }
 }
