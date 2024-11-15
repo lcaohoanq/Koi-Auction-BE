@@ -183,26 +183,26 @@ public class AuctionKoiController {
             Sort.by("id").ascending()
         );
 
-        List<KoiInAuctionResponse> koiResponses = koiRedisService.findKoiInAuctionByKeyword(keyword, pageRequest);
-
-
-        if (koiResponses != null && !koiResponses.isEmpty()) {
-            response.setItem(koiResponses);
-            response.setTotalItem(koiResponses.size());
-            response.setTotalPage(koiResponses.get(0).getTotalPage());
-            return ResponseEntity.ok(response);
-        }
+//        List<KoiInAuctionResponse> koiResponses = koiRedisService.findKoiInAuctionByKeyword(keyword, pageRequest);
+//
+//
+//        if (koiResponses != null && !koiResponses.isEmpty()) {
+//            response.setItem(koiResponses);
+//            response.setTotalItem(koiResponses.size());
+//            response.setTotalPage(koiResponses.get(0).getTotalPage());
+//            return ResponseEntity.ok(response);
+//        }
 
         Page<KoiInAuctionResponse> koiPage = auctionKoiService.getKoiByKeyword(keyword, pageRequest);
         response.setItem(koiPage.getContent());
         response.setTotalItem(koiPage.getTotalElements());
         response.setTotalPage(koiPage.getTotalPages());
 
-        int totalPage = koiPage.getTotalPages();
-        koiResponses = koiPage.getContent();
-        koiResponses.forEach(koi -> koi.setTotalPage(totalPage));
-
-        koiRedisService.saveAllKoiFindInAuctionByKeyword(koiResponses, keyword , pageRequest);
+//        int totalPage = koiPage.getTotalPages();
+//        koiResponses = koiPage.getContent();
+//        koiResponses.forEach(koi -> koi.setTotalPage(totalPage));
+//
+//        koiRedisService.saveAllKoiFindInAuctionByKeyword(koiResponses, keyword , pageRequest);
 
         return ResponseEntity.ok(response);
     }
