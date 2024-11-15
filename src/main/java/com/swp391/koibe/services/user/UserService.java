@@ -222,22 +222,34 @@ public class UserService implements IUserService {
         String newEmail = updatedUserDTO.email();
 
         if (newEmail != null && !newEmail.isEmpty()) {
-            if (!existingUser.getEmail().equals(newEmail) &&
-                    userRepository.existsByEmail(newEmail)) {
-                throw new DataIntegrityViolationException("Email already exists");
+            // Check if the new email is different from the current user's email
+            if (!newEmail.equals(existingUser.getEmail())) {
+                // Check if the new email is already in use by another user
+                Optional<User> userWithNewEmail = userRepository.findByEmail(newEmail);
+
+                if (userWithNewEmail.isPresent()) throw new EmailAlreadyUsedException("The email address is already associated with another account.");
+
+                // If not, update the current user's email
+                existingUser.setEmail(newEmail);
             }
-            existingUser.setEmail(newEmail);
+            // If the email is the same as the current one, no changes are needed
         }
 
         // Check if the phone number is being changed and if it already exists for another user
         String newPhoneNumber = updatedUserDTO.phoneNumber();
 
-        if (newPhoneNumber != null && newPhoneNumber.isEmpty()) {
-            if (!existingUser.getPhoneNumber().equals(newPhoneNumber) &&
-                    userRepository.existsByPhoneNumber(newPhoneNumber)) {
-                throw new DataIntegrityViolationException("Phone number already exists");
+        if (newPhoneNumber != null && !newPhoneNumber.isEmpty()) {
+            // Check if the new phone number is different from the current user's phone number
+            if (!newPhoneNumber.equals(existingUser.getPhoneNumber())) {
+                // Check if the new phone number is already in use by another user
+                Optional<User> userWithNewPhoneNumber = userRepository.findByPhoneNumber(newPhoneNumber);
+
+                if (userWithNewPhoneNumber.isPresent()) throw new PhoneAlreadyUsedException("The phone number is already associated with another account.");
+
+                // If not, update the current user's phone number
+                existingUser.setPhoneNumber(newPhoneNumber);
             }
-            existingUser.setPhoneNumber(newPhoneNumber);
+            // If the phone number is the same as the current one, no changes are needed
         }
 
         // Update user information based on the DTO
@@ -246,9 +258,6 @@ public class UserService implements IUserService {
         }
         if (updatedUserDTO.lastName() != null) {
             existingUser.setLastName(updatedUserDTO.lastName());
-        }
-        if (newPhoneNumber != null) {
-            existingUser.setPhoneNumber(newPhoneNumber);
         }
         if (updatedUserDTO.address() != null) {
             existingUser.setAddress(updatedUserDTO.address());

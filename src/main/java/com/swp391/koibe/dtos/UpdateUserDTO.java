@@ -12,7 +12,7 @@ import lombok.Builder;
 public record UpdateUserDTO(
     @JsonProperty("first_name") String firstName,
     @JsonProperty("last_name") String lastName,
-    @JsonProperty("emails") String email,
+    @JsonProperty("email") String email,
     @JsonProperty("phone_number") String phoneNumber,
     @JsonProperty("password") String password,
     @JsonProperty("confirm_password") String confirmPassword, // in case user wants to change password
