@@ -90,6 +90,7 @@ public class WebSecurityConfig {
                             .requestMatchers(GET, String.format("%s/breeders", apiPrefix)).permitAll()
                             //GET: breeders/{id} .permitAll()
                             .requestMatchers(GET, String.format("%s/breeders/{id:\\d+}", apiPrefix)).permitAll()
+                            .requestMatchers(GET, String.format("%s/breeders/kois/not-in-auction", apiPrefix)).hasAnyRole(Role.BREEDER)
 
                             .requestMatchers(GET,
                                     String.format("%s/roles", apiPrefix))

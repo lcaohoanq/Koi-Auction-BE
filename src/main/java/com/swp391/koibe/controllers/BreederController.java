@@ -116,6 +116,26 @@ public class BreederController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/kois/not-in-auction")
+    @PreAuthorize("hasRole('BREEDER')")
+    public ResponseEntity<KoiPaginationResponse> getKoisByBreederIdNotInAnyAuction(
+        @RequestParam("breeder_id") long breeder_id,
+        @RequestParam("page") int page,
+        @RequestParam("limit") int limit) {
+
+        KoiPaginationResponse response = new KoiPaginationResponse();
+
+        PageRequest pageRequest = PageRequest.of(page, limit);
+        Page<KoiResponse> koiList = breederService.getKoisByBreederIdNotInAnyAuction(
+            breeder_id,
+            pageRequest);
+
+        response.setItem(koiList.getContent());
+        response.setTotalPage(koiList.getTotalPages());
+        response.setTotalItem(koiList.getTotalElements());
+        return ResponseEntity.ok(response);
+    }
+
     @DeleteMapping("/{breeder_id}/koi/{id}")
     public ResponseEntity<?> deleteKoi(
         @PathVariable("id") long id,

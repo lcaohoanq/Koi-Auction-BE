@@ -82,4 +82,10 @@ interface KoiRepository : JpaRepository<Koi, Long> {
     )
     fun findAllKoiByKeyword(keyword: String, pageable: Pageable): Page<Koi>
 
+    @Query(
+        "SELECT k FROM Koi k LEFT JOIN AuctionKoi ak ON k.id = ak.koi.id " +
+                "WHERE k.owner.id = :ownerId AND k.status = 'VERIFIED' AND ak.id IS NULL"
+    )
+    fun findByOwnerIdAndStatusAndAuctionIsNull(ownerId: Long, pageable: Pageable): Page<Koi>
+
 }

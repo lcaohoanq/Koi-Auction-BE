@@ -23,4 +23,6 @@ public interface IBreederService {
     List<KoiResponse> getKoisByBreederID(long breederId);
     Page<KoiResponse> getKoisByBreederID(long breederId, Pageable pageable);
     Page<KoiResponse> getKoisByBreederIdAndStatus(long breederId, EKoiStatus koiStatus, Pageable pageable);
+    Page<KoiResponse> getKoisByBreederIdNotInAnyAuction(long breederId, Pageable pageable);
+
 }

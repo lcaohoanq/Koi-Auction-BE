@@ -177,6 +177,18 @@ public class BreederService implements IBreederService {
             .map(DTOConverter::convertToKoiDTO);
     }
 
+    @Override
+    public Page<KoiResponse> getKoisByBreederIdNotInAnyAuction(long breederId, Pageable pageable) {
+        userRepository.findBreederById(breederId)
+            .orElseThrow(() -> new BreederNotFoundException("Breeder not found"));
+
+
+        return koiRepository
+            .findByOwnerIdAndStatusAndAuctionIsNull(breederId, pageable)
+            .map(DTOConverter::convertToKoiDTO);
+
+    }
+
     /*
     *  @Override
     public Page<AuctionResponse> getAuctionByStatus(EAuctionStatus status, Pageable pageable) {
