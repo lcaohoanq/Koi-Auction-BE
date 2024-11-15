@@ -171,9 +171,7 @@ public class AuctionService implements IAuctionService {
         if(auction.getStatus() == EAuctionStatus.ENDED) throw
             new MalformDataException("Auction already ended");
         LocalDateTime now = LocalDateTime.now();
-        auction.setStartTime(now);
         auction.setEndTime(now);
-        auction.setStatus(EAuctionStatus.ENDED);
         auctionRepository.save(auction);
     }
 

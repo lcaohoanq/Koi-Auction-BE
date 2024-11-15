@@ -199,28 +199,4 @@ public class SystemService {
         }
     }
 
-    //every 5 minutes
-//for the auction is force to end, the order will be created for the latest bidder if the koi is not sold
-    @Scheduled(cron = "0 */5 * * * *")
-    @Async
-    public void updateEndedAuction() {
-        try {
-            List<Auction> auctions = auctionService.getAuctionByStatus(EAuctionStatus.ENDED);
-            for (Auction auction : auctions) {
-                //check if the auction is force to end (the end time is in that date)
-                if (auction.getEndTime().getDayOfYear() == LocalDateTime.now().getDayOfYear() &&
-                        auction.getEndTime().getYear() == LocalDateTime.now().getYear()) {
-                    updateAuctionKoiStatus(auction);
-                    Context context = new Context();
-                    auctionMailService.sendAuctionClosedEmailToAllUser(
-                            auction.getId(), "Auction Closed", "auctionClosed", context);
-                }
-            }
-        } catch (SystemServiceTaskException e) {
-            log.error("Error updating on going auction status", e.getCause());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 }

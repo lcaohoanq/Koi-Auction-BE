@@ -284,11 +284,11 @@ public class OrderService implements IOrderService {
         Long refundAmount = calculateRefundAmount(order);
 
         if (order.getStatus() == OrderStatus.PROCESSING) {
-            handleProcessingOrderStatus(order, orderStatus, refundAmount);
+            order = handleProcessingOrderStatus(order, orderStatus, refundAmount);
         } else if (order.getStatus() == OrderStatus.SHIPPING) {
-            handleShippingOrderStatus(order, orderStatus, refundAmount);
+            order = handleShippingOrderStatus(order, orderStatus, refundAmount);
         } else if (order.getStatus() == OrderStatus.DELIVERED) {
-            handleDeliveredOrderStatus(order, orderStatus);
+            order = handleDeliveredOrderStatus(order, orderStatus);
         }
 
         order.setStatus(orderStatus);
@@ -321,10 +321,15 @@ public class OrderService implements IOrderService {
         return itemsTotal + (order.getPaymentMethod().equals("Cash") ? 0L : order.getTotalMoney().longValue());
     }
 
-    private void handleProcessingOrderStatus(Order order, OrderStatus orderStatus, Long refundAmount) throws Exception {
+    private Order handleProcessingOrderStatus(Order order, OrderStatus orderStatus, Long refundAmount) throws Exception {
         switch (orderStatus) {
             case SHIPPING:
-                order.setShippingDate(LocalDate.now().plusDays(5));
+                if (order.getShippingMethod().equalsIgnoreCase("Standard")) {
+                    order.setShippingDate(LocalDate.now().plusDays(7));
+                }
+                if (order.getShippingMethod().equalsIgnoreCase("Express")) {
+                    order.setShippingDate(LocalDate.now().plusDays(3));
+                }
                 break;
             case CANCELLED:
                 order.setShippingDate(null);
@@ -334,9 +339,10 @@ public class OrderService implements IOrderService {
             default:
                 break;
         }
+        return order;
     }
 
-    private void handleShippingOrderStatus(Order order, OrderStatus orderStatus, Long refundAmount) throws Exception {
+    private Order handleShippingOrderStatus(Order order, OrderStatus orderStatus, Long refundAmount) throws Exception {
         switch (orderStatus) {
             case DELIVERED:
                 order.setShippingDate(LocalDate.now());
@@ -352,9 +358,10 @@ public class OrderService implements IOrderService {
             default:
                 break;
         }
+        return order;
     }
 
-    private void handleDeliveredOrderStatus(Order order, OrderStatus orderStatus) throws Exception {
+    private Order handleDeliveredOrderStatus(Order order, OrderStatus orderStatus) throws Exception {
         switch (orderStatus) {
             case COMPLETED:
                 userService.updateAccountBalance(order.getOrderDetails().get(0).getKoi().getOwner().getId(),
@@ -365,5 +372,6 @@ public class OrderService implements IOrderService {
             default:
                 break;
         }
+        return order;
     }
 }
