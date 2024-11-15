@@ -52,8 +52,9 @@ public class PaymentController {
     public ResponseEntity<?> handleVNPayReturn(@RequestParam Map<String, String> requestParams) {
         Map<String, Object> result = paymentService.handlePaymentReturn(requestParams);
 
-        String frontendUrl = "http://localhost:3000/payments/vnpay-payment-return";
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(frontendUrl);
+        String frontendUrl_dev = "http://localhost:3000/payments/vnpay-payment-return";
+        String frontendUrl_prod = "https://fkoi88.me/payments/vnpay-payment-return";
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(frontendUrl_dev);
 
         for (Map.Entry<String, Object> entry : result.entrySet()) {
             builder.queryParam(entry.getKey(), entry.getValue().toString());
