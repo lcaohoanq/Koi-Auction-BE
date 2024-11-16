@@ -4,6 +4,7 @@ import com.swp391.koibe.dtos.koi.KoiDTO;
 import com.swp391.koibe.enums.EKoiStatus;
 import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.User;
+import com.swp391.koibe.responses.BreederResponse;
 import com.swp391.koibe.responses.KoiResponse;
 import com.swp391.koibe.responses.UserResponse;
 import java.util.List;
@@ -12,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface IBreederService {
 
-    Page<UserResponse> getAllBreeders(Pageable pageable);
+    Page<BreederResponse> getAllBreeders(Pageable pageable);
     List<UserResponse> getAllBreeders();
     User findById(long breederId) throws DataNotFoundException;
     KoiResponse createKoi(Integer categoryId, KoiDTO koiDTO, long breederId);

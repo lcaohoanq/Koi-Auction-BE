@@ -10,7 +10,7 @@ import com.swp391.koibe.exceptions.MethodArgumentNotValidException;
 import com.swp391.koibe.models.Koi;
 import com.swp391.koibe.models.KoiImage;
 import com.swp391.koibe.models.User;
-import com.swp391.koibe.repositories.KoiRepository;
+import com.swp391.koibe.responses.KoiGenderResponse;
 import com.swp391.koibe.responses.KoiResponse;
 import com.swp391.koibe.responses.pagination.KoiPaginationResponse;
 import com.swp391.koibe.services.koi.IKoiService;
@@ -60,11 +60,14 @@ import org.springframework.web.multipart.MultipartFile;
 public class KoiController {
 
     private final IKoiService<KoiResponse> koiService;
-    private final KoiRepository koiRepository;
     private final IUserService userService;
     private final IKoiRedisService koiRedisService;
 
-    //pagination kois
+    @GetMapping("/count-by-gender")
+    public ResponseEntity<KoiGenderResponse> getQuantityKoiGender() {
+        return ResponseEntity.ok(koiService.findQuantityKoiByGender());
+    }
+
     @GetMapping("") //kois/?page=0&limit=10
     public ResponseEntity<KoiPaginationResponse> getAllKois(
         @RequestParam(defaultValue = "0") int page,

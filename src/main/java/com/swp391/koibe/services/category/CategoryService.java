@@ -2,13 +2,16 @@ package com.swp391.koibe.services.category;
 
 import com.swp391.koibe.dtos.CategoryDTO;
 import com.swp391.koibe.exceptions.CategoryAlreadyExistException;
-import com.swp391.koibe.exceptions.base.DataAlreadyExistException;
 import com.swp391.koibe.exceptions.CategoryNotFoundException;
+import com.swp391.koibe.exceptions.base.DataAlreadyExistException;
 import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.Category;
 import com.swp391.koibe.repositories.CategoryRepository;
-import java.util.List;
+import com.swp391.koibe.responses.CategoryResponse;
+import com.swp391.koibe.utils.DTOConverter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,14 +19,15 @@ import org.springframework.stereotype.Service;
 public class CategoryService implements ICategoryService{
 
     private final CategoryRepository categoryRepository;
+    private final DTOConverter dtoConverter;
 
     @Override
     public Category createCategory(CategoryDTO category) throws DataAlreadyExistException {
 
-        if(categoryRepository.findByName(category.name()) != null){
-            throw new CategoryAlreadyExistException("Category already exists");
-        }
-        
+        categoryRepository.findByName(category.name()).ifPresent(c -> {
+            throw new CategoryAlreadyExistException("Category already exist");
+        });
+
         Category newCategory = Category.builder()
             .name(category.name())
             .build();
@@ -37,18 +41,17 @@ public class CategoryService implements ICategoryService{
     }
 
     @Override
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+    public Page<CategoryResponse> getAllCategories(Pageable pageable) {
+        return categoryRepository.findAll(pageable).map(dtoConverter::convertToCategoryDTO);
     }
 
     @Override
-    public Category update(int categoryId, CategoryDTO category)
+    public void update(int categoryId, CategoryDTO category)
         throws DataNotFoundException {
 
         Category existingCategory = getById(categoryId);
         existingCategory.setName(category.name());
-        return categoryRepository.save(existingCategory);
-
+        categoryRepository.save(existingCategory);
     }
 
     @Override

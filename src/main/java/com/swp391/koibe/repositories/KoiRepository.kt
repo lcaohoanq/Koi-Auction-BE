@@ -17,6 +17,12 @@ interface KoiRepository : JpaRepository<Koi, Long> {
     fun findByOwnerIdAndStatus(ownerId: Long, status: EKoiStatus, pageable: Pageable): Page<Koi>
     fun findByStatus(status: EKoiStatus, pageable: Pageable): Page<Koi>
 
+    @Query("SELECT COUNT(k) FROM Koi k WHERE k.owner.id = :ownerId")
+    fun countKoisByOwnerId(ownerId: Long): Long
+
+    @Query("SELECT COUNT(k) FROM Koi k WHERE k.category.id = :categoryId")
+    fun countKoisByCategoryId(categoryId: Long): Long
+
     //SELECT koi data is display in existing auction
     //notice im want to retrieve the auction id at that last column to use in fe call
     @Query(

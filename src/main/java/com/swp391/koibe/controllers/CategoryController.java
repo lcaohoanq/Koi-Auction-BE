@@ -4,12 +4,16 @@ import com.swp391.koibe.components.LocalizationUtils;
 import com.swp391.koibe.dtos.CategoryDTO;
 import com.swp391.koibe.exceptions.MethodArgumentNotValidException;
 import com.swp391.koibe.exceptions.base.DataNotFoundException;
+import com.swp391.koibe.models.Category;
 import com.swp391.koibe.responses.CategoryResponse;
+import com.swp391.koibe.responses.pagination.CategoryPaginationResponse;
 import com.swp391.koibe.services.category.ICategoryService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -34,12 +39,20 @@ public class CategoryController {
     private final LocalizationUtils localizationUtils;
 
     @GetMapping("")
-    public ResponseEntity<CategoryResponse> getAllCategories() {
-        CategoryResponse response = CategoryResponse.builder()
-            .message(localizationUtils.getLocalizedMessage("category.get_all_successfully"))
-            .listData(categoryService.getAllCategories())
-            .build();
+    public ResponseEntity<CategoryPaginationResponse> getAllCategories(
+        @RequestParam("page") int page,
+        @RequestParam("limit") int limit
+    ) {
         try {
+            PageRequest pageRequest = PageRequest.of(page, limit);
+            Page<CategoryResponse> categories = categoryService.getAllCategories(pageRequest);
+
+            CategoryPaginationResponse response = new CategoryPaginationResponse();
+
+            response.setItem(categories.getContent());
+            response.setTotalPage(categories.getTotalPages());
+            response.setTotalItem(categories.getTotalElements());
+
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             throw new DataNotFoundException(
@@ -50,31 +63,31 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable int id) {
-
-        try {
-            CategoryResponse response = CategoryResponse.builder()
-                .message(localizationUtils.getLocalizedMessage("category.get_by_id_successfully"))
-                .singleData(categoryService.getById(id))
-                .build();
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            throw new DataNotFoundException(
-                localizationUtils.getLocalizedMessage("category.get_by_id_failed"));
-        }
+        Category category = categoryService.getById(id);
+        CategoryResponse response = CategoryResponse.builder()
+            .id(category.getId())
+            .name(category.getName())
+            .build();
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<CategoryResponse> createCategory(
+    public ResponseEntity<?> createCategory(
         @Valid @RequestBody CategoryDTO categoryDTO,
         BindingResult result) {
 
+        if(result.hasErrors()) {
+            throw new MethodArgumentNotValidException(result);
+        }
 
         try {
+
+            Category category = categoryService.createCategory(categoryDTO);
+
             CategoryResponse response = CategoryResponse.builder()
-                .message(localizationUtils.getLocalizedMessage(
-                    "category.create_category.create_successfully"))
-                .singleData(categoryService.createCategory(categoryDTO))
+                .id(category.getId())
+                .name(category.getName())
                 .build();
 
             categoryService.createCategory(categoryDTO);
@@ -88,7 +101,7 @@ public class CategoryController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<CategoryResponse> updateCategory(
+    public ResponseEntity<?> updateCategory(
         @PathVariable int id,
         @Valid @RequestBody CategoryDTO categoryDTO,
         BindingResult result) {
@@ -98,13 +111,9 @@ public class CategoryController {
         }
 
         try {
-            CategoryResponse response = CategoryResponse.builder()
-                .message(localizationUtils.getLocalizedMessage(
-                    "category.update_category.update_successfully"))
-                .singleData(categoryService.update(id, categoryDTO))
-                .build();
-
-            return ResponseEntity.ok().body(response);
+            categoryService.update(id, categoryDTO);
+            return ResponseEntity.ok().body(localizationUtils.getLocalizedMessage(
+                "category.update_category.update_successfully"));
         } catch (Exception e) {
             throw new RuntimeException(
                 localizationUtils.
@@ -114,15 +123,11 @@ public class CategoryController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<CategoryResponse> deleteCategory(@PathVariable int id) {
+    public ResponseEntity<?> deleteCategory(@PathVariable int id) {
         try {
-           CategoryResponse response = CategoryResponse.builder()
-                .message(localizationUtils.getLocalizedMessage(
-                    "category.delete_category.delete_successfully", id))
-                .build();
-
             categoryService.delete(id);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(localizationUtils.getLocalizedMessage(
+                "category.delete_category.delete_successfully", id));
         } catch (Exception e) {
             throw new RuntimeException(
                 localizationUtils.

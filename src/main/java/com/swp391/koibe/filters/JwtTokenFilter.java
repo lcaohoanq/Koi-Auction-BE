@@ -79,7 +79,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         specialCasePatterns.add(Pair.of("GET", Pattern.compile(String.format("%s/users/\\d+", apiPrefix))));
         specialCasePatterns.add(Pair.of("PUT", Pattern.compile(String.format("%s/users/verify/\\d"
                                                                                  + "+", apiPrefix))));
-
+        //CategoryController
+        specialCasePatterns.add(Pair.of("GET", Pattern.compile(String.format("%s/categories/\\d+", apiPrefix))));
         // Add more special case patterns here as needed
     }
 
@@ -136,6 +137,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 // KoiController
                 Pair.of(String.format("%s/kois", apiPrefix), "GET"),
                 Pair.of(String.format("%s/kois/get-kois-owner-by-keyword-not-auth", apiPrefix), "GET"),
+                //count-gender
+                Pair.of(String.format("%s/kois/count-by-gender", apiPrefix), "GET"),
 
                 Pair.of(String.format("%s/breeders", apiPrefix), "GET"),
 
@@ -144,10 +147,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
                 // CategoryController
                 Pair.of(String.format("%s/categories", apiPrefix), "GET"),
-                Pair.of(String.format("%s/categories", apiPrefix), "POST"), // add security later
-                Pair.of(String.format("%s/categories", apiPrefix), "GET"), // add security later
-                Pair.of(String.format("%s/categories", apiPrefix), "PUT"), // add security later
-                Pair.of(String.format("%s/categories", apiPrefix), "DELETE"), // add security later
 
                 // ManagerController
                 Pair.of(String.format("%s/managers", apiPrefix), "GET"),
@@ -218,12 +217,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 // Auction
                 Pair.of(String.format("%s/auctions", apiPrefix), "GET"),
 
-                // AuctionKoi
+                // AuctionKoiController
                 Pair.of(String.format("%s/auctionkois", apiPrefix), "GET"),
-//                Pair.of(String.format("%s/auctionkois", apiPrefix), "POST"),
                 Pair.of(String.format("%s/auctionkois", apiPrefix), "PUT"),
                 Pair.of(String.format("%s/auctionkois/get-kois-by-keyword", apiPrefix), "GET"),
                 Pair.of(String.format("%s/auctions/get-auctions-by-keyword", apiPrefix), "GET"),
+                //auctionkois//count-by-bid-method
+                Pair.of(String.format("%s/auctionkois/count-by-bid-method", apiPrefix), "GET"),
 
                 // AuctionKoiDetail
                 Pair.of(String.format("%s/bidding", apiPrefix), "GET"),

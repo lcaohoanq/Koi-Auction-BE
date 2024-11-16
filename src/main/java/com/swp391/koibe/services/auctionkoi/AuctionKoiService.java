@@ -15,6 +15,7 @@ import com.swp391.koibe.repositories.AuctionKoiRepository;
 import com.swp391.koibe.repositories.AuctionRepository;
 import com.swp391.koibe.repositories.KoiRepository;
 import com.swp391.koibe.responses.AuctionKoiResponse;
+import com.swp391.koibe.responses.BidMethodQuantityResponse;
 import com.swp391.koibe.responses.KoiInAuctionResponse;
 import com.swp391.koibe.services.auction.IAuctionService;
 import com.swp391.koibe.services.mail.IMailService;
@@ -194,6 +195,23 @@ public class AuctionKoiService implements IAuctionKoiService {
     @Override
     public Page<KoiInAuctionResponse> getKoiByKeyword(String keyword, Pageable pageable) {
         return koiRepository.findByKeyword(keyword, pageable);
+    }
+
+    @Override
+    public BidMethodQuantityResponse findQuantityByBidMethod() {
+        List<AuctionKoi> auctionKois = auctionKoiRepository.findAll();
+        long ascendingBid = auctionKois.stream()
+                .filter(auctionKoi -> auctionKoi.getBidMethod() == EBidMethod.ASCENDING_BID).count();
+        long descendingBid = auctionKois.stream()
+                .filter(auctionKoi -> auctionKoi.getBidMethod() == EBidMethod.DESCENDING_BID).count();
+        long fixedPrice = auctionKois.stream()
+                .filter(auctionKoi -> auctionKoi.getBidMethod() == EBidMethod.FIXED_PRICE).count();
+        return BidMethodQuantityResponse.builder()
+                .total(auctionKois.size())
+                .ascendingBid(ascendingBid)
+                .descendingBid(descendingBid)
+                .fixedPrice(fixedPrice)
+                .build();
     }
 
     @Override

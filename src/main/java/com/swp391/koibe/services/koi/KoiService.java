@@ -5,6 +5,7 @@ import com.swp391.koibe.dtos.KoiImageDTO;
 import com.swp391.koibe.dtos.koi.KoiDTO;
 import com.swp391.koibe.dtos.koi.UpdateKoiDTO;
 import com.swp391.koibe.dtos.koi.UpdateKoiStatusDTO;
+import com.swp391.koibe.enums.EKoiGender;
 import com.swp391.koibe.enums.EKoiStatus;
 import com.swp391.koibe.enums.EmailCategoriesEnum;
 import com.swp391.koibe.exceptions.InvalidParamException;
@@ -17,6 +18,7 @@ import com.swp391.koibe.repositories.CategoryRepository;
 import com.swp391.koibe.repositories.KoiImageRepository;
 import com.swp391.koibe.repositories.KoiRepository;
 import com.swp391.koibe.repositories.UserRepository;
+import com.swp391.koibe.responses.KoiGenderResponse;
 import com.swp391.koibe.responses.KoiResponse;
 import com.swp391.koibe.responses.pagination.KoiPaginationResponse;
 import com.swp391.koibe.services.mail.IMailService;
@@ -211,5 +213,30 @@ public non-sealed class KoiService implements IKoiService<KoiResponse> {
     public Page<Koi> findAllKoiByKeyword(String keyword, Pageable pageable) {
         return koiRepository.findAllKoiByKeyword(keyword,  pageable);
     }
+
+    @Override
+    public KoiGenderResponse findQuantityKoiByGender() {
+        List<Koi> kois = koiRepository.findAll();
+
+        long maleCount = kois.stream()
+            .filter(koi -> koi.getSex() == EKoiGender.MALE)
+            .count();
+
+        long femaleCount = kois.stream()
+            .filter(koi -> koi.getSex() == EKoiGender.FEMALE)
+            .count();
+
+        long unknownCount = kois.stream()
+            .filter(koi -> koi.getSex() == EKoiGender.UNKNOWN)
+            .count();
+
+        return KoiGenderResponse.builder()
+            .total(kois.size())
+            .male(maleCount)
+            .female(femaleCount)
+            .unknown(unknownCount)
+            .build();
+    }
+
 
 }
