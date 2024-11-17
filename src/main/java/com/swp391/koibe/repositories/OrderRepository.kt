@@ -11,6 +11,9 @@ import org.springframework.data.repository.query.Param
 interface OrderRepository : JpaRepository<Order, Long> {
     fun findByUserId(userId: Long): List<Order>
 
+    @Query("SELECT COUNT(o) FROM Order o WHERE o.user.id = :userId")
+    fun countOrdersByMemberId(userId: Long): Long
+
     @Query(
         "SELECT o FROM Order o WHERE o.active = true " +
                 "AND (:status IS NULL OR o.status = :status) " +

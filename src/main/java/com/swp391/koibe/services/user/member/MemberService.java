@@ -4,6 +4,7 @@ import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.exceptions.MemberNotFoundException;
 import com.swp391.koibe.models.User;
 import com.swp391.koibe.repositories.UserRepository;
+import com.swp391.koibe.responses.MemberResponse;
 import com.swp391.koibe.responses.UserResponse;
 import com.swp391.koibe.utils.DTOConverter;
 import java.util.Optional;
@@ -17,11 +18,12 @@ import org.springframework.stereotype.Service;
 public class MemberService implements IMemberService{
 
     private final UserRepository userRepository;
+    private final DTOConverter dtoConverter;
 
     @Override
-    public Page<UserResponse> getAllMembers(Pageable pageable) {
+    public Page<MemberResponse> getAllMembers(Pageable pageable) {
         Page<User> members = userRepository.findByRoleName("MEMBER", pageable);
-        return members.map(DTOConverter::convertToUserDTO);
+        return members.map(dtoConverter::convertToMemberDTO);
     }
 
     @Override

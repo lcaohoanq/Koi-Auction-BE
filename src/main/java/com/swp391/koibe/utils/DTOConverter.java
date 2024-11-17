@@ -3,6 +3,7 @@ package com.swp391.koibe.utils;
 import com.swp391.koibe.models.*;
 import com.swp391.koibe.repositories.AuctionRepository;
 import com.swp391.koibe.repositories.KoiRepository;
+import com.swp391.koibe.repositories.OrderRepository;
 import com.swp391.koibe.responses.*;
 import com.swp391.koibe.responses.order.OrderDetailResponse;
 import com.swp391.koibe.responses.order.OrderResponse;
@@ -16,6 +17,7 @@ public class DTOConverter {
 
     private final KoiRepository koiRepository;
     private final AuctionRepository auctionRepository;
+    private final OrderRepository orderRepository;
 
     public static UserResponse convertToUserDTO(User user) {
         return UserResponse.builder()
@@ -82,6 +84,29 @@ public class DTOConverter {
             .createdAt(user.getCreatedAt() != null ? user.getCreatedAt().format(DateTimeFormatter.ISO_DATE_TIME) : null)
             .updatedAt(user.getUpdatedAt() != null ? user.getUpdatedAt().format(DateTimeFormatter.ISO_DATE_TIME) : null)
             .auctionCount(auctionRepository.countAuctionsByAuctioneerId(user.getId()))
+            .build();
+    }
+
+    public MemberResponse convertToMemberDTO(User user) {
+        return MemberResponse.builder()
+            .id(user.getId())
+            .firstName(user.getFirstName())
+            .lastName(user.getLastName())
+            .phoneNumber(user.getPhoneNumber())
+            .email(user.getEmail())
+            .address(user.getAddress())
+            .password(user.getPassword())
+            .isActive(user.isActive() ? 1 : 0)
+            .isSubscription(user.isSubscription() ? 1 : 0)
+            .statusName(user.getStatus() != null ? user.getStatus().getStatus() : null)
+            .dob(String.valueOf(user.getDob()).split(" ")[0])
+            .avatarUrl(user.getAvatarUrl())
+            .googleAccountId(user.getGoogleAccountId())
+            .roleName(user.getRole() != null ? user.getRole().getName() : null)
+            .accountBalance(user.getAccountBalance())
+            .createdAt(user.getCreatedAt() != null ? user.getCreatedAt().format(DateTimeFormatter.ISO_DATE_TIME) : null)
+            .updatedAt(user.getUpdatedAt() != null ? user.getUpdatedAt().format(DateTimeFormatter.ISO_DATE_TIME) : null)
+            .orderCount(orderRepository.countOrdersByMemberId(user.getId()))
             .build();
     }
 
