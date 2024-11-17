@@ -10,6 +10,7 @@ import com.swp391.koibe.exceptions.MethodArgumentNotValidException;
 import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.Auction;
 import com.swp391.koibe.responses.AuctionResponse;
+import com.swp391.koibe.responses.AuctionStatusCountResponse;
 import com.swp391.koibe.responses.pagination.AuctionPaginationResponse;
 import com.swp391.koibe.services.auction.IAuctionMailService;
 import com.swp391.koibe.services.auction.IAuctionService;
@@ -46,28 +47,9 @@ public class AuctionController {
     private final IAuctionService auctionService;
     private final IAuctionMailService auctionMailService;
 
-    @PostMapping("/generateFakeAuctions")
-    private void generateFakeAuctions() {
-        Faker faker = new Faker();
-
-        for (int i = 0; i < 100; i++) {
-            LocalDateTime endTime = LocalDateTime.ofInstant(
-                faker.date().past(30, TimeUnit.DAYS).toInstant(), ZoneId.systemDefault());
-            LocalDateTime startTime = endTime.minusDays(faker.number().numberBetween(1, 20));
-
-            AuctionDTO auction = AuctionDTO.builder()
-                .statusName(String.valueOf(EAuctionStatus.ENDED))
-                .endTime(String.valueOf(endTime))
-                .startTime(String.valueOf(startTime))
-                .title(" Auction #" + i)
-                .build();
-            try {
-                auctionService.createAscendingAuction(auction);
-            } catch (Exception e) {
-                log.error("Error creating auction: " + e.getMessage());
-                throw new GenerateDataException();
-            }
-        }
+    @GetMapping("/count-by-auction-status")
+    public ResponseEntity<AuctionStatusCountResponse> countAuctionByStatus() {
+        return ResponseEntity.ok(auctionService.countAuctionByStatus());
     }
 
     @GetMapping("/notify/upcoming")

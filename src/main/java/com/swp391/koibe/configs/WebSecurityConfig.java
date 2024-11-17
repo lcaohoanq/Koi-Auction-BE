@@ -105,6 +105,7 @@ public class WebSecurityConfig {
                     .requestMatchers(GET, String.format("%s/auctions/koi_register", apiPrefix)).hasAnyRole(Role.BREEDER)
                     .requestMatchers(GET, String.format("%s/auctions/get-auctions-by-keyword", apiPrefix)).permitAll()
                     .requestMatchers(GET, String.format("%s/auctions/get-auctions-upcoming", apiPrefix)).permitAll()
+                    .requestMatchers(GET, String.format("%s/auctions/count-by-auction-status", apiPrefix)).permitAll()
                     .requestMatchers(GET, String.format("%s/auction-websocket/**", apiPrefix)).permitAll()
                     .requestMatchers(POST, String.format("%s/auction-websocket/**", apiPrefix)).permitAll()
                     .requestMatchers(GET, String.format("%s/auction-participant**", apiPrefix)).permitAll()

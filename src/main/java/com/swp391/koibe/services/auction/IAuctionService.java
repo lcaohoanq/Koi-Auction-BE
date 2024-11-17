@@ -7,6 +7,7 @@ import com.swp391.koibe.exceptions.base.DataAlreadyExistException;
 import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.Auction;
 import com.swp391.koibe.responses.AuctionResponse;
+import com.swp391.koibe.responses.AuctionStatusCountResponse;
 import java.util.List;
 import java.util.Set;
 import org.springframework.data.domain.Page;
@@ -46,4 +47,6 @@ public interface IAuctionService {
 
     Page<Auction> getAuctionUpcomingByKeyword(String keyword, EAuctionStatus status,
                                               Pageable pageable);
+
+    AuctionStatusCountResponse countAuctionByStatus();
 }

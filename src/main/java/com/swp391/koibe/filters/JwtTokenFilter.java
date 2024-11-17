@@ -223,6 +223,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/auctionkois/get-kois-by-keyword", apiPrefix), "GET"),
                 Pair.of(String.format("%s/auctions/get-auctions-by-keyword", apiPrefix), "GET"),
                 Pair.of(String.format("%s/auctions/get-auctions-upcoming", apiPrefix), "GET"),
+                Pair.of(String.format("%s/auctions/count-by-auction-status", apiPrefix), "GET"),
+
                 //auctionkois//count-by-bid-method
                 Pair.of(String.format("%s/auctionkois/count-by-bid-method", apiPrefix), "GET"),
 
