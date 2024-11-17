@@ -21,12 +21,10 @@ import com.swp391.koibe.services.auction.IAuctionService;
 import com.swp391.koibe.services.mail.IMailService;
 import com.swp391.koibe.utils.DTOConverter;
 import jakarta.mail.MessagingException;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -141,21 +139,9 @@ public class AuctionKoiService implements IAuctionKoiService {
     }
 
     @Override
-    public AuctionKoi createAuctionKoiV2(AuctionKoi auctionKoi) throws DataNotFoundException {
-        return auctionKoiRepository.save(auctionKoi);
-    }
-
-    @Override
     public AuctionKoi getAuctionKoiById(long id) throws DataNotFoundException {
         return auctionKoiRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("Auction Koi not found"));
-    }
-
-    @Override
-    public AuctionKoiResponse getAuctionKoiResponeById(long id) throws DataNotFoundException {
-        AuctionKoi auctionKoi = auctionKoiRepository.findById(id)
-                .orElseThrow(() -> new DataNotFoundException("Auction Koi not found"));
-        return DTOConverter.convertToAuctionKoiDTO(auctionKoi);
     }
 
     @Override
@@ -266,18 +252,6 @@ public class AuctionKoiService implements IAuctionKoiService {
     }
 
     @Override
-    public boolean existsByName(String name) {
-        return false;
-    }
-
-    @Override
-    public List<AuctionKoi> getAuctionIsSold() {
-        // get all auction koi
-        return auctionKoiRepository.findAll().stream().filter(auctionKoi -> auctionKoi.isSold())
-                .toList();
-    }
-
-    @Override
     public AuctionKoiResponse getAuctionKoiDetailsById(long id) throws DataNotFoundException {
         AuctionKoi auctionKoi = auctionKoiRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("Auction Koi not found"));
@@ -292,12 +266,6 @@ public class AuctionKoiService implements IAuctionKoiService {
                 .filter(auctionKoi1 -> auctionKoi1.getId() == id).findFirst()
                 .orElseThrow(() -> new DataNotFoundException("Auction Koi not found"));
         return DTOConverter.convertToAuctionKoiDTO(auctionKoi);
-    }
-
-    @Override
-    public List<AuctionKoi> getAuctionKoiIsNotSold() {
-        return auctionKoiRepository.findAll().stream().filter(auctionKoi -> !auctionKoi.isSold())
-                .toList();
     }
 
     @Override

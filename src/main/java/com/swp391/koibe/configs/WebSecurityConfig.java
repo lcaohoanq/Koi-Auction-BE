@@ -228,7 +228,6 @@ public class WebSecurityConfig {
                     .anyRequest().authenticated();
             })
             .csrf(AbstractHttpConfigurer::disable);
-        ;
 
         return http.build();
     }

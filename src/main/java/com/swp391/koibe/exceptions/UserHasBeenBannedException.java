@@ -3,7 +3,7 @@ package com.swp391.koibe.exceptions;
 public class UserHasBeenBannedException extends RuntimeException {
 
     private Long id;
-    private String email_phone;
+    private final String email_phone;
 
     public UserHasBeenBannedException(String email_phone) {
         super("Account " + email_phone + " has been banned");

@@ -30,7 +30,7 @@ public class KoiImageController {
     public ResponseEntity<?> generateFakeKoiImages() {
         Faker faker = new Faker();
         SampleDataStorage.KoiImage koiImage = new KoiImage();
-        for(int i = 1; i <= 100; i++){
+        for (int i = 1; i <= 100; i++) {
 
         }
         return ResponseEntity.ok("Fake koi images generated");
@@ -44,14 +44,14 @@ public class KoiImageController {
         KoiImagePaginationResponse response =
             new KoiImagePaginationResponse();
 
-        try{
+        try {
             PageRequest pageRequest = PageRequest.of(page, limit);
             Page<KoiImageResponse> koiImages = koiImageService.getAllKoiImages(pageRequest);
             response.setItems(koiImages.getContent());
             response.setTotalPage(koiImages.getTotalPages());
             response.setTotalItem(koiImages.getTotalElements());
             return ResponseEntity.ok(response);
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -60,9 +60,9 @@ public class KoiImageController {
     public ResponseEntity<?> getKoiImageByKoiId(
         @PathVariable("id") Long id
     ) {
-        try{
+        try {
             return ResponseEntity.ok(koiImageService.getKoiImagesByKoiId(id));
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

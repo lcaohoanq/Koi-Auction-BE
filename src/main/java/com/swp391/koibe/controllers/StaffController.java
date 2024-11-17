@@ -2,7 +2,6 @@ package com.swp391.koibe.controllers;
 
 import com.swp391.koibe.dtos.StaffRegisterDTO;
 import com.swp391.koibe.dtos.UserDTO;
-import com.swp391.koibe.dtos.UserRegisterDTO;
 import com.swp391.koibe.exceptions.InvalidApiPathVariableException;
 import com.swp391.koibe.exceptions.MethodArgumentNotValidException;
 import com.swp391.koibe.exceptions.PermissionDeniedException;
@@ -10,7 +9,6 @@ import com.swp391.koibe.models.User;
 import com.swp391.koibe.responses.UserResponse;
 import com.swp391.koibe.responses.pagination.UserPaginationResponse;
 import com.swp391.koibe.services.user.staff.IStaffService;
-import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -68,8 +66,9 @@ public class StaffController {
         @Valid @RequestBody StaffRegisterDTO staff,
         BindingResult result
     ) throws PermissionDeniedException {
-        if(result.hasErrors())
+        if (result.hasErrors()) {
             throw new MethodArgumentNotValidException(result);
+        }
         return ResponseEntity.ok(staffService.createNewStaff(staff));
     }
 
@@ -78,9 +77,10 @@ public class StaffController {
     @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_STAFF')")
     public ResponseEntity<?> createNewStaff(
         @PathVariable long id
-    ){
-        if(id <= 0)
+    ) {
+        if (id <= 0) {
             throw new InvalidApiPathVariableException("Staff id must be greater than 0");
+        }
         User newStaff = staffService.updateMemberToStaff(id);
         return ResponseEntity.ok(newStaff);
     }
@@ -92,8 +92,9 @@ public class StaffController {
         @Valid @RequestBody UserDTO staff,
         BindingResult result) {
 
-        if(result.hasErrors())
+        if (result.hasErrors()) {
             throw new MethodArgumentNotValidException(result);
+        }
 
         return ResponseEntity.ok(staffService.update(id, staff));
     }

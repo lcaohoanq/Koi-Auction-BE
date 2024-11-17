@@ -1,6 +1,5 @@
 package com.swp391.koibe.controllers;
 
-import com.swp391.koibe.constants.ErrorMessage;
 import com.swp391.koibe.dtos.KoiImageDTO;
 import com.swp391.koibe.dtos.koi.KoiDTO;
 import com.swp391.koibe.dtos.koi.UpdateKoiDTO;
@@ -320,7 +319,7 @@ public class KoiController {
             files = files == null ? new ArrayList<>() : files;
             if (files.size() > KoiImage.MAXIMUM_IMAGES_PER_PRODUCT) {
                 return ResponseEntity.badRequest().body(
-                    ErrorMessage.MAXIMUM_IMAGES_PER_PRODUCT
+                    "Maximum images per product: "
                         + KoiImage.MAXIMUM_IMAGES_PER_PRODUCT
                         + " found: " + files.size());
             }

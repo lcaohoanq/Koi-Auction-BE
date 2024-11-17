@@ -36,7 +36,7 @@ public class AuctionKoiRedisService implements IAuctionKoiRedisService {
                                                 Integer bidMethod,
                                                 PageRequest pageRequest) throws JsonProcessingException {
 
-        if(useRedisCache == false) {
+        if(!useRedisCache) {
             return null;
         }
         String key = this.getKeyFrom(keyword, bidMethod, pageRequest);

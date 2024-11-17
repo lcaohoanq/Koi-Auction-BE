@@ -1,7 +1,7 @@
 package com.swp391.koibe.controllers;
 
-import com.swp391.koibe.components.LocalizationUtils;
 import com.swp391.koibe.annotations.RetryAndBlock;
+import com.swp391.koibe.components.LocalizationUtils;
 import com.swp391.koibe.dtos.UpdateUserDTO;
 import com.swp391.koibe.dtos.UserLoginDTO;
 import com.swp391.koibe.dtos.UserRegisterDTO;
@@ -56,7 +56,7 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUserById(
         @PathVariable Long id
-    ){
+    ) {
         return ResponseEntity.ok(DTOConverter.convertToUserDTO(userService.getUserById(id)));
     }
 

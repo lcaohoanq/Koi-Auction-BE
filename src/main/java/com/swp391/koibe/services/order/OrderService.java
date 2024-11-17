@@ -307,10 +307,12 @@ public class OrderService implements IOrderService {
             context.setVariable("koi_id", order.getOrderDetails().get(0).getKoi().getId());
             context.setVariable("koi_name", order.getOrderDetails().get(0).getKoi().getName());
             context.setVariable("koi_price", order.getOrderDetails().get(0).getPrice());
-            orderMailService.sendOrderCancelledToUser(user, "Order Cancelled", EmailCategoriesEnum.ORDER_CANCELLED_BREEDER.getType().toString(), context);
+            orderMailService.sendOrderCancelledToUser(user, "Order Cancelled",
+                                                      EmailCategoriesEnum.ORDER_CANCELLED_BREEDER.getType(), context);
         } else if (user.getRole().getName().equals(Role.MEMBER.toLowerCase())) {
             context.setVariable("total_money", order.getTotalMoney());
-            orderMailService.sendOrderCancelledToUser(user, "Order Cancelled", EmailCategoriesEnum.ORDER_CANCELLED.getType().toString(), context);
+            orderMailService.sendOrderCancelledToUser(user, "Order Cancelled",
+                                                      EmailCategoriesEnum.ORDER_CANCELLED.getType(), context);
         }
     }
 

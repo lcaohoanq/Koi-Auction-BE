@@ -14,12 +14,11 @@ import com.swp391.koibe.repositories.AuctionParticipantRepository;
 import com.swp391.koibe.repositories.AuctionRepository;
 import com.swp391.koibe.repositories.UserRepository;
 import com.swp391.koibe.responses.AuctionResponse;
-import com.swp391.koibe.services.auctionparticipant.AuctionParticipantService;
 import com.swp391.koibe.utils.DTOConverter;
 import com.swp391.koibe.utils.DateTimeUtils;
-
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -28,14 +27,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
-
 @Service
 @RequiredArgsConstructor
 public class AuctionService implements IAuctionService {
     private final AuctionRepository auctionRepository;
-    private final AuctionParticipantService auctionParticipantService;
     private final AuctionParticipantRepository auctionParticipantRepository;
     private final AuctionKoiRepository auctionKoiRepository;
     private final UserRepository userRepository;
@@ -66,21 +61,6 @@ public class AuctionService implements IAuctionService {
                 .build();
 
         return auctionRepository.save(newAuction);
-    }
-
-    @Override
-    public Auction createDescendingAuction(AuctionDTO auctionDTO) throws DataAlreadyExistException {
-        return null;
-    }
-
-    @Override
-    public Auction creatSealedAuction(AuctionDTO auctionDTO) throws DataAlreadyExistException {
-        return null;
-    }
-
-    @Override
-    public Auction createFixedPriceAuction(AuctionDTO auctionDTO) throws DataAlreadyExistException {
-        return null;
     }
 
     @Override

@@ -7,7 +7,6 @@ import com.swp391.koibe.responses.KoiResponse;
 import com.swp391.koibe.responses.UserResponse;
 import com.swp391.koibe.responses.pagination.BreederPaginationResponse;
 import com.swp391.koibe.responses.pagination.KoiPaginationResponse;
-import com.swp391.koibe.responses.pagination.UserPaginationResponse;
 import com.swp391.koibe.services.user.breeder.IBreederService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

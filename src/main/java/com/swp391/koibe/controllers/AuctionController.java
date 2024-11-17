@@ -2,7 +2,6 @@ package com.swp391.koibe.controllers;
 
 import com.github.javafaker.Faker;
 import com.swp391.koibe.dtos.AuctionDTO;
-import com.swp391.koibe.dtos.MailDTO;
 import com.swp391.koibe.dtos.UpdateAuctionDTO;
 import com.swp391.koibe.enums.EAuctionStatus;
 import com.swp391.koibe.exceptions.GenerateDataException;
@@ -11,29 +10,32 @@ import com.swp391.koibe.exceptions.MethodArgumentNotValidException;
 import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.Auction;
 import com.swp391.koibe.responses.AuctionResponse;
-import com.swp391.koibe.responses.KoiInAuctionResponse;
 import com.swp391.koibe.responses.pagination.AuctionPaginationResponse;
-import com.swp391.koibe.responses.pagination.KoiInAuctionPaginationResponse;
 import com.swp391.koibe.services.auction.IAuctionMailService;
 import com.swp391.koibe.services.auction.IAuctionService;
 import com.swp391.koibe.utils.DTOConverter;
 import jakarta.validation.Valid;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RequestMapping("${api.prefix}/auctions")

@@ -1,13 +1,10 @@
 package com.swp391.koibe.controllers;
 
 import com.swp391.koibe.exceptions.InvalidApiPathVariableException;
-import com.swp391.koibe.services.auction.AuctionService;
 import com.swp391.koibe.services.auction.IAuctionMailService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +18,6 @@ import org.thymeleaf.context.Context;
 public class AuctionMailController {
 
     private final IAuctionMailService auctionMailService;
-    private final AuctionService auctionService;
 
     @GetMapping("/end/{auctionId}")
     public void sendAuctionClosedEmailToAllUser(

@@ -57,7 +57,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         specialCasePatterns.add(Pair.of("GET", Pattern.compile(
                 String.format("%s/bidding/\\d+/\\d+", apiPrefix))));
         // Add WebSocket connection pattern
-        specialCasePatterns.add(Pair.of("POST", Pattern.compile(String.format("/app/auctionkoi/\\d+/bid"))));
+        specialCasePatterns.add(Pair.of("POST", Pattern.compile("/app/auctionkoi/\\d+/bid")));
         specialCasePatterns.add(Pair.of("GET", Pattern.compile(String.format("%s/auction-websocket.*", apiPrefix))));
         //swagger-*
 

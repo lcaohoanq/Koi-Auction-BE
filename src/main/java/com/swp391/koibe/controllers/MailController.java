@@ -1,7 +1,7 @@
 package com.swp391.koibe.controllers;
 
-import com.swp391.koibe.constants.EmailSubject;
 import com.swp391.koibe.annotations.SkipEmailValidation;
+import com.swp391.koibe.constants.EmailSubject;
 import com.swp391.koibe.enums.EUpdateRole;
 import com.swp391.koibe.enums.EmailBlockReasonEnum;
 import com.swp391.koibe.enums.EmailCategoriesEnum;
@@ -50,14 +50,17 @@ public class MailController {
         context.setVariable("name", user.getFirstName());
         context.setVariable("sendFromEmail", user.getEmail());
         context.setVariable("role", updateRole);
-        mailService.sendMail("hoangclw@gmail.com", EmailSubject.subjectRequestUpdateRole(), EmailCategoriesEnum.UPDATE_ROLE.getType(), context);
-        mailService.sendMail(user.getEmail(), EmailSubject.subjectRequestUpdateRole(), EmailCategoriesEnum.PROCESSING_UPDATE_ROLE.getType(), context);
+        mailService.sendMail("hoangclw@gmail.com", EmailSubject.subjectRequestUpdateRole(),
+                             EmailCategoriesEnum.UPDATE_ROLE.getType(), context);
+        mailService.sendMail(user.getEmail(), EmailSubject.subjectRequestUpdateRole(),
+                             EmailCategoriesEnum.PROCESSING_UPDATE_ROLE.getType(), context);
         MailResponse response = new MailResponse("Mail sent successfully");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     //api: /otp/send?type=email&recipient=abc@gmail
-    public ResponseEntity<MailResponse> sendOtp(@RequestParam String toEmail) throws MessagingException {
+    public ResponseEntity<MailResponse> sendOtp(@RequestParam String toEmail)
+        throws MessagingException {
         User user = (User) request.getAttribute("validatedEmail");
 
         String name = user.getFirstName();
@@ -84,7 +87,8 @@ public class MailController {
     }
 
     @GetMapping("/block")
-    ResponseEntity<MailResponse> sendBlockAccount(@RequestParam String toEmail) throws MessagingException {
+    ResponseEntity<MailResponse> sendBlockAccount(@RequestParam String toEmail)
+        throws MessagingException {
         User user = (User) request.getAttribute("validatedEmail");
         Context context = new Context();
         context.setVariable("reason", EmailBlockReasonEnum.ABUSE.getReason());
@@ -95,14 +99,16 @@ public class MailController {
     }
 
     @GetMapping(path = "/forgotPassword")
-    ResponseEntity<MailResponse> sendForgotPassword(@RequestParam String toEmail) throws MessagingException {
+    ResponseEntity<MailResponse> sendForgotPassword(@RequestParam String toEmail)
+        throws MessagingException {
         User user = (User) request.getAttribute("validatedEmail");
         String name = user.getFirstName();
         Context context = new Context();
         String otp = OTPUtils.generateOTP();
         context.setVariable("name", name);
         context.setVariable("otp", otp);
-        mailService.sendMail(toEmail, EmailSubject.subjectGreeting(name), EmailCategoriesEnum.FORGOT_PASSWORD.getType(), context);
+        mailService.sendMail(toEmail, EmailSubject.subjectGreeting(name),
+                             EmailCategoriesEnum.FORGOT_PASSWORD.getType(), context);
         MailResponse response = new MailResponse("Mail sent successfully");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

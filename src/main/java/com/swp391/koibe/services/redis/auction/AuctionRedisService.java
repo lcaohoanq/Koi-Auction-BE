@@ -36,7 +36,7 @@ public class AuctionRedisService implements IAuctionRedisService {
                                                 Long categoryId,
                                                 PageRequest pageRequest) throws JsonProcessingException {
 
-        if(useRedisCache == false) {
+        if(!useRedisCache) {
             return null;
         }
         String key = this.getKeyFrom(keyword, categoryId, pageRequest);
