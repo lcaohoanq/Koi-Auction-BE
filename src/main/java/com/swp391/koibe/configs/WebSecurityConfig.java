@@ -75,90 +75,60 @@ public class WebSecurityConfig {
                     .permitAll()
 
                     //UserController
-                    .requestMatchers(GET, String.format("%s/users/{id:\\d+}", apiPrefix))
-                    .permitAll()
-                    .requestMatchers(POST, String.format("%s/users/details", apiPrefix))
-                    .hasAnyRole(Role.MANAGER, Role.MEMBER, Role.BREEDER, Role.STAFF)
+                    .requestMatchers(GET, String.format("%s/users/{id:\\d+}", apiPrefix)).permitAll()
+                    .requestMatchers(POST, String.format("%s/users/details", apiPrefix)).hasAnyRole(Role.MANAGER, Role.MEMBER, Role.BREEDER, Role.STAFF)
                     .requestMatchers(POST, String.format("%s/users/login", apiPrefix)).permitAll()
-                    .requestMatchers(POST, String.format("%s/users/register", apiPrefix))
-                    .permitAll()
-                    .requestMatchers(PUT, String.format(("%s/users/verify/{otp:\\d+}"), apiPrefix))
-                    .permitAll()
-                    .requestMatchers(POST, String.format(("%s/users/verify"), apiPrefix))
-                    .permitAll()
-                    .requestMatchers(POST, String.format("%s/users/logout", apiPrefix)).
-                    hasAnyRole(Role.MANAGER, Role.MEMBER, Role.BREEDER, Role.STAFF)
-                    .requestMatchers(PUT,
-                                     String.format("%s/users/{userId:\\d+}/deposit/{payment:\\d+}",
-                                                   apiPrefix))
-                    .hasAnyRole(Role.MANAGER, Role.MEMBER, Role.BREEDER, Role.STAFF)
+                    .requestMatchers(POST, String.format("%s/users/register", apiPrefix)).permitAll()
+                    .requestMatchers(PUT, String.format(("%s/users/verify/{otp:\\d+}"), apiPrefix)).permitAll()
+                    .requestMatchers(POST, String.format(("%s/users/verify"), apiPrefix)).permitAll()
+                    .requestMatchers(POST, String.format("%s/users/logout", apiPrefix)).hasAnyRole(Role.MANAGER, Role.MEMBER, Role.BREEDER, Role.STAFF)
+                    .requestMatchers(PUT, String.format("%s/users/{userId:\\d+}/deposit/{payment:\\d+}", apiPrefix)).hasAnyRole(Role.MANAGER, Role.MEMBER, Role.BREEDER, Role.STAFF)
 
-                    //GET: breeders .permitAll()
+                    // BreederController
                     .requestMatchers(GET, String.format("%s/breeders", apiPrefix)).permitAll()
-                    //GET: breeders/{id} .permitAll()
-                    .requestMatchers(GET, String.format("%s/breeders/{id:\\d+}", apiPrefix))
-                    .permitAll()
-                    .requestMatchers(GET,
-                                     String.format("%s/breeders/kois/not-in-auction", apiPrefix))
-                    .hasAnyRole(Role.BREEDER)
+                    .requestMatchers(GET, String.format("%s/breeders/{id:\\d+}", apiPrefix)).permitAll()
+                    .requestMatchers(GET, String.format("%s/breeders/kois/not-in-auction", apiPrefix)).hasAnyRole(Role.BREEDER)
 
-                    .requestMatchers(GET,
-                                     String.format("%s/roles", apiPrefix))
-                    .permitAll()
-                    .requestMatchers(GET,
-                                     String.format("%s/roles/{id:\\d+}", apiPrefix))
-                    .permitAll()
+                    // RoleController
+                    .requestMatchers(GET, String.format("%s/roles", apiPrefix)).permitAll()
+                    .requestMatchers(GET, String.format("%s/roles/{id:\\d+}", apiPrefix)).permitAll()
 
-                    .requestMatchers(POST,
-                                     String.format("%s/autho2/**", apiPrefix))
-                    .permitAll()
+                    // OAuth2Controller
+                    .requestMatchers(POST, String.format("%s/autho2/**", apiPrefix)).permitAll()
 
-                    .requestMatchers(GET,
-                                     String.format("%s/auction-websocket/**", apiPrefix))
-                    .permitAll()
-
-                    .requestMatchers(POST,
-                                     String.format("%s/auction-websocket/**",
-                                                   apiPrefix))
-                    .permitAll()
-
-                    .requestMatchers(GET,
-                                     String.format("%s/auction-participant**",
-                                                   apiPrefix))
-                    .permitAll()
-
-                    .requestMatchers(GET,
-                                     String.format("%s/auction-mail**", apiPrefix))
-                    .permitAll()
-
-                    // AuctionController******************
+                    // AuctionController
                     .requestMatchers(GET, String.format("%s/auctions**", apiPrefix)).permitAll()
-                    .requestMatchers(PUT, String.format("%s/auctions/{id:\\d+}", apiPrefix))
-                    .hasAnyRole(Role.MANAGER, Role.STAFF)
-                    .requestMatchers(POST, String.format("%s/auctions", apiPrefix))
-                    .hasAnyRole(Role.MANAGER)
-                    .requestMatchers(DELETE, String.format("%s/auctions/{id:\\d+}", apiPrefix))
-                    .hasAnyRole(Role.MANAGER)
-                    .requestMatchers(GET, String.format("%s/auctions/{id:\\d+}", apiPrefix))
-                    .permitAll()
-                    .requestMatchers(GET, String.format("%s/auctions/koi_register", apiPrefix))
-                    .hasAnyRole(Role.BREEDER)
-                    // ******************************8
+                    .requestMatchers(PUT, String.format("%s/auctions/{id:\\d+}", apiPrefix)).hasAnyRole(Role.MANAGER, Role.STAFF)
+                    .requestMatchers(POST, String.format("%s/auctions", apiPrefix)).hasAnyRole(Role.MANAGER)
+                    .requestMatchers(DELETE, String.format("%s/auctions/{id:\\d+}", apiPrefix)).hasAnyRole(Role.MANAGER)
+                    .requestMatchers(GET, String.format("%s/auctions/{id:\\d+}", apiPrefix)).permitAll()
+                    .requestMatchers(GET, String.format("%s/auctions/koi_register", apiPrefix)).hasAnyRole(Role.BREEDER)
+                    .requestMatchers(GET, String.format("%s/auctions/get-auctions-by-keyword", apiPrefix)).permitAll()
+                    .requestMatchers(GET, String.format("%s/auction-websocket/**", apiPrefix)).permitAll()
+                    .requestMatchers(POST, String.format("%s/auction-websocket/**", apiPrefix)).permitAll()
+                    .requestMatchers(GET, String.format("%s/auction-participant**", apiPrefix)).permitAll()
+                    .requestMatchers(GET, String.format("%s/auction-mail**", apiPrefix)).permitAll()
 
-                    // AuctionKoiController******************
+                    // AuctionKoiController
                     .requestMatchers(GET, String.format("%s/auctionkois**", apiPrefix)).permitAll()
                     .requestMatchers(GET, String.format("%s/auctionkois/auction/{id:\\d+}", apiPrefix)).permitAll()
                     .requestMatchers(GET, String.format("%s/auctionkois/{aid:\\d+}/{id:\\d+}", apiPrefix)).permitAll()
                     .requestMatchers(GET, String.format("%s/auctionkois/get-kois-by-keyword", apiPrefix)).permitAll()
                     .requestMatchers(GET, String.format("%s/auctionkois/count-by-bid-method", apiPrefix)).permitAll()
 
+                    // BiddingHistoryController
                     .requestMatchers(GET, String.format("%s/bidding/{id:\\d+}", apiPrefix)).permitAll()
                     .requestMatchers(GET, String.format("%s/bidding/{auctionKoiId:\\d+}/{userId:\\d+}", apiPrefix)).permitAll()
 
+                    // OrderController
                     .requestMatchers(GET, String.format("%s/orders**", apiPrefix)).permitAll()
                     .requestMatchers(GET,String.format("%s/orders/get-orders-by-keyword", apiPrefix)).permitAll()
 
+                    // OrderDetailController
+                    .requestMatchers(GET, String.format("%s/orders_details**", apiPrefix)).permitAll()
+
                     //KoiController
+                    .requestMatchers(GET, String.format("%s/kois**", apiPrefix)).permitAll()
                     .requestMatchers(GET, String.format("%s/kois/count-by-gender", apiPrefix)).permitAll()
                     .requestMatchers(GET, String.format("%s/kois/{id:\\d+}", apiPrefix)).permitAll()
                     .requestMatchers(PUT, String.format("%s/kois/{id:\\d+}", apiPrefix)).hasAnyRole(Role.MANAGER, Role.STAFF, Role.BREEDER)
@@ -166,64 +136,36 @@ public class WebSecurityConfig {
                     .requestMatchers(GET, String.format("%s/kois/get-kois-owner-by-keyword-not-auth", apiPrefix)).permitAll()
                     .requestMatchers(GET, String.format("%s/kois/get-unverified-kois-by-keyword", apiPrefix)).hasAnyRole(Role.MANAGER, Role.STAFF, Role.BREEDER)
 
-                    // Already put this in PreAuthorize
-                    .requestMatchers(GET,
-                                     String.format("%s/auctions/get-auctions-by-keyword",
-                                                   apiPrefix))
-                    .permitAll()
+                    // StaffController
+                    .requestMatchers(GET, String.format("%s/staffs**", apiPrefix)).hasAnyRole(Role.MANAGER)
 
-                    .requestMatchers(GET,
-                                     String.format("%s/orders_details**", apiPrefix))
-                    .permitAll()
+                    // PaymentController
+                    .requestMatchers(GET, String.format("%s/payment**", apiPrefix)).hasAnyRole(Role.MEMBER, Role.BREEDER)
+                    .requestMatchers(GET, String.format("%s/payments/vnpay/payment_return", apiPrefix)).permitAll()
 
-                    .requestMatchers(GET,
-                                     String.format("%s/kois**", apiPrefix))
-                    .permitAll()
-
-                    // StaffController: all route need to verify JWT Token
-                    .requestMatchers(GET,
-                                     String.format("%s/staffs**", apiPrefix))
-                    .hasAnyRole(Role.MANAGER)
-
-                    .requestMatchers(GET,
-                                     String.format("%s/payment**", apiPrefix))
-                    .hasAnyRole(Role.MEMBER, Role.BREEDER)
-
-                    // forgot-password
-                    .requestMatchers(GET, String.format("%s/forgot-password**", apiPrefix))
-                    .permitAll()
-                    .requestMatchers(PUT, String.format("%s/forgot-password**", apiPrefix))
-                    .permitAll()
+                    // ForgotPasswordController
+                    .requestMatchers(GET, String.format("%s/forgot-password**", apiPrefix)).permitAll()
+                    .requestMatchers(PUT, String.format("%s/forgot-password**", apiPrefix)).permitAll()
 
                     // OtpController
                     .requestMatchers(GET, String.format("%s/otp/send", apiPrefix)).permitAll()
                     .requestMatchers(POST, String.format("%s/otp/verify", apiPrefix)).permitAll()
 
-                    // feedbackcontroller
+                    // FeedbackController
                     .requestMatchers(GET, String.format("%s/feedbacks**", apiPrefix)).permitAll()
                     .requestMatchers(POST, String.format("%s/feedbacks**", apiPrefix)).permitAll()
                     .requestMatchers(PUT, String.format("%s/feedbacks**", apiPrefix)).permitAll()
                     .requestMatchers(DELETE, String.format("%s/feedbacks**", apiPrefix)).permitAll()
 
                     // MailController
-                    .requestMatchers(POST, String.format("%s/mail/update-role", apiPrefix))
-                    .hasAnyRole(Role.MEMBER)
-
-                    // Add this new rule to allow access to the VNPay payment return endpoint
-                    .requestMatchers(GET,
-                                     String.format("%s/payments/vnpay/payment_return", apiPrefix))
-                    .permitAll()
+                    .requestMatchers(POST, String.format("%s/mail/update-role", apiPrefix)).hasAnyRole(Role.MEMBER)
 
                     //CategoryController
-                    .requestMatchers(GET, String.format("%s/categories/{id:\\d+}", apiPrefix))
-                    .permitAll()
+                    .requestMatchers(GET, String.format("%s/categories/{id:\\d+}", apiPrefix)).permitAll()
                     .requestMatchers(GET, String.format("%s/categories**", apiPrefix)).permitAll()
-                    .requestMatchers(POST, String.format("%s/categories", apiPrefix))
-                    .hasAnyRole(Role.MANAGER)
-                    .requestMatchers(PUT, String.format("%s/categories/{id:\\d+}", apiPrefix))
-                    .hasAnyRole(Role.MANAGER)
-                    .requestMatchers(DELETE, String.format("%s/categories/{id:\\d+}", apiPrefix))
-                    .hasAnyRole(Role.MANAGER)
+                    .requestMatchers(POST, String.format("%s/categories", apiPrefix)).hasAnyRole(Role.MANAGER)
+                    .requestMatchers(PUT, String.format("%s/categories/{id:\\d+}", apiPrefix)).hasAnyRole(Role.MANAGER)
+                    .requestMatchers(DELETE, String.format("%s/categories/{id:\\d+}", apiPrefix)).hasAnyRole(Role.MANAGER)
 
                     .anyRequest().authenticated();
             })
@@ -241,7 +183,11 @@ public class WebSecurityConfig {
             "https://*.lt", // Localtunnel domains
             "https://www.koiauction88.me", // Your domain
             "https://koiauction88.me", // Non-www version
-            "https://*.ngrok-free.app" // ngrok domains
+            "https://*.ngrok-free.app", // ngrok domains
+            "https://koi-auction-production.vercel.app", // Vercel domain
+            "https://koi-auction-production-g6sratwgy-lcaohoanqs-projects.vercel.app", // Vercel domain
+            "https://koi-auction-production-git-main-lcaohoanqs-projects.vercel.app", // Vercel domain
+            "https://www.fkoi88.me" // Your domain
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList(
