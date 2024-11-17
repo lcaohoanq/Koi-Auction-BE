@@ -224,4 +224,9 @@ public class AuctionService implements IAuctionService {
     public Page<Auction> getAuctionByKeyword(String keyword, Pageable pageable) {
         return auctionRepository.getAuctionByKeyword(keyword, pageable);
     }
+
+    @Override
+    public Page<Auction> getAuctionUpcomingByKeyword(String keyword, EAuctionStatus status, Pageable pageable) {
+        return auctionRepository.getAuctionUpcomingByKeyword(keyword, status, pageable);
+    }
 }

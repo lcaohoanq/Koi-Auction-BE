@@ -17,7 +17,16 @@ interface AuctionRepository : JpaRepository<Auction, Long> {
             "a.title LIKE CONCAT('%', :keyword, '%')" +
             "OR CAST(a.status as string) LIKE CONCAT('%', :keyword, '%') " +
             "OR CAST(a.startTime as string) LIKE CONCAT('%', :keyword, '%') " +
-            "OR CAST(a.startTime as string) LIKE CONCAT('%', :keyword, '%') ")
+            "OR CAST(a.endTime as string) LIKE CONCAT('%', :keyword, '%') ")
     fun getAuctionByKeyword(@Param("keyword") keyword: String, pageable: Pageable): Page<Auction>
+
+    @Query("SELECT a FROM Auction a WHERE " +
+            "(a.title LIKE CONCAT('%', :keyword, '%') " +
+            "OR CAST(a.startTime as string) LIKE CONCAT('%', :keyword, '%') " +
+            "OR CAST(a.endTime as string) LIKE CONCAT('%', :keyword, '%')) " +
+            "AND a.status = :status")
+    fun getAuctionUpcomingByKeyword(@Param("keyword") keyword: String,
+                                    @Param("status") status: EAuctionStatus,
+                                    pageable: Pageable): Page<Auction>
 
 }

@@ -43,4 +43,7 @@ public interface IAuctionService {
     List<Auction> getAuctionByAuctioneerId(long auctioneerId) throws DataNotFoundException;
 
     Page<Auction> getAuctionByKeyword(String keyword, Pageable pageable);
+
+    Page<Auction> getAuctionUpcomingByKeyword(String keyword, EAuctionStatus status,
+                                              Pageable pageable);
 }

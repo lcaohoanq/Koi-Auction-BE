@@ -170,6 +170,23 @@ public class AuctionController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/get-auctions-upcoming")
+    public ResponseEntity<AuctionPaginationResponse> getAuctionsUpcomingByKeyword(
+        @RequestParam(defaultValue = "", required = false) String keyword,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int limit) {
+        // Tạo Pageable từ thông tin trang và giới hạn
+        PageRequest pageRequest = PageRequest.of(page, limit);
+        Page<AuctionResponse> auctionPage = auctionService
+            .getAuctionUpcomingByKeyword(keyword, EAuctionStatus.UPCOMING, pageRequest).map(DTOConverter::convertToAuctionDTO);
+        AuctionPaginationResponse response = new AuctionPaginationResponse();
+        response.setItem(auctionPage.getContent());
+        response.setTotalItem(auctionPage.getTotalElements());
+        response.setTotalPage(auctionPage.getTotalPages());
+
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("")
     @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     public ResponseEntity<AuctionResponse> createAuction(
