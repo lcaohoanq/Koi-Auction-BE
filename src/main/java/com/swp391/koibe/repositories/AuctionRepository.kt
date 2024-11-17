@@ -29,4 +29,7 @@ interface AuctionRepository : JpaRepository<Auction, Long> {
                                     @Param("status") status: EAuctionStatus,
                                     pageable: Pageable): Page<Auction>
 
+    @Query("SELECT COUNT(a) FROM Auction a WHERE a.auctioneer.id = :auctioneer_id")
+    fun countAuctionsByAuctioneerId(auctioneer_id: Long): Long
+
 }
