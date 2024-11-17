@@ -206,7 +206,7 @@ public class WebSecurityConfig {
                     .requestMatchers(DELETE, String.format("%s/feedbacks**", apiPrefix)).permitAll()
 
                     // MailController
-                    .requestMatchers(GET, String.format("%s/mail/update-role", apiPrefix))
+                    .requestMatchers(POST, String.format("%s/mail/update-role", apiPrefix))
                     .hasAnyRole(Role.MEMBER)
 
                     // Add this new rule to allow access to the VNPay payment return endpoint

@@ -2,9 +2,11 @@ package com.swp391.koibe.controllers;
 
 import com.swp391.koibe.annotations.SkipEmailValidation;
 import com.swp391.koibe.constants.EmailSubject;
+import com.swp391.koibe.dtos.UpdateRolePurposeDTO;
 import com.swp391.koibe.enums.EUpdateRole;
 import com.swp391.koibe.enums.EmailBlockReasonEnum;
 import com.swp391.koibe.enums.EmailCategoriesEnum;
+import com.swp391.koibe.exceptions.MethodArgumentNotValidException;
 import com.swp391.koibe.models.Otp;
 import com.swp391.koibe.models.User;
 import com.swp391.koibe.responses.MailResponse;
@@ -14,12 +16,16 @@ import com.swp391.koibe.services.user.IUserService;
 import com.swp391.koibe.utils.OTPUtils;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,19 +43,24 @@ public class MailController {
     private final IUserService userService;
 
     //GET: localhost:4000/api/v1/mail/update-role?updateRole=STAFF
-    @GetMapping("/update-role")
+    @PostMapping("/update-role")
     @PreAuthorize("hasAnyRole('ROLE_MEMBER')")
     @SkipEmailValidation
     public ResponseEntity<?> sendOtp(
         @RequestHeader("Authorization") String authorizationHeader,
-        @RequestParam EUpdateRole updateRole
+        @RequestParam EUpdateRole updateRole,
+        @Valid @RequestBody UpdateRolePurposeDTO updateRolePurposeDTO,
+        BindingResult result
     ) throws Exception {
+        if(result.hasErrors()) throw new MethodArgumentNotValidException(result);
+
         String extractedToken = authorizationHeader.substring(7);
         User user = userService.getUserDetailsFromToken(extractedToken);
         Context context = new Context();
         context.setVariable("name", user.getFirstName());
         context.setVariable("sendFromEmail", user.getEmail());
         context.setVariable("role", updateRole);
+        context.setVariable("purpose", updateRolePurposeDTO.purpose());
         mailService.sendMail("hoangclw@gmail.com", EmailSubject.subjectRequestUpdateRole(),
                              EmailCategoriesEnum.UPDATE_ROLE.getType(), context);
         mailService.sendMail(user.getEmail(), EmailSubject.subjectRequestUpdateRole(),
