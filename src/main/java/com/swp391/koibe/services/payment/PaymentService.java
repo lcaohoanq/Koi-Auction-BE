@@ -62,7 +62,7 @@ public class PaymentService implements IPaymentService {
         long amount = (long) (paymentDTO.getPaymentAmount() * 100);
         String id = orderInfoPrefix.startsWith("Deposit") ? paymentDTO.getUserId().toString()
                 : paymentDTO.getOrderId().toString();
-        String vnp_TxnRef = VNPayConfig.getRandomNumber(8);
+        String vnp_TxnRef = com.swp391.koibe.configs.VNPayConfig.getRandomNumber(8);
 
         Map<String, String> vnp_Params = createBaseVnpParams(amount, vnp_TxnRef, ipAddress);
         vnp_Params.put("vnp_OrderInfo", orderInfoPrefix + id);
@@ -108,14 +108,14 @@ public class PaymentService implements IPaymentService {
         Iterator itr = fieldNames.iterator();
         while (itr.hasNext()) {
             String fieldName = (String) itr.next();
-            String fieldValue = (String) vnp_Params.get(fieldName);
+            String fieldValue = vnp_Params.get(fieldName);
             if ((fieldValue != null) && (fieldValue.length() > 0)) {
                 hashData.append(fieldName);
                 hashData.append('=');
-                hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
-                query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII.toString()));
+                hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
+                query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII));
                 query.append('=');
-                query.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
+                query.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
                 if (itr.hasNext()) {
                     query.append('&');
                     hashData.append('&');
@@ -123,7 +123,7 @@ public class PaymentService implements IPaymentService {
             }
         }
         String queryUrl = query.toString();
-        String vnp_SecureHash = VNPayConfig.hmacSHA512(VNPayConfig.getVnp_HashSecret(), hashData.toString());
+        String vnp_SecureHash = com.swp391.koibe.configs.VNPayConfig.hmacSHA512(VNPayConfig.getVnp_HashSecret(), hashData.toString());
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
         return VNPayConfig.getVnp_PayUrl() + "?" + queryUrl;
     }

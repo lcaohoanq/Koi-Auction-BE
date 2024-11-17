@@ -11,9 +11,6 @@ interface UserRepository : JpaRepository<User, Long> {
     fun findByEmail(email: String): Optional<User>
     fun findByPhoneNumber(phoneNumber: String): Optional<User>
     fun findByRoleName(roleName: String, pageable: Pageable): Page<User>
-    fun existsByPhoneNumber(phoneNumber: String): Boolean
-    fun existsByEmail(email: String): Boolean
-    fun findByRoleId(roleId: Long): List<User>
     @Query("SELECT u FROM User u WHERE u.role.id = 2")
     fun findAllStaff(pageable: Pageable): Page<User>
     @Query("SELECT u FROM User u WHERE u.id = :id AND u.role.id = 2")

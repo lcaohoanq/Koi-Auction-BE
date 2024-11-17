@@ -43,7 +43,7 @@ public class RoleControllerIT {
     @Autowired
     private JwtTokenUtils jwtTokenUtils;
 
-    private String jwtToken = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjI3LCJlbWFpbCI6ImlzYUBnbWFpbC5jb20iLCJzdWIiOiJpc2FAZ21haWwuY29tIiwiZXhwIjoxNzMyMzgxMzAyfQ.kqRptjGDXns0lFlZZptJHJFLzSrHDvHnGf2LbE6l9rE";
+    private final String jwtToken = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjI3LCJlbWFpbCI6ImlzYUBnbWFpbC5jb20iLCJzdWIiOiJpc2FAZ21haWwuY29tIiwiZXhwIjoxNzMyMzgxMzAyfQ.kqRptjGDXns0lFlZZptJHJFLzSrHDvHnGf2LbE6l9rE";
 
     @BeforeEach
     public void setup() throws Exception {

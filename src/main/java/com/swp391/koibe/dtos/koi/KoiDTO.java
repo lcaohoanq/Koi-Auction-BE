@@ -1,6 +1,7 @@
 package com.swp391.koibe.dtos.koi;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.swp391.koibe.enums.EKoiGender;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -23,7 +24,7 @@ public record KoiDTO(
 
     @NotBlank(message = "Koi gender is required when create a new koi")
     @Pattern(regexp = "MALE|FEMALE|UNKNOWN", message = "Gender must be either MALE | FEMALE | UNKNOWN")
-    @JsonProperty("gender") String sex,
+    @JsonProperty("gender") EKoiGender sex,
 
     @NotNull(message = "Koi length is required when create a new koi")
     @Min(value = 1, message = "Koi length must be greater than 0(cm)")

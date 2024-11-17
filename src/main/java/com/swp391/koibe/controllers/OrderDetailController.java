@@ -45,6 +45,7 @@ public class OrderDetailController {
         }
 
     }
+
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_MEMBER', 'ROLE_STAFF', 'ROLE_BREEDER')")
     public ResponseEntity<?> getOrderDetail(
@@ -68,7 +69,7 @@ public class OrderDetailController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_BREEDER', 'ROLE_STAFF')")
-    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
+    @Operation(security = {@SecurityRequirement(name = "bearer-key")})
     public ResponseEntity<?> updateOrderDetail(
         @Valid @PathVariable("id") Long id,
         @RequestBody OrderDetailDTO orderDetailDTO) {
@@ -81,7 +82,7 @@ public class OrderDetailController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
+    @Operation(security = {@SecurityRequirement(name = "bearer-key")})
     @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_BREEDER', 'ROLE_STAFF')")
     public ResponseEntity<?> deleteOrderDetail(
         @Valid @PathVariable("id") Long id) {

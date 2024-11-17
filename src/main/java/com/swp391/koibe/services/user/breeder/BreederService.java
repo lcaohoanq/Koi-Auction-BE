@@ -11,6 +11,7 @@ import com.swp391.koibe.models.User;
 import com.swp391.koibe.repositories.CategoryRepository;
 import com.swp391.koibe.repositories.KoiRepository;
 import com.swp391.koibe.repositories.UserRepository;
+import com.swp391.koibe.responses.BreederResponse;
 import com.swp391.koibe.responses.KoiResponse;
 import com.swp391.koibe.responses.UserResponse;
 import com.swp391.koibe.utils.DTOConverter;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,11 +32,12 @@ public class BreederService implements IBreederService {
     private final UserRepository userRepository;
     private final KoiRepository koiRepository;
     private final CategoryRepository categoryRepository;
+    private final DTOConverter dtoConverter;
 
     @Override
-    public Page<UserResponse> getAllBreeders(Pageable pageable) {
+    public Page<BreederResponse> getAllBreeders(Pageable pageable) {
         Page<User> breeders = userRepository.findByRoleName("BREEDER", pageable);
-        return breeders.map(DTOConverter::convertToUserDTO);
+        return breeders.map(dtoConverter::convertToBreederDTO);
     }
 
     @Override

@@ -176,7 +176,7 @@ public class WebUI {
             wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         } catch (Throwable error) {
             LogUtils.error("Timeout waiting for the element Visible. " + by.toString());
-            Assert.fail("Timeout waiting for the element Visible. " + by.toString());
+            Assert.fail("Timeout waiting for the element Visible. " + by);
         }
     }
 
@@ -186,7 +186,7 @@ public class WebUI {
             wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         } catch (Throwable error) {
             LogUtils.error("Timeout waiting for the element Visible. " + by.toString());
-            Assert.fail("Timeout waiting for the element Visible. " + by.toString());
+            Assert.fail("Timeout waiting for the element Visible. " + by);
         }
     }
 
@@ -196,7 +196,7 @@ public class WebUI {
             wait.until(ExpectedConditions.presenceOfElementLocated(by));
         } catch (Throwable error) {
             LogUtils.error("Element not exist. " + by.toString());
-            Assert.fail("Element not exist. " + by.toString());
+            Assert.fail("Element not exist. " + by);
         }
     }
 
@@ -206,7 +206,7 @@ public class WebUI {
             wait.until(ExpectedConditions.presenceOfElementLocated(by));
         } catch (Throwable error) {
             LogUtils.error("Element not exist. " + by.toString());
-            Assert.fail("Element not exist. " + by.toString());
+            Assert.fail("Element not exist. " + by);
 
         }
     }

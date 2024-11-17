@@ -10,6 +10,7 @@ import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.AuctionKoi;
 import com.swp391.koibe.models.User;
 import com.swp391.koibe.responses.AuctionKoiResponse;
+import com.swp391.koibe.responses.BidMethodQuantityResponse;
 import com.swp391.koibe.responses.KoiInAuctionResponse;
 import com.swp391.koibe.responses.pagination.KoiInAuctionPaginationResponse;
 import com.swp391.koibe.services.auctionkoi.IAuctionKoiService;
@@ -37,6 +38,11 @@ public class AuctionKoiController {
     private final IAuctionKoiService auctionKoiService;
     private final IUserService userService;
     private final IKoiRedisService koiRedisService;
+
+    @GetMapping("/count-by-bid-method")
+    public ResponseEntity<BidMethodQuantityResponse> countAuctionKoiByBidMethod() {
+        return ResponseEntity.ok(auctionKoiService.findQuantityByBidMethod());
+    }
 
     @GetMapping("/auction/{id}")
     public ResponseEntity<List<AuctionKoiResponse>> getAuctionKoisByAuctionId(@PathVariable Long id) {

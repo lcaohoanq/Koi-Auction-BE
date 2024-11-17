@@ -1,5 +1,6 @@
 package com.swp391.koibe.models;
 
+import com.swp391.koibe.enums.EKoiGender;
 import com.swp391.koibe.enums.EKoiStatus;
 import com.swp391.koibe.models.listener.KoiListener;
 import jakarta.persistence.Column;
@@ -37,8 +38,9 @@ public class Koi extends BaseEntity{
     @Column(name = "name", nullable = false, length = 350)
     private String name;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "sex", length = 10)
-    private String sex;
+    private EKoiGender sex;
 
     @Column(name = "length")
     private int length;

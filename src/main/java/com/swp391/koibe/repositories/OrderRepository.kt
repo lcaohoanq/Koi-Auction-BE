@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 
 interface OrderRepository : JpaRepository<Order, Long> {
-    fun findByUserId(userId: Long): List<Order>;
+    fun findByUserId(userId: Long): List<Order>
 
     @Query(
         "SELECT o FROM Order o WHERE o.active = true " +

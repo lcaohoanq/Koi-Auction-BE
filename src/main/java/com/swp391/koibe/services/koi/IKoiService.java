@@ -8,6 +8,7 @@ import com.swp391.koibe.enums.EKoiStatus;
 import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.Koi;
 import com.swp391.koibe.models.KoiImage;
+import com.swp391.koibe.responses.KoiGenderResponse;
 import com.swp391.koibe.responses.KoiResponse;
 import jakarta.mail.MessagingException;
 import org.springframework.data.domain.Page;
@@ -38,5 +39,7 @@ public sealed interface IKoiService<T> permits KoiService {
     Page<Koi> findUnverifiedKoiByKeyword(String keyword, Pageable pageable);
 
     Page<Koi> findAllKoiByKeyword(String keyword, Pageable pageable);
+
+    KoiGenderResponse findQuantityKoiByGender();
 
 }

@@ -1,12 +1,19 @@
 package com.swp391.koibe.utils;
 
 import com.swp391.koibe.models.*;
+import com.swp391.koibe.repositories.KoiRepository;
 import com.swp391.koibe.responses.*;
 import com.swp391.koibe.responses.order.OrderDetailResponse;
 import com.swp391.koibe.responses.order.OrderResponse;
 import java.time.format.DateTimeFormatter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@RequiredArgsConstructor
+@Component
 public class DTOConverter {
+
+    private final KoiRepository koiRepository;
 
     public static UserResponse convertToUserDTO(User user) {
         return UserResponse.builder()
@@ -30,11 +37,42 @@ public class DTOConverter {
                 .build();
     }
 
+    public BreederResponse convertToBreederDTO(User user) {
+        return BreederResponse.builder()
+            .id(user.getId())
+            .firstName(user.getFirstName())
+            .lastName(user.getLastName())
+            .phoneNumber(user.getPhoneNumber())
+            .email(user.getEmail())
+            .address(user.getAddress())
+            .password(user.getPassword())
+            .isActive(user.isActive() ? 1 : 0)
+            .isSubscription(user.isSubscription() ? 1 : 0)
+            .statusName(user.getStatus() != null ? user.getStatus().getStatus() : null)
+            .dob(String.valueOf(user.getDob()).split(" ")[0])
+            .avatarUrl(user.getAvatarUrl())
+            .googleAccountId(user.getGoogleAccountId())
+            .roleName(user.getRole() != null ? user.getRole().getName() : null)
+            .accountBalance(user.getAccountBalance())
+            .createdAt(user.getCreatedAt() != null ? user.getCreatedAt().format(DateTimeFormatter.ISO_DATE_TIME) : null)
+            .updatedAt(user.getUpdatedAt() != null ? user.getUpdatedAt().format(DateTimeFormatter.ISO_DATE_TIME) : null)
+            .koiCount(koiRepository.countKoisByOwnerId(user.getId()))
+            .build();
+    }
+
+    public CategoryResponse convertToCategoryDTO(Category category) {
+        return CategoryResponse.builder()
+                .id(category.getId())
+                .name(category.getName())
+                .koiCount(koiRepository.countKoisByCategoryId(category.getId()))
+                .build();
+    }
+
     public static KoiResponse convertToKoiDTO(Koi koi) {
         return KoiResponse.builder()
                 .id(koi.getId())
                 .name(koi.getName())
-                .sex(koi.getSex().toUpperCase())
+                .sex(koi.getSex())
                 .length(koi.getLength())
                 .yearBorn(koi.getYearBorn())
                 .price(koi.getPrice())

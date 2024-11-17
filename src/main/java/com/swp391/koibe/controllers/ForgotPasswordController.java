@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ForgotPasswordController {
 
     private final HttpServletRequest request;
-private final IForgotPasswordService forgotPasswordService;
+    private final IForgotPasswordService forgotPasswordService;
     private final UserService userService;
 
     @GetMapping("")
@@ -37,14 +37,15 @@ private final IForgotPasswordService forgotPasswordService;
     ) throws MessagingException {
         User user = (User) request.getAttribute("validatedEmail"); //get from aop
 
-        try{
+        try {
             forgotPasswordService.sendEmailOtp(user);
 
             ForgotPasswordResponse response =
-                new ForgotPasswordResponse("Forgot password email sent successfully to " + user.getEmail());
+                new ForgotPasswordResponse(
+                    "Forgot password email sent successfully to " + user.getEmail());
             return ResponseEntity.ok(response);
-        }catch (Exception e){
-            if(e instanceof MessagingException){
+        } catch (Exception e) {
+            if (e instanceof MessagingException) {
                 log.error("Error sending email", e.getCause());
                 throw e;
             }
@@ -56,15 +57,15 @@ private final IForgotPasswordService forgotPasswordService;
     public ResponseEntity<?> updatePassword(
         @Valid @RequestBody UpdatePasswordDTO updatePasswordDTO,
         BindingResult result
-    ){
-        if(result.hasErrors()){
+    ) {
+        if (result.hasErrors()) {
             throw new MethodArgumentNotValidException(result);
         }
 
-        try{
+        try {
             userService.updatePassword(updatePasswordDTO);
             return ResponseEntity.ok("Password updated successfully");
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error updating password", e.getCause());
             return ResponseEntity.badRequest().body("Error updating password");
         }

@@ -12,15 +12,18 @@ import com.swp391.koibe.responses.OAuth2Payload;
 import com.swp391.koibe.services.user.IUserService;
 import com.swp391.koibe.utils.MessageKeys;
 import com.swp391.koibe.utils.ResponseUtils;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -62,11 +65,14 @@ public class OAuth2Controller {
                 oAuth2Payload.getPicture());
 
             log.info("Login via Google successfully");
-            return ResponseUtils.loginSuccess(localizationUtils.getLocalizedMessage(MessageKeys.LOGIN_SUCCESSFULLY), token);
+            return ResponseUtils.loginSuccess(
+                localizationUtils.getLocalizedMessage(MessageKeys.LOGIN_SUCCESSFULLY), token);
         } catch (Exception e) {
-            return ResponseUtils.loginFailed(localizationUtils.getLocalizedMessage(MessageKeys.LOGIN_FAILED, e.getMessage()));
+            return ResponseUtils.loginFailed(
+                localizationUtils.getLocalizedMessage(MessageKeys.LOGIN_FAILED, e.getMessage()));
         }
     }
+
     @GetMapping("/google-client-id")
     public ResponseEntity<Map<String, String>> getGoogleClientId() {
         Map<String, String> response = new HashMap<>();

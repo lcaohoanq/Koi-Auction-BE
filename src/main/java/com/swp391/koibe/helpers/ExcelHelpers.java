@@ -24,7 +24,7 @@ public class ExcelHelpers {
     private CellStyle cellstyle;
     private Color mycolor;
     private String excelFilePath;
-    private Map<String, Integer> columns = new HashMap<>();
+    private final Map<String, Integer> columns = new HashMap<>();
 
     public void setExcelFile(String ExcelPath, String SheetName) {
         try {

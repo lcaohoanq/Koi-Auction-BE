@@ -3,6 +3,7 @@ package com.swp391.koibe.responses;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.swp391.koibe.enums.EBidMethod;
+import com.swp391.koibe.enums.EKoiGender;
 import com.swp391.koibe.enums.EKoiStatus;
 import com.swp391.koibe.models.Koi;
 import com.swp391.koibe.responses.base.BaseResponse;
@@ -27,7 +28,7 @@ public class KoiInAuctionResponse extends BaseResponse<Koi> {
     private String name;
 
     @JsonProperty("sex")
-    private String sex;
+    private EKoiGender sex;
 
     @JsonProperty("length")
     private Integer length;
@@ -71,7 +72,7 @@ public class KoiInAuctionResponse extends BaseResponse<Koi> {
     @JsonProperty("total_page")
     private Integer totalPage;
 
-    public KoiInAuctionResponse(Long id, String name, String sex, int length, int yearBorn, Long price,
+    public KoiInAuctionResponse(Long id, String name, EKoiGender sex, int length, int yearBorn, Long price,
                                 EKoiStatus status, int isDisplay, String thumbnail, String description,
                                 Long ownerId, Integer categoryId, LocalDateTime createdAt, LocalDateTime updatedAt,
                                 Long auctionId, EBidMethod bidMethod) {

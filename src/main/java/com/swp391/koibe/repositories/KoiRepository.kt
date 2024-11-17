@@ -3,8 +3,6 @@ package com.swp391.koibe.repositories
 import com.swp391.koibe.enums.EKoiStatus
 import com.swp391.koibe.models.Koi
 import com.swp391.koibe.responses.KoiInAuctionResponse
-import com.swp391.koibe.responses.KoiResponse
-import com.swp391.koibe.responses.pagination.KoiPaginationResponse
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
@@ -12,10 +10,15 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 
 interface KoiRepository : JpaRepository<Koi, Long> {
-    fun existsByName(name: String): Boolean
     fun findByOwnerId(ownerId: Long, pageable: Pageable): Page<Koi>
     fun findByOwnerIdAndStatus(ownerId: Long, status: EKoiStatus, pageable: Pageable): Page<Koi>
     fun findByStatus(status: EKoiStatus, pageable: Pageable): Page<Koi>
+
+    @Query("SELECT COUNT(k) FROM Koi k WHERE k.owner.id = :ownerId")
+    fun countKoisByOwnerId(ownerId: Long): Long
+
+    @Query("SELECT COUNT(k) FROM Koi k WHERE k.category.id = :categoryId")
+    fun countKoisByCategoryId(categoryId: Long): Long
 
     //SELECT koi data is display in existing auction
     //notice im want to retrieve the auction id at that last column to use in fe call
@@ -26,7 +29,7 @@ interface KoiRepository : JpaRepository<Koi, Long> {
                 "(:keyword IS NULL OR :keyword = '' OR " +
                 "k.name LIKE CONCAT('%', :keyword, '%') " +
                 "OR k.description LIKE CONCAT('%', :keyword, '%') " +
-                "OR k.sex LIKE CONCAT('%', :keyword, '%') " +
+                "OR CAST(k.sex as string) LIKE CONCAT('%', :keyword, '%') " +
                 "OR CAST(k.length AS string) LIKE CONCAT('%', :keyword, '%') " +
                 "OR CAST(k.yearBorn AS string) LIKE CONCAT('%', :keyword, '%') " +
                 "OR CAST(k.owner.firstName as string) LIKE CONCAT('%', :keyword, '%')" +
@@ -74,7 +77,7 @@ interface KoiRepository : JpaRepository<Koi, Long> {
     @Query(
         "SELECT k FROM Koi k WHERE (k.name LIKE CONCAT('%', :keyword, '%') " +
                 "OR k.description LIKE CONCAT('%', :keyword, '%') " +
-                "OR k.sex LIKE CONCAT('%', :keyword, '%') " +
+                "OR CAST(k.sex as string) LIKE CONCAT('%', :keyword, '%') " +
                 "OR CAST(k.length AS string) LIKE CONCAT('%', :keyword, '%') " +
                 "OR CAST(k.yearBorn AS string) LIKE CONCAT('%', :keyword, '%') " +
                 "OR CAST(k.price AS string) LIKE CONCAT('%', :keyword, '%') " +

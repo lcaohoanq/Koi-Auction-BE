@@ -227,12 +227,14 @@ public class UserService implements IUserService {
                 // Check if the new email is already in use by another user
                 Optional<User> userWithNewEmail = userRepository.findByEmail(newEmail);
 
-                if (userWithNewEmail.isPresent()) throw new EmailAlreadyUsedException("The email address is already associated with another account.");
+                if (userWithNewEmail.isPresent()) throw new EmailAlreadyUsedException("This email address is already registered");
 
                 // If not, update the current user's email
                 existingUser.setEmail(newEmail);
             }
             // If the email is the same as the current one, no changes are needed
+        } else {
+            throw new UpdateEmailException("This email cannot be empty");
         }
 
         // Check if the phone number is being changed and if it already exists for another user
@@ -244,12 +246,14 @@ public class UserService implements IUserService {
                 // Check if the new phone number is already in use by another user
                 Optional<User> userWithNewPhoneNumber = userRepository.findByPhoneNumber(newPhoneNumber);
 
-                if (userWithNewPhoneNumber.isPresent()) throw new PhoneAlreadyUsedException("The phone number is already associated with another account.");
+                if (userWithNewPhoneNumber.isPresent()) throw new PhoneAlreadyUsedException("This phone number is already registered");
 
                 // If not, update the current user's phone number
                 existingUser.setPhoneNumber(newPhoneNumber);
             }
             // If the phone number is the same as the current one, no changes are needed
+        } else {
+            existingUser.setPhoneNumber(null);
         }
 
         // Update user information based on the DTO

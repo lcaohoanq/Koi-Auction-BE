@@ -1,6 +1,5 @@
 package com.swp391.koibe.services.auction;
 
-import com.swp391.koibe.dtos.MailDTO;
 import com.swp391.koibe.enums.EAuctionStatus;
 import com.swp391.koibe.enums.EmailCategoriesEnum;
 import com.swp391.koibe.exceptions.base.DataNotFoundException;

@@ -31,7 +31,8 @@ public class OtpController {
     private final LocalizationUtils localizationUtils;
 
     @GetMapping("/send")
-    public ResponseEntity<?> sendOtp(@RequestParam String type, @RequestParam String recipient) throws MessagingException {
+    public ResponseEntity<?> sendOtp(@RequestParam String type, @RequestParam String recipient)
+        throws MessagingException {
         return switch (type.toLowerCase()) {
             case "mail" -> mailController.sendOtp(recipient);
             case "phone" -> phoneController.sendPhoneOtp(recipient);
@@ -44,7 +45,7 @@ public class OtpController {
         @Valid @RequestBody VerifyUserDTO verifyUserDTO,
         BindingResult result
     ) {
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
             throw new MethodArgumentNotValidException(result);
         }
 
@@ -52,10 +53,12 @@ public class OtpController {
         try {
             User user = userService.getUserByEmail(verifyUserDTO.email());
             userService.verifyOtpIsCorrect(user.getId(), verifyUserDTO.otp());
-            otpResponse.setMessage(localizationUtils.getLocalizedMessage(MessageKeys.OTP_IS_CORRECT));
+            otpResponse.setMessage(
+                localizationUtils.getLocalizedMessage(MessageKeys.OTP_IS_CORRECT));
             return ResponseEntity.ok().body(otpResponse);
-        } catch (Exception e){
-            otpResponse.setMessage(localizationUtils.getLocalizedMessage(MessageKeys.OTP_IS_INCORRECT));
+        } catch (Exception e) {
+            otpResponse.setMessage(
+                localizationUtils.getLocalizedMessage(MessageKeys.OTP_IS_INCORRECT));
             otpResponse.setReason(e.getMessage());
             return ResponseEntity.badRequest().body(otpResponse);
         }
