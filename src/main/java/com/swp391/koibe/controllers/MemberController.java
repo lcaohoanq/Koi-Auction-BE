@@ -1,8 +1,8 @@
 package com.swp391.koibe.controllers;
 
 import com.swp391.koibe.models.User;
-import com.swp391.koibe.responses.UserResponse;
-import com.swp391.koibe.responses.pagination.UserPaginationResponse;
+import com.swp391.koibe.responses.MemberResponse;
+import com.swp391.koibe.responses.pagination.MemberPaginationResponse;
 import com.swp391.koibe.services.user.member.IMemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,14 +24,14 @@ public class MemberController {
 
     @GetMapping("")
     @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_STAFF')")
-    public ResponseEntity<UserPaginationResponse> getAllMembers(
+    public ResponseEntity<MemberPaginationResponse> getAllMembers(
         @RequestParam("page") int page,
         @RequestParam("limit") int limit
     ) {
         try {
             PageRequest pageRequest = PageRequest.of(page, limit);
-            Page<UserResponse> members = memberService.getAllMembers(pageRequest);
-            UserPaginationResponse response = new UserPaginationResponse();
+            Page<MemberResponse> members = memberService.getAllMembers(pageRequest);
+            MemberPaginationResponse response = new MemberPaginationResponse();
             response.setItem(members.getContent());
             response.setTotalPage(members.getTotalPages());
             response.setTotalItem(members.getTotalElements());

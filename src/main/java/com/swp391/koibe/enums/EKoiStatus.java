@@ -11,7 +11,6 @@ public enum EKoiStatus {
     UNVERIFIED("UNVERIFIED"),
     VERIFIED("VERIFIED"),
     REJECTED("REJECTED"),
-    PENDING("PENDING"),
     SOLD("SOLD"),;
 
     private final String status;

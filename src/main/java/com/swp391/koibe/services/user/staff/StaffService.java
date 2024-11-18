@@ -11,6 +11,7 @@ import com.swp391.koibe.models.Role;
 import com.swp391.koibe.models.User;
 import com.swp391.koibe.repositories.RoleRepository;
 import com.swp391.koibe.repositories.UserRepository;
+import com.swp391.koibe.responses.StaffResponse;
 import com.swp391.koibe.responses.UserResponse;
 import com.swp391.koibe.services.mail.IMailService;
 import com.swp391.koibe.services.otp.IOtpService;
@@ -32,14 +33,13 @@ public class StaffService implements IStaffService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final IMailService  mailService;
-    private final IOtpService otpService;
     private final PasswordEncoder passwordEncoder;
+    private final DTOConverter dtoConverter;
 
     @Override
-    public Page<UserResponse> getAllStaffs(Pageable pageable) {
+    public Page<StaffResponse> getAllStaffs(Pageable pageable) {
         Page<User> staffs = userRepository.findAllStaff(pageable);
-        return staffs.map(DTOConverter::convertToUserDTO);
+        return staffs.map(dtoConverter::convertToStaffDTO);
     }
 
     @Override

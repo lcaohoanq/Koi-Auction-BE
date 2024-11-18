@@ -11,6 +11,7 @@ import com.swp391.koibe.models.KoiImage;
 import com.swp391.koibe.models.User;
 import com.swp391.koibe.responses.KoiGenderResponse;
 import com.swp391.koibe.responses.KoiResponse;
+import com.swp391.koibe.responses.KoiStatusResponse;
 import com.swp391.koibe.responses.pagination.KoiPaginationResponse;
 import com.swp391.koibe.services.koi.IKoiService;
 import com.swp391.koibe.services.redis.koi.IKoiRedisService;
@@ -65,6 +66,11 @@ public class KoiController {
     @GetMapping("/count-by-gender")
     public ResponseEntity<KoiGenderResponse> getQuantityKoiGender() {
         return ResponseEntity.ok(koiService.findQuantityKoiByGender());
+    }
+
+    @GetMapping("/count-by-status")
+    public ResponseEntity<KoiStatusResponse> getQuantityKoiStatus() {
+        return ResponseEntity.ok(koiService.findQuantityKoiByStatus());
     }
 
     @GetMapping("") //kois/?page=0&limit=10

@@ -169,11 +169,12 @@ public class UserController {
             User user = userService.createUser(userRegisterDTO);
             registerResponse.setMessage(
                 localizationUtils.getLocalizedMessage(MessageKeys.REGISTER_SUCCESSFULLY));
-            registerResponse.setUserResponse(DTOConverter.convertToUserDTO(user));
+            registerResponse.setSingleData(DTOConverter.convertToUserDTO(user));
             log.info("New user registered successfully");
             return ResponseEntity.ok(registerResponse);
         } catch (Exception e) {
-            registerResponse.setMessage(e.getMessage());
+            registerResponse.setMessage("Fail to register new user");
+            registerResponse.setReason(e.getMessage());
             return ResponseEntity.badRequest().body(registerResponse);
         }
     }
