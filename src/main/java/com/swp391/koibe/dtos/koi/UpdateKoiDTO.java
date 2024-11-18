@@ -14,9 +14,6 @@ public record UpdateKoiDTO(
     @NotBlank(message = "Koi name is required")
     String name,
 
-    @NotNull(message = "Koi price is required")
-    @JsonProperty("base_price") long price,
-
     @NotBlank(message = "Koi status is required")
     @Pattern(regexp = "UNVERIFIED|VERIFIED|REJECTED|PENDING|SOLD", message = "Status must be either UNVERIFIED, VERIFIED, REJECTED, PENDING, SOLD")
     @JsonProperty("status_name") String trackingStatus,
@@ -38,7 +35,6 @@ public record UpdateKoiDTO(
 
     @NotNull(message = "Koi year born is required")
     @Min(value = 1, message = "Koi year born must be greater than 0")
-    @Max(value = 230, message = "Koi year born must be less than 230")
     @JsonProperty("year_born") int yearBorn,
 
     @JsonProperty("description") String description,

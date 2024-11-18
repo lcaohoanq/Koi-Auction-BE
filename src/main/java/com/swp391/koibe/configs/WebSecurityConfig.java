@@ -132,6 +132,7 @@ public class WebSecurityConfig {
                     //KoiController
                     .requestMatchers(GET, String.format("%s/kois**", apiPrefix)).permitAll()
                     .requestMatchers(GET, String.format("%s/kois/count-by-gender", apiPrefix)).permitAll()
+                    .requestMatchers(GET, String.format("%s/kois/count-by-status", apiPrefix)).permitAll()
                     .requestMatchers(GET, String.format("%s/kois/{id:\\d+}", apiPrefix)).permitAll()
                     .requestMatchers(PUT, String.format("%s/kois/{id:\\d+}", apiPrefix)).hasAnyRole(Role.MANAGER, Role.STAFF, Role.BREEDER)
                     .requestMatchers(GET, String.format("%s/kois/get-kois-by-keyword", apiPrefix)).hasAnyRole(Role.BREEDER)

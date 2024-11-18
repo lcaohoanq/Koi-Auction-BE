@@ -137,8 +137,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 // KoiController
                 Pair.of(String.format("%s/kois", apiPrefix), "GET"),
                 Pair.of(String.format("%s/kois/get-kois-owner-by-keyword-not-auth", apiPrefix), "GET"),
-                //count-gender
                 Pair.of(String.format("%s/kois/count-by-gender", apiPrefix), "GET"),
+                Pair.of(String.format("%s/kois/count-by-status", apiPrefix), "GET"),
 
                 Pair.of(String.format("%s/breeders", apiPrefix), "GET"),
 

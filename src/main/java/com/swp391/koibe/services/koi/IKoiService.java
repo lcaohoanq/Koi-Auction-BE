@@ -10,6 +10,7 @@ import com.swp391.koibe.models.Koi;
 import com.swp391.koibe.models.KoiImage;
 import com.swp391.koibe.responses.KoiGenderResponse;
 import com.swp391.koibe.responses.KoiResponse;
+import com.swp391.koibe.responses.KoiStatusResponse;
 import jakarta.mail.MessagingException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,5 +42,7 @@ public sealed interface IKoiService<T> permits KoiService {
     Page<Koi> findAllKoiByKeyword(String keyword, Pageable pageable);
 
     KoiGenderResponse findQuantityKoiByGender();
+
+    KoiStatusResponse findQuantityKoiByStatus();
 
 }

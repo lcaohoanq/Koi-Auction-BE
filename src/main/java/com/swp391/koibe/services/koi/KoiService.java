@@ -18,6 +18,7 @@ import com.swp391.koibe.repositories.KoiRepository;
 import com.swp391.koibe.repositories.UserRepository;
 import com.swp391.koibe.responses.KoiGenderResponse;
 import com.swp391.koibe.responses.KoiResponse;
+import com.swp391.koibe.responses.KoiStatusResponse;
 import com.swp391.koibe.services.mail.IMailService;
 import com.swp391.koibe.utils.DTOConverter;
 import jakarta.mail.MessagingException;
@@ -101,7 +102,6 @@ public non-sealed class KoiService implements IKoiService<KoiResponse> {
             .orElseThrow(() -> new DataNotFoundException("Category not found: " + koiDTO.categoryId()));
 
         existingKoi.setName(koiDTO.name());
-        existingKoi.setPrice(koiDTO.price());
         existingKoi.setStatus(EKoiStatus.valueOf(koiDTO.trackingStatus()));
         existingKoi.setIsDisplay(koiDTO.isDisplay());
         existingKoi.setThumbnail(koiDTO.thumbnail());
@@ -230,6 +230,35 @@ public non-sealed class KoiService implements IKoiService<KoiResponse> {
             .male(maleCount)
             .female(femaleCount)
             .unknown(unknownCount)
+            .build();
+    }
+
+    @Override
+    public KoiStatusResponse findQuantityKoiByStatus() {
+        List<Koi> kois = koiRepository.findAll();
+
+        long unverifiedCount = kois.stream()
+            .filter(koi -> koi.getStatus() == EKoiStatus.UNVERIFIED)
+            .count();
+
+        long verifiedCount = kois.stream()
+            .filter(koi -> koi.getStatus() == EKoiStatus.VERIFIED)
+            .count();
+
+        long rejectedCount = kois.stream()
+            .filter(koi -> koi.getStatus() == EKoiStatus.REJECTED)
+            .count();
+
+        long soldCount = kois.stream()
+            .filter(koi -> koi.getStatus() == EKoiStatus.SOLD)
+            .count();
+
+        return KoiStatusResponse.builder()
+            .total(kois.size())
+            .unverified(unverifiedCount)
+            .verified(verifiedCount)
+            .rejected(rejectedCount)
+            .sold(soldCount)
             .build();
     }
 
