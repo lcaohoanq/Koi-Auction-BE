@@ -20,9 +20,6 @@ public record AuctionKoiDTO(
     long basePrice,
 
     @JsonProperty("bid_step")
-    @NotNull(message = "Bid Step is required")
-    @Positive(message = "Bid step must be positive")
-    @Min(value = 5, message = "Minimum bid step is $5")
     long bidStep,
 
     @JsonProperty("bid_method")
