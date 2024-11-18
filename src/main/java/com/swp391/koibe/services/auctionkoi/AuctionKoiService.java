@@ -201,6 +201,16 @@ public class AuctionKoiService implements IAuctionKoiService {
     }
 
     @Override
+    public boolean findKoiInAuction(long koiId) {
+        for (AuctionKoi auctionKoi : auctionKoiRepository.findAll()) {
+            if (auctionKoi.getKoi().getId() == koiId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public List<AuctionKoiResponse> getAuctionKoiByAuctionId(long id) {
         return auctionKoiRepository.findAuctionKoiByAuctionId(id).stream()
                 .map(DTOConverter::convertToAuctionKoiDTO)

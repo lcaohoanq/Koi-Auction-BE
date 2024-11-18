@@ -34,6 +34,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -303,6 +304,30 @@ public class UserController {
             logoutResponse.setReason(e.getMessage());
             return ResponseEntity.badRequest().body(logoutResponse);
         }
+    }
+
+    @PutMapping("/{id}/update-role/{roleId}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public ResponseEntity<?> updateRole(
+        @PathVariable long id,
+        @PathVariable long roleId
+    ) {
+        userService.updateRole(id, roleId);
+        return ResponseEntity.ok("Update role successfully");
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public ResponseEntity<?> deleteUser(@PathVariable long id) {
+        userService.softDeleteUser(id);
+        return ResponseEntity.ok("Delete user successfully");
+    }
+
+    @PutMapping("/{id}/restore")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public ResponseEntity<?> restoreUser(@PathVariable long id) {
+        userService.restoreUser(id);
+        return ResponseEntity.ok("Restore user successfully");
     }
 
 }

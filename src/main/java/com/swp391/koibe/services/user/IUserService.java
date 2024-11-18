@@ -47,4 +47,10 @@ public interface IUserService {
     void bannedUser(Long userId) throws DataNotFoundException;
 
     void updatePassword(UpdatePasswordDTO updatePasswordDTO) throws Exception;
+
+    void softDeleteUser(Long userId) throws DataNotFoundException;
+
+    void restoreUser(Long userId) throws DataNotFoundException;
+
+    void updateRole(long id, long roleId) throws DataNotFoundException;
 }

@@ -6,6 +6,7 @@ import com.swp391.koibe.models.User;
 import com.swp391.koibe.repositories.UserRepository;
 import com.swp391.koibe.responses.MemberResponse;
 import com.swp391.koibe.responses.UserResponse;
+import com.swp391.koibe.services.user.IUserService;
 import com.swp391.koibe.utils.DTOConverter;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ public class MemberService implements IMemberService{
 
     private final UserRepository userRepository;
     private final DTOConverter dtoConverter;
+    private final IUserService userService;
 
     @Override
     public Page<MemberResponse> getAllMembers(Pageable pageable) {
@@ -43,28 +45,4 @@ public class MemberService implements IMemberService{
         return existingMember;
     }
 
-    @Override
-    public User createMember(User member) {
-        return userRepository.save(member);
-    }
-
-    @Override
-    public User updateMember(long memberId, User member) throws Exception {
-
-        User existingMember = findById(memberId);
-
-        if(existingMember != null){
-
-
-
-        }
-
-
-        return null;
-    }
-
-    @Override
-    public void deleteMember(long id) {
-
-    }
 }

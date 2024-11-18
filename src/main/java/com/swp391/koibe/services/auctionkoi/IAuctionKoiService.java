@@ -43,4 +43,6 @@ public interface IAuctionKoiService {
     Page<KoiInAuctionResponse> getKoiByKeyword(String keyword, Pageable pageable);
 
     BidMethodQuantityResponse findQuantityByBidMethod();
+
+    boolean findKoiInAuction(long koiId);
 }

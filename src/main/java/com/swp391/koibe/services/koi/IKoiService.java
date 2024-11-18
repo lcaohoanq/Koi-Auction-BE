@@ -25,7 +25,7 @@ public sealed interface IKoiService<T> permits KoiService {
 
     KoiResponse updateKoi(long id, UpdateKoiDTO koiDTO);
 
-    void deleteKoi(long id);
+    void deleteKoi(long id) throws Exception;
 
     KoiImage createKoiImage(Long koiId, KoiImageDTO koiImageDTO) throws Exception;
 
