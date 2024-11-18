@@ -29,7 +29,7 @@ public record UpdateKoiDTO(
 
     @NotBlank(message = "Koi gender is required")
     @Pattern(regexp = "MALE|FEMALE|UNKNOWN", message = "Gender must be either MALE | FEMALE | UNKNOWN")
-    @JsonProperty("sex") EKoiGender sex,
+    @JsonProperty("sex") String sex,
 
     @NotNull(message = "Koi length is required")
     @Min(value = 1, message = "Koi length must be greater than 0")

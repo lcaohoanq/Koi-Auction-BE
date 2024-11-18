@@ -61,7 +61,7 @@ public non-sealed class KoiService implements IKoiService<KoiResponse> {
             .status(EKoiStatus.UNVERIFIED) //default when create a new koi, breeder need to wait staff verify
             .isDisplay(1) //default when create a new koi, breeder need to wait staff verify then turn to 1
             .thumbnail(koiDTO.thumbnail())
-            .sex(koiDTO.sex())
+            .sex(EKoiGender.valueOf(koiDTO.sex()))
             .length(koiDTO.length())
             .yearBorn(koiDTO.yearBorn())
             .description(koiDTO.description() == null ? "Not provided" : koiDTO.description())
@@ -105,7 +105,7 @@ public non-sealed class KoiService implements IKoiService<KoiResponse> {
         existingKoi.setStatus(EKoiStatus.valueOf(koiDTO.trackingStatus()));
         existingKoi.setIsDisplay(koiDTO.isDisplay());
         existingKoi.setThumbnail(koiDTO.thumbnail());
-        existingKoi.setSex(koiDTO.sex());
+        existingKoi.setSex(EKoiGender.valueOf(koiDTO.sex()));
         existingKoi.setLength(koiDTO.length());
         existingKoi.setYearBorn(koiDTO.yearBorn());
         existingKoi.setDescription(koiDTO.description());

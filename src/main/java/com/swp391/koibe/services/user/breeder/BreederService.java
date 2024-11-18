@@ -1,6 +1,7 @@
 package com.swp391.koibe.services.user.breeder;
 
 import com.swp391.koibe.dtos.koi.KoiDTO;
+import com.swp391.koibe.enums.EKoiGender;
 import com.swp391.koibe.enums.EKoiStatus;
 import com.swp391.koibe.exceptions.BreederNotFoundException;
 import com.swp391.koibe.exceptions.MalformDataException;
@@ -92,7 +93,7 @@ public class BreederService implements IBreederService {
             .status(EKoiStatus.UNVERIFIED)
             .isDisplay(0)
             .thumbnail(koiDTO.thumbnail())
-            .sex(koiDTO.sex())
+            .sex(EKoiGender.valueOf(koiDTO.sex()))
             .length(koiDTO.length())
             .yearBorn(koiDTO.yearBorn())
             .description(koiDTO.description() == null ? "Not provided" : koiDTO.description())
