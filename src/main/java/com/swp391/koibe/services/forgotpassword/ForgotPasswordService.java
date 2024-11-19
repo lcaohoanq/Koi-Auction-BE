@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.context.Context;
 
 @Slf4j
@@ -23,6 +24,7 @@ public class ForgotPasswordService implements IForgotPasswordService{
     private final IOtpService otpService;
 
     @Override
+    @Transactional
     public void sendEmailOtp(User existingUser) throws MessagingException {
         Context context = new Context();
         String otp = OTPUtils.generateOTP();

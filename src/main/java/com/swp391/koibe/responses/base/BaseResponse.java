@@ -18,6 +18,12 @@ public class BaseResponse<T>  {
     protected String message;
     protected String reason;
 
+    @JsonProperty("status_code")
+    protected Integer statusCode;
+
+    @JsonProperty("is_success")
+    protected Boolean isSuccess;
+
     @JsonProperty("list_data")
     protected List<T> listData;
 

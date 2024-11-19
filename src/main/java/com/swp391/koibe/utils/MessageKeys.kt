@@ -9,6 +9,9 @@ object MessageKeys {
     const val PASSWORD_NOT_MATCH: String = "user.register.password_not_match"
     const val USER_IS_LOCKED: String = "user.login.user_is_locked"
     const val USER_NOT_FOUND: String = "user.login.user_not_found"
+    const val EMAIL_ALREADY_EXISTS: String = "user.register.email_already_exists"
+    const val PERMISSION_DENIED: String = "user.permission.permission_denied"
+    const val REGISTER_FAILED: String = "user.register.register_failed"
 
     const val UPDATE_USER_SUCCESSFULLY: String = "user.update.update_successfully"
     const val VERIFY_USER_SUCCESSFULLY: String = "user.verify.verify_successfully"
@@ -32,4 +35,6 @@ object MessageKeys {
     const val ROLE_DOES_NOT_EXISTS: String = "user.login.role_not_exist"
 
     const val BIDDING_RULES_ERROR: String = "bid.exception.bidding_rule_error"
+    const val MALFORMED_BEHAVIOUR: String = "exception.malformed_behaviour"
+    const val WRONG_FORMAT: String = "exception.data_wrong_format"
 }
