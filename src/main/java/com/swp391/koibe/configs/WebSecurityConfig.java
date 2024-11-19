@@ -83,6 +83,9 @@ public class WebSecurityConfig {
                     .requestMatchers(POST, String.format(("%s/users/verify"), apiPrefix)).permitAll()
                     .requestMatchers(POST, String.format("%s/users/logout", apiPrefix)).hasAnyRole(Role.MANAGER, Role.MEMBER, Role.BREEDER, Role.STAFF)
                     .requestMatchers(PUT, String.format("%s/users/{userId:\\d+}/deposit/{payment:\\d+}", apiPrefix)).hasAnyRole(Role.MANAGER, Role.MEMBER, Role.BREEDER, Role.STAFF)
+                    .requestMatchers(PUT, String.format("%s/users/{id:\\d+}/update-role/{roleId:\\d+}", apiPrefix)).hasAnyRole(Role.MANAGER)
+                    .requestMatchers(DELETE, String.format("%s/users/{id:\\d+}", apiPrefix)).hasAnyRole(Role.MANAGER)
+                    .requestMatchers(PUT, String.format("%s/users/{id:\\d+}/restore", apiPrefix)).hasAnyRole(Role.MANAGER)
 
                     // BreederController
                     .requestMatchers(GET, String.format("%s/breeders", apiPrefix)).permitAll()

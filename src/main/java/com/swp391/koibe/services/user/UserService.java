@@ -19,6 +19,7 @@ import com.swp391.koibe.repositories.SocialAccountRepository;
 import com.swp391.koibe.repositories.UserRepository;
 import com.swp391.koibe.services.mail.IMailService;
 import com.swp391.koibe.services.otp.OtpService;
+import com.swp391.koibe.services.role.RoleService;
 import com.swp391.koibe.utils.MessageKeys;
 import com.swp391.koibe.utils.OTPUtils;
 import jakarta.mail.MessagingException;
@@ -54,6 +55,7 @@ public class UserService implements IUserService {
     private final LocalizationUtils localizationUtils;
     private final IMailService mailService;
     private final OtpService otpService;
+    private final RoleService roleService;
 
     @Override
     public User createUser(UserRegisterDTO userRegisterDTO) throws Exception {
@@ -461,6 +463,32 @@ public class UserService implements IUserService {
         );
 
         userRepository.save(existingUser);
+    }
+
+    //need send email
+    @Override
+    @Transactional
+    public void softDeleteUser(Long userId) throws DataNotFoundException {
+        User existingUser = getUserById(userId);
+        if(!existingUser.isActive()) throw new MalformDataException("User is already deleted");
+        userRepository.softDeleteUser(userId);
+    }
+
+    @Override
+    @Transactional
+    public void restoreUser(Long userId) throws DataNotFoundException {
+        User existingUser = getUserById(userId);
+        if(existingUser.isActive()) throw new MalformDataException("User is already active");
+        userRepository.restoreUser(userId);
+    }
+
+    //need send email
+    @Override
+    @Transactional
+    public void updateRole(long id, long roleId) throws DataNotFoundException {
+        getUserById(id);
+        roleService.getRoleById(roleId);
+        userRepository.updateRole(id, roleId);
     }
 
     @Override

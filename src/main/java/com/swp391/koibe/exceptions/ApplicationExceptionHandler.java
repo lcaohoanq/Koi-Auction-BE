@@ -126,6 +126,15 @@ public class ApplicationExceptionHandler {
                 .build();
     }
 
+    @ExceptionHandler(MalformBehaviourException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public BaseResponse<Object> handleMalformBehaviourException(MalformBehaviourException e) {
+        return ExceptionResponse.builder()
+            .message(localizationUtils.getLocalizedMessage("exception.malformed_behaviour"))
+            .reason(e.getMessage())
+            .build();
+    }
+
     @ExceptionHandler(JwtAuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ResponseBody

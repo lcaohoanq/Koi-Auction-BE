@@ -6,6 +6,7 @@ import com.swp391.koibe.responses.KoiInAuctionResponse
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 
@@ -19,6 +20,10 @@ interface KoiRepository : JpaRepository<Koi, Long> {
 
     @Query("SELECT COUNT(k) FROM Koi k WHERE k.category.id = :categoryId")
     fun countKoisByCategoryId(categoryId: Long): Long
+
+    @Modifying
+    @Query("UPDATE Koi k SET k.isDisplay = 0 WHERE k.id = :id")
+    fun softDeleteKoi(id: Long)
 
     //SELECT koi data is display in existing auction
     //notice im want to retrieve the auction id at that last column to use in fe call

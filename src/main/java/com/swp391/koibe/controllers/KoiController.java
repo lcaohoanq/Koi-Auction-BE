@@ -81,23 +81,23 @@ public class KoiController {
 
         KoiPaginationResponse response = new KoiPaginationResponse();
 
-        try{
+        try {
             PageRequest pageRequest = PageRequest.of(page, limit);
             Page<KoiResponse> kois = koiService.getAllKois(pageRequest);
             response.setItem(kois.getContent());
             response.setTotalPage(kois.getTotalPages());
             response.setTotalItem(kois.getTotalElements());
             return ResponseEntity.ok(response);
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
         }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<KoiResponse> getKoi(@PathVariable long id) {
-        try{
+        try {
             return ResponseEntity.ok(koiService.getKoiById(id));
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
         }
     }
@@ -107,7 +107,7 @@ public class KoiController {
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "20") int limit,
         @RequestParam String status
-    ){
+    ) {
         KoiPaginationResponse response = new KoiPaginationResponse();
         EKoiStatus eKoiStatus = EKoiStatus.valueOf(status.toUpperCase());
         PageRequest pageRequest = PageRequest.of(page, limit);
@@ -124,7 +124,7 @@ public class KoiController {
         @RequestParam(defaultValue = "20") int limit,
         @PathVariable("owner_id") Long ownerId,
         @RequestParam String status
-    ){
+    ) {
         KoiPaginationResponse response = new KoiPaginationResponse();
         EKoiStatus eKoiStatus = EKoiStatus.valueOf(status.toUpperCase());
         PageRequest pageRequest = PageRequest.of(page, limit);
@@ -253,14 +253,15 @@ public class KoiController {
         BindingResult result
     ) {
 
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
             throw new MethodArgumentNotValidException(result);
         }
 
         KoiResponse response = new KoiResponse();
 
         try {
-            String extractedToken = authorizationHeader.substring(7); // Loại bỏ "Bearer " từ chuỗi token
+            String extractedToken = authorizationHeader.substring(
+                7); // Loại bỏ "Bearer " từ chuỗi token
             User breeder = userService.getUserDetailsFromToken(extractedToken);
 
             //need to save the product first to get the product id, get the id and add the image
@@ -281,7 +282,7 @@ public class KoiController {
         BindingResult result
     ) {
 
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
             throw new MethodArgumentNotValidException(result);
         }
         try {
@@ -299,19 +300,17 @@ public class KoiController {
         @Valid @RequestBody UpdateKoiDTO updateKoiDTO,
         BindingResult result
     ) {
-        if(result.hasErrors()) throw new MethodArgumentNotValidException(result);
+        if (result.hasErrors()) {
+            throw new MethodArgumentNotValidException(result);
+        }
         return ResponseEntity.ok(koiService.updateKoi(koiId, updateKoiDTO));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_BREEDER', 'ROLE_MANAGER', 'ROLE_STAFF')")
-    public ResponseEntity<?> deleteProduct(@PathVariable("id") Long koiId) {
-        try {
-            koiService.deleteKoi(koiId);
-            return ResponseEntity.ok().body("Koi deleted successfully");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> deleteProduct(@PathVariable("id") Long koiId) throws Exception {
+        koiService.deleteKoi(koiId);
+        return ResponseEntity.ok().body("Koi deleted successfully");
     }
 
     @PostMapping(value = "uploads/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

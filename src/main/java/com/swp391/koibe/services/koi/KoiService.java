@@ -7,6 +7,8 @@ import com.swp391.koibe.dtos.koi.UpdateKoiStatusDTO;
 import com.swp391.koibe.enums.EKoiGender;
 import com.swp391.koibe.enums.EKoiStatus;
 import com.swp391.koibe.exceptions.InvalidParamException;
+import com.swp391.koibe.exceptions.MalformBehaviourException;
+import com.swp391.koibe.exceptions.MalformDataException;
 import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.Category;
 import com.swp391.koibe.models.Koi;
@@ -19,6 +21,7 @@ import com.swp391.koibe.repositories.UserRepository;
 import com.swp391.koibe.responses.KoiGenderResponse;
 import com.swp391.koibe.responses.KoiResponse;
 import com.swp391.koibe.responses.KoiStatusResponse;
+import com.swp391.koibe.services.auctionkoi.AuctionKoiService;
 import com.swp391.koibe.services.mail.IMailService;
 import com.swp391.koibe.utils.DTOConverter;
 import jakarta.mail.MessagingException;
@@ -28,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.context.Context;
 
 @Service
@@ -39,6 +43,7 @@ public non-sealed class KoiService implements IKoiService<KoiResponse> {
     private final UserRepository userRepository;
     private final KoiImageRepository koiImageRepository;
     private final IMailService mailService;
+    private final AuctionKoiService auctionKoiService;
 
     @Override
     public Koi createKoi(KoiDTO koiDTO, long breederId) throws Exception {
@@ -116,12 +121,18 @@ public non-sealed class KoiService implements IKoiService<KoiResponse> {
     }
 
     @Override
-    public void deleteKoi(long id) {
+    @Transactional
+    public void deleteKoi(long id) throws Exception {
         //find if koi exist
         Koi existingKoi = koiRepository.findById(id)
             .orElseThrow(() -> new DataNotFoundException("Koi not found: " + id));
-        existingKoi.setIsDisplay(0);
-        koiRepository.save(existingKoi);
+
+        if(existingKoi.getIsDisplay() == 0)
+            throw new MalformBehaviourException("Koi already deleted");
+
+        if(auctionKoiService.findKoiInAuction(id))
+            throw new MalformBehaviourException("Cannot delete koi already register in auction");
+        koiRepository.softDeleteKoi(id);
     }
 
     @Override
