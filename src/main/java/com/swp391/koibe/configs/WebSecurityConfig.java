@@ -120,6 +120,7 @@ public class WebSecurityConfig {
                     .requestMatchers(GET, String.format("%s/auctionkois/{aid:\\d+}/{id:\\d+}", apiPrefix)).permitAll()
                     .requestMatchers(GET, String.format("%s/auctionkois/get-kois-by-keyword", apiPrefix)).permitAll()
                     .requestMatchers(GET, String.format("%s/auctionkois/count-by-bid-method", apiPrefix)).permitAll()
+                    .requestMatchers(PUT, String.format("%s/auctionkois/revoke/koi/{koi_id}/auction/{auction_id}", apiPrefix)).hasAnyRole(Role.MANAGER, Role.STAFF, Role.BREEDER)
 
                     // BiddingHistoryController
                     .requestMatchers(GET, String.format("%s/bidding/{id:\\d+}", apiPrefix)).permitAll()

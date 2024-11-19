@@ -38,11 +38,14 @@ public interface IAuctionKoiService {
 
     void updateDescendAuctionKoiPrice(long auctionKoiId, AuctionKoi auctionKoi);
 
-    AuctionKoi revokeKoiInAuction(long koiId, long auctionId);
+    void revokeKoiInAuction(long koiId, long auctionId);
 
     Page<KoiInAuctionResponse> getKoiByKeyword(String keyword, Pageable pageable);
 
     BidMethodQuantityResponse findQuantityByBidMethod();
 
     boolean findKoiInAuction(long koiId);
+
+    void revokeKoiInAuction(long koiId);
+
 }
