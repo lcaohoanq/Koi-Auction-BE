@@ -3,8 +3,10 @@ package com.swp391.koibe.exceptions;
 import com.swp391.koibe.components.LocalizationUtils;
 import com.swp391.koibe.exceptions.base.DataAlreadyExistException;
 import com.swp391.koibe.exceptions.base.DataNotFoundException;
+import com.swp391.koibe.exceptions.base.DataWrongFormatException;
 import com.swp391.koibe.responses.ExceptionResponse;
 import com.swp391.koibe.responses.base.BaseResponse;
+import com.swp391.koibe.utils.MessageKeys;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -183,6 +185,15 @@ public class ApplicationExceptionHandler {
                 .reason(e.getMessage())
                 .build();
         return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(DataWrongFormatException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public BaseResponse<Object> handlePasswordWrongFormatException(DataWrongFormatException e) {
+        return ExceptionResponse.builder()
+                .message(localizationUtils.getLocalizedMessage(MessageKeys.WRONG_FORMAT))
+                .reason(e.getMessage())
+                .build();
     }
 
 }

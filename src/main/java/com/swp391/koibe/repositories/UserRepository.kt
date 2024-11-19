@@ -10,6 +10,7 @@ import java.util.*
 
 interface UserRepository : JpaRepository<User, Long> {
     fun findByEmail(email: String): Optional<User>
+    fun existsByEmail(email: String): Boolean
     fun findByPhoneNumber(phoneNumber: String): Optional<User>
     fun findByRoleName(roleName: String, pageable: Pageable): Page<User>
     @Query("SELECT u FROM User u WHERE u.role.id = 2")

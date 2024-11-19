@@ -2,6 +2,7 @@ package com.swp391.koibe.services.user;
 
 import com.swp391.koibe.components.JwtTokenUtils;
 import com.swp391.koibe.components.LocalizationUtils;
+import com.swp391.koibe.constants.Regex;
 import com.swp391.koibe.dtos.UpdatePasswordDTO;
 import com.swp391.koibe.dtos.UpdateUserDTO;
 import com.swp391.koibe.dtos.UserRegisterDTO;
@@ -58,24 +59,31 @@ public class UserService implements IUserService {
     private final RoleService roleService;
 
     @Override
+    @Transactional
     public User createUser(UserRegisterDTO userRegisterDTO) throws Exception {
+        if(!userRegisterDTO.password().matches(Regex.PASSWORD_REGEX)){
+            throw new PasswordWrongFormatException("Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character");
+        }
+
+        if (!userRegisterDTO.password().equals(userRegisterDTO.confirmPassword())) {
+            throw new MalformBehaviourException("Password and confirm password must be the same");
+        }
+
         String email = userRegisterDTO.email();
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        if (optionalUser.isPresent()) {
+        if (userRepository.existsByEmail(email)) {
             throw new DataIntegrityViolationException("Email already exists");
         }
 
         Role role = roleRepository.findById(userRegisterDTO.roleId())
                 .orElseThrow(() -> new DataNotFoundException("Role not found"));
 
-        if (role.getName().toUpperCase().equals(Role.MANAGER)) {
-            log.error("Cannot create manager account");
-            throw new PermissionDeniedException("Cannot create manager account");
+        if (role.getName().toUpperCase().equals(Role.MANAGER)
+            || role.getName().toUpperCase().equals(Role.STAFF)
+            || role.getName().toUpperCase().equals(Role.BREEDER)
+        ) {
+            log.error("Cannot directly create this type account");
+            throw new PermissionDeniedException("Cannot directly create this type account");
         }
-
-//        if(userRegisterDTO.getIsSubscription()==null){
-//            userRegisterDTO.setIsSubscription(0);
-//        }
 
         User newUser = User.builder()
                 .firstName(userRegisterDTO.firstName())
@@ -88,7 +96,8 @@ public class UserService implements IUserService {
                 // subscription
                 .status(UserStatus.UNVERIFIED)
                 .dob(userRegisterDTO.dateOfBirth())
-                .avatarUrl(userRegisterDTO.avatarUrl() == null ? "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1677509740.jpg" : userRegisterDTO.avatarUrl())
+                .avatarUrl(Optional.ofNullable(userRegisterDTO.avatarUrl())
+                           .orElse("https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1677509740.jpg"))
                 .googleAccountId(userRegisterDTO.googleAccountId())
                 .accountBalance(0L) //new user has 0 money when register
                 .build();
@@ -97,9 +106,7 @@ public class UserService implements IUserService {
 
         // check if user are log in without google account, then encode password
         if (userRegisterDTO.googleAccountId() == 0) {
-            String password = userRegisterDTO.password();
-            String encodedPassword = passwordEncoder.encode(password);
-            newUser.setPassword(encodedPassword);
+            newUser.setPassword(passwordEncoder.encode(userRegisterDTO.password()));
         }
 
         User savedUser = userRepository.save(newUser);
@@ -116,6 +123,8 @@ public class UserService implements IUserService {
                 EmailCategoriesEnum.OTP.getType(),
                 context
         );
+
+        log.info("Send email otp to {}", savedUser.getEmail());
 
         Otp otpEntity = Otp.builder()
                 .email(savedUser.getEmail())
@@ -427,7 +436,7 @@ public class UserService implements IUserService {
 
     private Otp getOtpByEmailOtp(String email, String otp) {
         return otpService.getOtpByEmailOtp(email, otp)
-            .orElseThrow(() -> new DataNotFoundException("OTP not found"));
+            .orElseThrow(() -> new DataNotFoundException("OTP is not correct, please try again later"));
     }
 
     @Override

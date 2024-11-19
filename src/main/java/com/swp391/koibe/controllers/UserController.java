@@ -6,9 +6,12 @@ import com.swp391.koibe.dtos.UpdateUserDTO;
 import com.swp391.koibe.dtos.UserLoginDTO;
 import com.swp391.koibe.dtos.UserRegisterDTO;
 import com.swp391.koibe.dtos.VerifyUserDTO;
+import com.swp391.koibe.exceptions.MalformBehaviourException;
 import com.swp391.koibe.exceptions.MalformDataException;
 import com.swp391.koibe.exceptions.MethodArgumentNotValidException;
+import com.swp391.koibe.exceptions.PermissionDeniedException;
 import com.swp391.koibe.exceptions.base.DataNotFoundException;
+import com.swp391.koibe.exceptions.base.DataWrongFormatException;
 import com.swp391.koibe.models.Token;
 import com.swp391.koibe.models.User;
 import com.swp391.koibe.responses.LoginResponse;
@@ -28,6 +31,7 @@ import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -148,35 +152,61 @@ public class UserController {
         @RequestBody @Valid UserRegisterDTO userRegisterDTO,
         BindingResult result) {
 
-        RegisterResponse registerResponse = new RegisterResponse();
-
         if (result.hasErrors()) {
-            List<String> errorMessages = result.getFieldErrors()
-                .stream()
-                .map(FieldError::getDefaultMessage)
-                .toList();
-
-            registerResponse.setMessage(errorMessages.toString());
-            return ResponseEntity.badRequest().body(registerResponse);
-        }
-
-        if (!userRegisterDTO.password().equals(userRegisterDTO.confirmPassword())) {
-            registerResponse.setMessage(
-                localizationUtils.getLocalizedMessage(MessageKeys.PASSWORD_NOT_MATCH));
-            return ResponseEntity.badRequest().body(registerResponse);
+            throw new MethodArgumentNotValidException(result);
         }
 
         try {
             User user = userService.createUser(userRegisterDTO);
-            registerResponse.setMessage(
-                localizationUtils.getLocalizedMessage(MessageKeys.REGISTER_SUCCESSFULLY));
-            registerResponse.setSingleData(DTOConverter.convertToUserDTO(user));
             log.info("New user registered successfully");
-            return ResponseEntity.ok(registerResponse);
+            return ResponseEntity.status(HttpStatus.CREATED).body(
+                RegisterResponse.builder()
+                    .message(localizationUtils.getLocalizedMessage(MessageKeys.REGISTER_SUCCESSFULLY))
+                    .statusCode(HttpStatus.CREATED.value())
+                    .isSuccess(true)
+                    .singleData(DTOConverter.convertToUserDTO(user))
+                    .build());
+        } catch (DataWrongFormatException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                RegisterResponse.builder()
+                    .message(localizationUtils.getLocalizedMessage(MessageKeys.WRONG_FORMAT))
+                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .isSuccess(false)
+                    .reason(e.getMessage())
+                    .build());
+        } catch (MalformBehaviourException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                RegisterResponse.builder()
+                    .message(localizationUtils.getLocalizedMessage(MessageKeys.MALFORMED_BEHAVIOUR))
+                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .isSuccess(false)
+                    .reason(e.getMessage())
+                    .build());
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                RegisterResponse.builder()
+                    .message(
+                        localizationUtils.getLocalizedMessage(MessageKeys.EMAIL_ALREADY_EXISTS))
+                    .statusCode(HttpStatus.CONFLICT.value())
+                    .isSuccess(false)
+                    .reason(e.getMessage())
+                    .build());
+        } catch (PermissionDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+                RegisterResponse.builder()
+                    .message(localizationUtils.getLocalizedMessage(MessageKeys.PERMISSION_DENIED))
+                    .statusCode(HttpStatus.FORBIDDEN.value())
+                    .isSuccess(false)
+                    .reason(e.getMessage())
+                    .build());
         } catch (Exception e) {
-            registerResponse.setMessage("Fail to register new user");
-            registerResponse.setReason(e.getMessage());
-            return ResponseEntity.badRequest().body(registerResponse);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                RegisterResponse.builder()
+                    .message(localizationUtils.getLocalizedMessage(MessageKeys.REGISTER_FAILED))
+                    .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .isSuccess(false)
+                    .reason(e.getMessage())
+                    .build());
         }
     }
 
