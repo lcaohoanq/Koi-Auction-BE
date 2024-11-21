@@ -90,10 +90,19 @@ interface KoiRepository : JpaRepository<Koi, Long> {
     )
     fun findAllKoiByKeyword(keyword: String, pageable: Pageable): Page<Koi>
 
-    @Query(
-        "SELECT k FROM Koi k LEFT JOIN AuctionKoi ak ON k.id = ak.koi.id " +
-                "WHERE k.owner.id = :ownerId AND k.status = 'VERIFIED' AND ak.id IS NULL"
+    @Query("""
+    SELECT DISTINCT k FROM Koi k 
+    LEFT JOIN AuctionKoi ak ON k.id = ak.koi.id 
+    LEFT JOIN Auction a ON ak.auction.id = a.id 
+    WHERE k.owner.id = :ownerId 
+    AND k.status = 'VERIFIED' 
+    AND NOT EXISTS (
+        SELECT 1 FROM AuctionKoi ak2 
+        INNER JOIN Auction a2 ON ak2.auction.id = a2.id 
+        WHERE ak2.koi.id = k.id 
+        AND a2.status IN (com.swp391.koibe.enums.EAuctionStatus.UPCOMING, com.swp391.koibe.enums.EAuctionStatus.ONGOING)
     )
+""")
     fun findByOwnerIdAndStatusAndAuctionIsNull(ownerId: Long, pageable: Pageable): Page<Koi>
 
 }

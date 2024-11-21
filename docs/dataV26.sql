@@ -175,70 +175,6 @@ CREATE TABLE `auction_kois_details` (
 -- Đang đổ dữ liệu cho bảng `auction_kois_details`
 --
 
-INSERT INTO `auction_kois_details` (`auction_koi_id`, `bid_amount`, `bid_time`, `id`, `user_id`) VALUES
-(1, 200000, '2024-10-18 04:57:48.000000', 1, 2),
-(3, 200000, '2024-10-18 04:59:37.000000', 4, 19),
-(4, 200000, '2024-10-18 05:01:01.000000', 5, 19),
-(2, 200000, '2024-10-18 05:02:31.000000', 6, 2),
-(8, 200000, '2024-10-25 15:42:30.712599', 9, 2),
-(26, 10005, '2024-11-09 14:21:22.116399', 11, 2),
-(26, 10010, '2024-11-09 14:21:27.288119', 12, 19),
-(26, 10015, '2024-11-09 14:21:30.944485', 13, 2),
-(26, 10020, '2024-11-09 14:21:33.459104', 14, 19),
-(26, 10025, '2024-11-09 14:21:35.751043', 15, 19),
-(26, 10030, '2024-11-09 14:21:38.627618', 16, 2),
-(26, 10035, '2024-11-09 14:21:48.359677', 17, 19),
-(26, 11111, '2024-11-09 14:22:01.261276', 18, 2),
-(26, 11222, '2024-11-09 14:22:19.189476', 19, 19),
-(26, 11444, '2024-11-09 14:22:32.470892', 20, 2),
-(26, 11449, '2024-11-09 14:25:06.885532', 21, 2),
-(26, 11454, '2024-11-09 14:26:29.810675', 22, 2),
-(26, 11459, '2024-11-09 14:28:00.609185', 23, 19),
-(26, 22222, '2024-11-09 14:28:07.119848', 24, 19),
-(26, 22227, '2024-11-09 14:36:52.265823', 25, 2),
-(37, 108000, '2024-11-10 21:44:00.014090', 26, 2),
-(38, 1050000, '2024-11-10 21:49:12.696033', 27, 2),
-(35, 1050000, '2024-11-11 20:56:26.811242', 28, 40),
-(41, 200000, '2024-11-11 21:02:29.150679', 29, 2),
-(35, 1100000, '2024-11-11 21:16:53.336634', 30, 2),
-(35, 1250000, '2024-11-11 21:17:03.857820', 31, 40),
-(45, 2105000, '2024-11-11 21:37:32.066020', 32, 2),
-(45, 2110000, '2024-11-11 21:37:41.591886', 33, 40),
-(44, 2150000, '2024-11-11 21:52:56.923135', 34, 19),
-(45, 2115000, '2024-11-11 21:53:20.407614', 35, 19),
-(45, 2120000, '2024-11-11 21:56:28.993596', 36, 40),
-(45, 2125000, '2024-11-11 21:56:40.434538', 37, 2),
-(45, 2130000, '2024-11-11 21:56:49.001265', 38, 40),
-(45, 3135000, '2024-11-11 21:56:55.860343', 39, 40),
-(45, 3180000, '2024-11-11 21:57:18.919332', 40, 2),
-(45, 3285000, '2024-11-11 21:57:37.250756', 41, 40),
-(45, 3290000, '2024-11-11 21:57:42.070078', 42, 2),
-(45, 3295000, '2024-11-11 21:58:37.790089', 43, 40),
-(45, 3300000, '2024-11-11 21:58:44.627895', 44, 2),
-(45, 3305000, '2024-11-11 21:58:50.954147', 45, 2),
-(45, 3310000, '2024-11-11 21:58:55.803669', 46, 2),
-(45, 3315000, '2024-11-11 21:59:49.931967', 47, 2),
-(45, 3320000, '2024-11-11 21:59:54.290810', 48, 40),
-(45, 3325000, '2024-11-11 22:00:34.095741', 49, 19),
-(45, 4330000, '2024-11-11 22:05:42.829608', 50, 40),
-(45, 5334999, '2024-11-11 22:13:30.495711', 51, 19),
-(46, 5005000, '2024-11-11 22:45:12.387170', 52, 40),
-(47, 5005000, '2024-11-11 22:45:26.443559', 53, 2),
-(46, 5010000, '2024-11-11 22:45:35.497258', 54, 2),
-(46, 5015000, '2024-11-11 22:47:05.232127', 55, 40),
-(31, 1050015, '2024-11-11 22:52:19.335955', 56, 40),
-(48, 1250000, '2024-11-12 10:18:53.580760', 60, 19),
-(31, 1050030, '2024-11-15 16:40:50.819068', 61, 19),
-(31, 1050045, '2024-11-15 16:41:22.017681', 62, 19),
-(31, 1500000, '2024-11-15 16:41:36.821892', 63, 19),
-(31, 1500015, '2024-11-15 16:42:00.365743', 64, 19),
-(32, 1050015, '2024-11-15 17:37:48.878619', 65, 19),
-(31, 1500030, '2024-11-15 19:39:17.179044', 66, 19),
-(31, 1500045, '2024-11-15 19:39:20.004181', 67, 19),
-(31, 2000000, '2024-11-15 19:39:29.084578', 68, 19),
-(52, 4050000, '2024-11-15 19:48:07.416861', 69, 19),
-(54, 2000000, '2024-11-15 23:39:21.960812', 72, 19);
-
 -- --------------------------------------------------------
 
 --
@@ -255,26 +191,6 @@ CREATE TABLE `auction_participants` (
 --
 -- Đang đổ dữ liệu cho bảng `auction_participants`
 --
-
-INSERT INTO `auction_participants` (`auction_id`, `id`, `join_time`, `user_id`) VALUES
-(1, 1, '2024-10-18 04:57:48.000000', 2),
-(2, 2, '2024-10-18 04:58:37.000000', 2),
-(2, 3, '2024-10-18 04:58:43.000000', 19),
-(1, 4, '2024-10-18 04:59:37.000000', 19),
-(9, 5, '2024-11-09 14:21:22.116399', 2),
-(9, 6, '2024-11-09 14:21:27.288119', 19),
-(19, 7, '2024-11-10 21:44:00.014090', 2),
-(19, 8, '2024-11-11 20:56:26.811242', 40),
-(11, 9, '2024-11-11 21:37:32.066020', 2),
-(11, 10, '2024-11-11 21:37:41.591886', 40),
-(11, 11, '2024-11-11 21:52:56.923135', 19),
-(13, 12, '2024-11-11 22:45:12.387170', 40),
-(13, 13, '2024-11-11 22:45:26.443559', 2),
-(12, 14, '2024-11-11 22:52:19.335955', 40),
-(22, 15, '2024-11-12 10:18:53.580760', 19),
-(12, 16, '2024-11-15 16:40:50.819068', 19),
-(28, 17, '2024-11-15 19:48:07.416861', 19);
-
 -- --------------------------------------------------------
 
 --
@@ -330,10 +246,6 @@ CREATE TABLE `feedbacks` (
 --
 -- Đang đổ dữ liệu cho bảng `feedbacks`
 --
-
-INSERT INTO `feedbacks` (`rating`, `created_at`, `id`, `order_id`, `user_id`, `content`) VALUES
-(3, '2024-10-18 16:34:28.000000', 2, 2, 19, 'vai ca cho'),
-(5, '2024-11-10 21:56:24.269133', 3, 6, 2, 'em ca mup map');
 
 -- --------------------------------------------------------
 
@@ -824,31 +736,12 @@ CREATE TABLE `orders` (
   `shipping_address` varchar(255) DEFAULT NULL,
   `shipping_method` varchar(255) DEFAULT NULL,
   `tracking_number` varchar(255) DEFAULT NULL,
-  `status` enum('ALL','CANCELLED','COMPLETED','DELIVERED','PENDING','PROCESSING','SHIPPING') DEFAULT NULL
+  `status` enum('CANCELLED','COMPLETED','DELIVERED','PENDING','PROCESSING','SHIPPING') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `orders`
 --
-
-INSERT INTO `orders` (`active`, `order_date`, `shipping_date`, `total_money`, `id`, `user_id`, `address`, `email`, `first_name`, `last_name`, `note`, `phone_number`, `payment_method`, `shipping_address`, `shipping_method`, `tracking_number`, `status`) VALUES
-(b'0', '2024-10-18', NULL, 500000, 1, 2, 'Quang Binh, Viet Nam', 'son@gmail.com', 'Son', 'Cong Duong', '12345', '0562278326', 'Cash', 'Á', 'Standard', NULL, 'CANCELLED'),
-(b'1', '2024-10-18', '2024-10-30', 500000, 2, 19, 'Da Nang, Viet Nam', 'duongnmse181515@fpt.edu.vn', 'Duong', 'Duong', NULL, '', 'Cash', 'Da Nang, Viet Nam', 'Standard', NULL, 'COMPLETED'),
-(b'0', '2024-10-18', NULL, 500000, 3, 19, 'Da Nang, Viet Nam', 'duongnmse181515@fpt.edu.vn', 'Duong', 'Duong', '123123', '031241233', 'Payment', 'Da Nang, Viet Nam', 'Standard', NULL, 'CANCELLED'),
-(b'0', '2024-10-18', '2024-10-18', 500000, 4, 2, 'Quang Binh, Viet Nam', 'son@gmail.com', 'Son', 'Cong Duong', NULL, '', 'Cash', 'Quang Binh, Viet Nam', 'Standard', NULL, 'CANCELLED'),
-(b'1', '2024-10-25', '2024-10-26', 10000, 5, 2, 'Quang Binh, Viet Nam', 'son@gmail.com', 'Son', 'Cong Duong', 'anh bay den roiiiiiii', '0348018758', 'Payment', 'Quang Binh, Viet Nam', 'Standard', NULL, 'COMPLETED'),
-(b'1', '2024-11-10', '2024-11-15', 10000, 6, 2, 'Quang Binh, Viet Nam', 'son@gmail.com', 'Son', 'Cong Duong', '1 chuc con', '0818954955', 'Cash', 'Quang Binh, Viet Nam', 'Standard', NULL, 'COMPLETED'),
-(b'1', '2024-11-10', NULL, 10000, 7, 2, 'Quang Binh, Viet Nam', 'son@gmail.com', 'Son', 'Cong Duong', NULL, '', 'Cash', 'Quang Binh, Viet Nam', 'Standard', NULL, 'CANCELLED'),
-(b'1', '2024-11-11', NULL, 10000, 9, 2, 'Quang Binh, Viet Nam', 'son@gmail.com', 'Son', 'Cong Duong', NULL, '', 'Cash', 'Quang Binh, Viet Nam', 'Standard', NULL, 'CANCELLED'),
-(b'1', '2024-11-11', NULL, 10000, 10, 40, '', 'sonduongcong8@gmail.com', 'Son', 'Duong Cong', NULL, '', 'Cash', '', 'Standard', NULL, 'CANCELLED'),
-(b'1', '2024-11-11', NULL, 500000, 12, 40, '', 'sonduongcong8@gmail.com', 'Son', 'Duong Cong', NULL, '', 'Cash', '', 'Standard', NULL, 'CANCELLED'),
-(b'1', '2024-11-12', NULL, 1000000, 13, 19, 'Da Nang, Viet Nam', 'duongnmse181515@fpt.edu.vn', 'Nguyễn', 'Mạnh Dưỡng', 'anh bay di roiiiiiiii', '0348018758', 'Payment', '23 Nguyễn Phong Sắc, Phường An Mỹ, Thành phố Tam Kỳ, Tỉnh Quảng Nam', 'Express', NULL, 'CANCELLED'),
-(b'1', '2024-11-14', NULL, 500000, 14, 19, 'Da Nang, Viet Nam', 'duongnmse181515@fpt.edu.vn', 'Duong', 'Duong', 'anh ba khia', '0348018758', 'Payment', '250c Võ Văn Hát, Phường 1, Thị xã Quảng Trị, Tỉnh Quảng Trị', 'Standard', NULL, 'CANCELLED'),
-(b'1', '2024-11-14', '2024-11-19', 1000000, 15, 19, 'Da Nang, Viet Nam', 'duongnmse181515@fpt.edu.vn', 'Nguyễn Mạnh', 'Dưỡng', 'ship nhẹ tay', '0348018758', 'Payment', '250c Võ Văn Hát, phường Long Trường, Phường An Mỹ, Thành phố Tam Kỳ, Tỉnh Quảng Nam', 'Express', NULL, 'SHIPPING'),
-(b'1', '2024-11-15', NULL, 500000, 16, 19, 'Da Nang, Viet Nam', 'duongnmse181515@fpt.edu.vn', 'Duong', 'Duong', NULL, '', 'Cash', 'Da Nang, Viet Nam', 'Standard', NULL, 'CANCELLED'),
-(b'1', '2024-11-15', NULL, 500000, 17, 19, 'Da Nang, Viet Nam', 'duongnmse181515@fpt.edu.vn', 'Duong', 'Duong', NULL, '', 'Cash', 'Da Nang, Viet Nam', 'Standard', NULL, 'CANCELLED'),
-(b'1', '2024-11-15', NULL, 500000, 18, 19, 'Da Nang, Viet Nam', 'duongnmse181515@fpt.edu.vn', 'Duong', 'Duong', NULL, '', 'Cash', 'Da Nang, Viet Nam', 'Standard', NULL, 'CANCELLED');
-
 -- --------------------------------------------------------
 
 --
@@ -867,25 +760,6 @@ CREATE TABLE `order_details` (
 --
 -- Đang đổ dữ liệu cho bảng `order_details`
 --
-
-INSERT INTO `order_details` (`number_of_products`, `price`, `total_money`, `id`, `order_id`, `product_id`) VALUES
-(1, 100000, 0, 1, 1, 117),
-(1, 100000, 0, 2, 2, 123),
-(1, 100000, 0, 3, 3, 333),
-(1, 100000, 0, 4, 4, 324),
-(1, 200000, 0, 5, 5, 97),
-(1, 108000, 108000, 6, 6, 206),
-(1, 1050000, 1050000, 7, 7, 15),
-(1, 200000, 200000, 9, 9, 356),
-(1, 1250000, 1250000, 10, 10, 413),
-(1, 5015000, 5015000, 12, 12, 6),
-(1, 1250000, 1250000, 13, 13, 418),
-(1, 2150000, 2150000, 14, 14, 416),
-(1, 5335000, 5335000, 15, 15, 417),
-(1, 4050000, 4050000, 16, 16, 18),
-(1, 2000000, 2000000, 17, 17, 2),
-(1, 2000000, 2000000, 18, 18, 86);
-
 -- --------------------------------------------------------
 
 --
@@ -998,7 +872,7 @@ CREATE TABLE `payments` (
   `bank_name` varchar(255) DEFAULT NULL,
   `bank_number` varchar(255) DEFAULT NULL,
   `payment_method` varchar(255) NOT NULL,
-  `payment_status` enum('ALL','PENDING','REFUNDED','SUCCESS') NOT NULL,
+  `payment_status` enum('PENDING','REFUNDED','SUCCESS') NOT NULL,
   `payment_type` enum('DEPOSIT','DRAW_OUT','ORDER') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
