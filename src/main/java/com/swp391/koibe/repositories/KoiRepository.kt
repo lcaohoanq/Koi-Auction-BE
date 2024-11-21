@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 
 interface KoiRepository : JpaRepository<Koi, Long> {
+    @Query("SELECT k FROM Koi k WHERE k.owner.id = :ownerId AND k.isDisplay = 1")
     fun findByOwnerId(ownerId: Long, pageable: Pageable): Page<Koi>
     fun findByOwnerIdAndStatus(ownerId: Long, status: EKoiStatus, pageable: Pageable): Page<Koi>
     fun findByStatus(status: EKoiStatus, pageable: Pageable): Page<Koi>

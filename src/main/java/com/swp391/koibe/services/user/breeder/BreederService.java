@@ -163,11 +163,9 @@ public class BreederService implements IBreederService {
             throw new BreederNotFoundException("Breeder not found");
         }
 
-        Page<KoiResponse> koiResponses =
-            koiRepository
-                .findByOwnerId(breederId, pageable)
-                .map(DTOConverter::convertToKoiDTO);
-        return koiResponses;
+        return koiRepository
+            .findByOwnerId(breederId, pageable)
+            .map(DTOConverter::convertToKoiDTO);
     }
 
     @Override

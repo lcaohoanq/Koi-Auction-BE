@@ -192,7 +192,7 @@ public class KoiController {
 
 //        int totalPage = koiPage.getTotalPages();
 //        koiResponses = koiPage.getContent();
-//        for(KoiResponse koi: koiResponses){
+//        for(KoiResponse koi: koiResponses){@
 //            koi.setTotalPage(totalPage);
 //        }
 //

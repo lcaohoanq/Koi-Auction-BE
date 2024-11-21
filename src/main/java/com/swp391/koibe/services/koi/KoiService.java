@@ -98,6 +98,13 @@ public non-sealed class KoiService implements IKoiService<KoiResponse> {
         Koi existingKoi = koiRepository.findById(id)
             .orElseThrow(() -> new DataNotFoundException("Koi not found: " + id));
 
+        if(existingKoi.getIsDisplay() == 0)
+            throw new MalformBehaviourException("Koi already deleted");
+
+        if(existingKoi.getStatus() == EKoiStatus.VERIFIED || existingKoi.getStatus() == EKoiStatus.SOLD){
+            throw new MalformBehaviourException("Cannot update koi already verified or sold");
+        }
+
         //find if koi owner exist
         User existingUser = userRepository.findById(koiDTO.ownerId())
             .orElseThrow(() -> new DataNotFoundException("User not found: " + koiDTO.ownerId()));
