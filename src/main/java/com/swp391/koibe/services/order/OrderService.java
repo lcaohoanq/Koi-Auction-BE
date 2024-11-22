@@ -157,6 +157,12 @@ public class OrderService implements IOrderService {
         Order existingOrder = orderRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("Cannot find order with id: " + id));
 
+        if(existingOrder.getPhoneNumber() == null || existingOrder.getPhoneNumber().isEmpty())
+            throw new MalformDataException("Order phone number is required when updating order");
+
+        if(existingOrder.getAddress() == null || existingOrder.getAddress().isEmpty())
+            throw new MalformDataException("Order address is required when updating order");
+
         // Update only the fields that are allowed to be changed
         existingOrder.setFirstName(orderDTO.getFirstName());
         existingOrder.setLastName(orderDTO.getLastName());

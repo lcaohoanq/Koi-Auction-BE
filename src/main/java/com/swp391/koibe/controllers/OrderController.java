@@ -5,6 +5,7 @@ import com.swp391.koibe.dtos.order.OrderDTO;
 import com.swp391.koibe.dtos.order.UpdateOrderStatusDTO;
 import com.swp391.koibe.enums.OrderStatus;
 import com.swp391.koibe.exceptions.InvalidApiPathVariableException;
+import com.swp391.koibe.exceptions.MalformDataException;
 import com.swp391.koibe.exceptions.MethodArgumentNotValidException;
 import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.Order;
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -130,6 +132,7 @@ public class OrderController {
         if (id <= 0) {
             throw new InvalidApiPathVariableException("Order id must be greater than 0");
         }
+        BaseResponse<Object> response = new BaseResponse<>();
         if (result.hasErrors()) {
             throw new MethodArgumentNotValidException(result);
         }
@@ -137,12 +140,16 @@ public class OrderController {
             Order order;
             order = orderService.updateOrder(id, orderDTO);
             return ResponseEntity.ok(DTOConverter.fromOrder(order));
+        } catch (MalformDataException e) {
+            response.setMessage("Update order failed");
+            response.setReason(e.getMessage());
+            response.setIsSuccess(false);
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
         } catch (Exception e) {
-
             if (e instanceof DataNotFoundException) {
                 throw e;
             }
-            BaseResponse response = new BaseResponse();
             response.setReason(e.getMessage());
             response.setMessage("Update order failed");
             return ResponseEntity.badRequest().body(response);
