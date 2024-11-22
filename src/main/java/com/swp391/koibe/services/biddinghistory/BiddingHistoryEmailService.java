@@ -14,10 +14,8 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -33,26 +31,29 @@ public class BiddingHistoryEmailService implements IBiddingHistoryEmailService {
             backoff = @Backoff(delay = 2000)       // 2 seconds delay between retries
     )
     public void sendRefundEmail(AuctionKoi auctionKoi, String subject, String templateName, Context context) throws MessagingException {
-        // Get all users who have bidded on the auction, and not won
         Long winnerBidderId = auctionKoi.getCurrentBidderId();
-        if (winnerBidderId != null) {
+        if (winnerBidderId != null && winnerBidderId != 0) {
             List<Bid> bids = biddingHistoryService.getBidsByAuctionKoiId(auctionKoi.getId());
-            Map<Long, Long> userBids = new HashMap<>();
-            // iterate through the Map userBids
-            for (Map.Entry<Long, Long> entry :
-                FilterUtils.filterBiddersExceptWinner(
-                    winnerBidderId,
-                    bids,
-                    userBids
-                ).entrySet())
-            {
-                Long bidedAmount = biddingHistoryService.getBidderLatestBid(entry.getKey(), auctionKoi.getId()).getBidAmount();
+
+            // Create map of bidder IDs and their latest bids directly from bids list
+            Map<Long, Bid> bidderLatestBids = bids.stream()
+                    .filter(bid -> !bid.getBidder().getId().equals(winnerBidderId))
+                    .collect(Collectors.groupingBy(
+                            bid -> bid.getBidder().getId(),
+                            Collectors.collectingAndThen(
+                                    Collectors.maxBy(Comparator.comparing(Bid::getBidTime)),
+                                    Optional::get
+                            )
+                    ));
+
+            // Process refunds
+            for (Map.Entry<Long, Bid> entry : bidderLatestBids.entrySet()) {
                 try {
                     User user = userService.getUserById(entry.getKey());
                     context.setVariable("name", user.getFirstName() + " " + user.getLastName());
                     context.setVariable("auction_title", auctionKoi.getAuction().getTitle());
                     context.setVariable("auction_end_date", auctionKoi.getAuction().getEndTime());
-                    context.setVariable("user_bid", bidedAmount);
+                    context.setVariable("user_bid", entry.getValue().getBidAmount());
                     context.setVariable("auction_url", "http://localhost:3000/auctions/" + auctionKoi.getAuction().getId());
                     mailService.sendMail(user.getEmail(), subject, templateName, context);
                 } catch (Exception e) {
