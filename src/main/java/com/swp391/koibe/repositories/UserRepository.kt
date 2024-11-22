@@ -15,10 +15,13 @@ interface UserRepository : JpaRepository<User, Long> {
     fun findByRoleName(roleName: String, pageable: Pageable): Page<User>
     @Query("SELECT u FROM User u WHERE u.role.id = 2")
     fun findAllStaff(pageable: Pageable): Page<User>
-    @Query("SELECT u FROM User u WHERE u.id = :id AND u.role.id = 2")
+    @Query("SELECT u FROM User u WHERE u.id = :id AND u.role.id = 2 AND u.isActive = true")
     fun findStaffById(id: Long): Optional<User>
-    @Query("SELECT u FROM User u WHERE u.id = :id AND u.role.id = 3")
+    @Query("SELECT u FROM User u WHERE u.id = :id AND u.role.id = 3 AND u.isActive = true")
     fun findBreederById(id: Long): Optional<User>
+
+    @Query("SELECT u FROM User u WHERE u.role.id = 2 AND u.isActive = true")
+    fun findAllStaffWithActive(pageable: Pageable): Page<User>
 
     @Modifying
     @Query("UPDATE User u SET u.isActive = false WHERE u.id = :id")

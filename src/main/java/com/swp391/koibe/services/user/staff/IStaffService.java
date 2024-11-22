@@ -20,5 +20,6 @@ public interface IStaffService {
     User updateMemberToStaff(long id);
     User update(long id, UserDTO staff);
     void delete(long id);
+    Page<StaffResponse> findAllStaffWithActive(Pageable pageable);
 
 }

@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -141,7 +142,7 @@ public class AuctionController {
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int limit) {
         // Tạo Pageable từ thông tin trang và giới hạn
-        PageRequest pageRequest = PageRequest.of(page, limit);
+        PageRequest pageRequest = PageRequest.of(page, limit, Sort.by("id").descending());
         Page<AuctionResponse> auctionPage = auctionService
             .getAuctionByKeyword(keyword, pageRequest).map(DTOConverter::convertToAuctionDTO);
         AuctionPaginationResponse response = new AuctionPaginationResponse();

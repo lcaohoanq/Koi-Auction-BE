@@ -88,7 +88,7 @@ public non-sealed class KoiService implements IKoiService<KoiResponse> {
 
     @Override
     public Page<KoiResponse> getAllKois(Pageable pageable) {
-        Page<Koi> kois = koiRepository.findAll(pageable);
+        Page<Koi> kois = koiRepository.findAllKoiByIsDisplayIsTrue(pageable);
         return kois.map(DTOConverter::convertToKoiDTO);
     }
 
@@ -229,7 +229,7 @@ public non-sealed class KoiService implements IKoiService<KoiResponse> {
 
     @Override
     public KoiGenderResponse findQuantityKoiByGender() {
-        List<Koi> kois = koiRepository.findAll();
+        List<Koi> kois = koiRepository.findAll().stream().filter(koi -> koi.getIsDisplay() == 1).toList();
 
         long maleCount = kois.stream()
             .filter(koi -> koi.getSex() == EKoiGender.MALE)
@@ -253,7 +253,7 @@ public non-sealed class KoiService implements IKoiService<KoiResponse> {
 
     @Override
     public KoiStatusResponse findQuantityKoiByStatus() {
-        List<Koi> kois = koiRepository.findAll();
+        List<Koi> kois = koiRepository.findAll().stream().filter(koi -> koi.getIsDisplay() == 1).toList();
 
         long unverifiedCount = kois.stream()
             .filter(koi -> koi.getStatus() == EKoiStatus.UNVERIFIED)

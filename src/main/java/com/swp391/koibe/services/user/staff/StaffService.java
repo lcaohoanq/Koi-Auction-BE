@@ -151,4 +151,10 @@ public class StaffService implements IStaffService {
         staff.setActive(false);
         userRepository.save(staff);
     }
+
+    @Override
+    public Page<StaffResponse> findAllStaffWithActive(Pageable pageable) {
+        Page<User> staffs = userRepository.findAllStaffWithActive(pageable);
+        return staffs.map(dtoConverter::convertToStaffDTO);
+    }
 }

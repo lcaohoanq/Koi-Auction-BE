@@ -16,10 +16,13 @@ interface KoiRepository : JpaRepository<Koi, Long> {
     fun findByOwnerIdAndStatus(ownerId: Long, status: EKoiStatus, pageable: Pageable): Page<Koi>
     fun findByStatus(status: EKoiStatus, pageable: Pageable): Page<Koi>
 
-    @Query("SELECT COUNT(k) FROM Koi k WHERE k.owner.id = :ownerId")
+    @Query("SELECT k FROM Koi k WHERE k.isDisplay = 1")
+    fun findAllKoiByIsDisplayIsTrue(pageable: Pageable): Page<Koi>
+
+    @Query("SELECT COUNT(k) FROM Koi k WHERE k.owner.id = :ownerId AND k.isDisplay = 1")
     fun countKoisByOwnerId(ownerId: Long): Long
 
-    @Query("SELECT COUNT(k) FROM Koi k WHERE k.category.id = :categoryId")
+    @Query("SELECT COUNT(k) FROM Koi k WHERE k.category.id = :categoryId AND k.isDisplay = 1")
     fun countKoisByCategoryId(categoryId: Long): Long
 
     @Modifying

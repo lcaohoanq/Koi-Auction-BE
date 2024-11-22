@@ -145,6 +145,7 @@ public class WebSecurityConfig {
 
                     // StaffController
                     .requestMatchers(GET, String.format("%s/staffs**", apiPrefix)).hasAnyRole(Role.MANAGER)
+                    .requestMatchers(GET, String.format("%s/staffs/active", apiPrefix)).hasAnyRole(Role.MANAGER, Role.STAFF)
 
                     // PaymentController
                     .requestMatchers(GET, String.format("%s/payment**", apiPrefix)).hasAnyRole(Role.MEMBER, Role.BREEDER)
