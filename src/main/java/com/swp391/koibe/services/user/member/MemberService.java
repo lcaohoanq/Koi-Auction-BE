@@ -5,7 +5,6 @@ import com.swp391.koibe.exceptions.MemberNotFoundException;
 import com.swp391.koibe.models.User;
 import com.swp391.koibe.repositories.UserRepository;
 import com.swp391.koibe.responses.MemberResponse;
-import com.swp391.koibe.responses.UserResponse;
 import com.swp391.koibe.services.user.IUserService;
 import com.swp391.koibe.utils.DTOConverter;
 import java.util.Optional;
@@ -24,7 +23,7 @@ public class MemberService implements IMemberService{
 
     @Override
     public Page<MemberResponse> getAllMembers(Pageable pageable) {
-        Page<User> members = userRepository.findByRoleName("MEMBER", pageable);
+        Page<User> members = userRepository.findAllMember(pageable);
         return members.map(dtoConverter::convertToMemberDTO);
     }
 

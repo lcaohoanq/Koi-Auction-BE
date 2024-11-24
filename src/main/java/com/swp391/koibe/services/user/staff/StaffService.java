@@ -2,6 +2,7 @@ package com.swp391.koibe.services.user.staff;
 
 import com.swp391.koibe.dtos.StaffRegisterDTO;
 import com.swp391.koibe.dtos.UserDTO;
+import com.swp391.koibe.enums.UserRole;
 import com.swp391.koibe.enums.UserStatus;
 import com.swp391.koibe.exceptions.PermissionDeniedException;
 import com.swp391.koibe.exceptions.StaffNotFoundException;
@@ -60,7 +61,7 @@ public class StaffService implements IStaffService {
         Role role = roleRepository.findById(2L)
             .orElseThrow(() -> new DataNotFoundException("Staff Role not found"));
 
-        if (role.getName().toUpperCase().equals(Role.MANAGER)) {
+        if (role.getUserRole() == UserRole.MANAGER) {
             log.error("Cannot create manager account");
             throw new PermissionDeniedException("Cannot create manager account");
         }
@@ -102,7 +103,7 @@ public class StaffService implements IStaffService {
             throw new DataAlreadyExistException("User is already a staff");
 
         User newStaff = user.get();
-        newStaff.setRole(new Role(2L, "STAFF"));
+        newStaff.setRole(new Role(2L, UserRole.STAFF));
 
         return userRepository.save(newStaff);
     }

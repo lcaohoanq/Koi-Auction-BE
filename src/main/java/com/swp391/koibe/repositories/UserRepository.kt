@@ -1,5 +1,7 @@
 package com.swp391.koibe.repositories
 
+import com.swp391.koibe.enums.UserRole
+import com.swp391.koibe.models.Role
 import com.swp391.koibe.models.User
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -12,9 +14,17 @@ interface UserRepository : JpaRepository<User, Long> {
     fun findByEmail(email: String): Optional<User>
     fun existsByEmail(email: String): Boolean
     fun findByPhoneNumber(phoneNumber: String): Optional<User>
-    fun findByRoleName(roleName: String, pageable: Pageable): Page<User>
+    fun findByRole(role: Role, pageable: Pageable): Page<User>
+
     @Query("SELECT u FROM User u WHERE u.role.id = 2")
     fun findAllStaff(pageable: Pageable): Page<User>
+
+    @Query("SELECT u FROM User u WHERE u.role.id = 1")
+    fun findAllMember(pageable: Pageable): Page<User>
+
+    @Query("SELECT u FROM User u WHERE u.role.id = 3")
+    fun findAllBreeder(pageable: Pageable): Page<User>
+
     @Query("SELECT u FROM User u WHERE u.id = :id AND u.role.id = 2 AND u.isActive = true")
     fun findStaffById(id: Long): Optional<User>
     @Query("SELECT u FROM User u WHERE u.id = :id AND u.role.id = 3 AND u.isActive = true")

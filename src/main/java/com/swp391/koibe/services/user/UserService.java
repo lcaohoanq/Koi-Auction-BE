@@ -8,6 +8,7 @@ import com.swp391.koibe.dtos.UpdateUserDTO;
 import com.swp391.koibe.dtos.UserRegisterDTO;
 import com.swp391.koibe.enums.EmailCategoriesEnum;
 import com.swp391.koibe.enums.ProviderName;
+import com.swp391.koibe.enums.UserRole;
 import com.swp391.koibe.enums.UserStatus;
 import com.swp391.koibe.exceptions.*;
 import com.swp391.koibe.exceptions.base.DataNotFoundException;
@@ -77,9 +78,9 @@ public class UserService implements IUserService {
         Role role = roleRepository.findById(userRegisterDTO.roleId())
                 .orElseThrow(() -> new DataNotFoundException("Role not found"));
 
-        if (role.getName().toUpperCase().equals(Role.MANAGER)
-            || role.getName().toUpperCase().equals(Role.STAFF)
-            || role.getName().toUpperCase().equals(Role.BREEDER)
+        if (role.getUserRole() == UserRole.MANAGER
+            || role.getUserRole() == UserRole.STAFF
+            || role.getUserRole() == UserRole.BREEDER
         ) {
             log.error("Cannot directly create this type account");
             throw new PermissionDeniedException("Cannot directly create this type account");
@@ -170,7 +171,7 @@ public class UserService implements IUserService {
 
         if (optionalUser.isEmpty()) {
             // Register new user
-            Role memberRole = roleRepository.findByName("MEMBER")
+            Role memberRole = roleRepository.findByUserRole(UserRole.MEMBER)
                     .orElseThrow(() -> new DataNotFoundException("Default MEMBER role not found"));
 
             User newUser = User.builder()
