@@ -54,6 +54,27 @@ public class StaffController {
             return ResponseEntity.badRequest().body(null);
         }
     }
+    //findAllStaffWithActive
+
+    @GetMapping("/active")
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_STAFF')")
+    public ResponseEntity<StaffPaginationResponse> getAllStaffsWithActive(
+        @RequestParam("page") int page,
+        @RequestParam("limit") int limit
+    ) {
+        try {
+            PageRequest pageRequest = PageRequest.of(page, limit);
+            Page<StaffResponse> staffs = staffService.findAllStaffWithActive(pageRequest);
+
+            StaffPaginationResponse response = new StaffPaginationResponse();
+            response.setItem(staffs.getContent());
+            response.setTotalPage(staffs.getTotalPages());
+            response.setTotalItem(staffs.getTotalElements());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_MANAGER')")

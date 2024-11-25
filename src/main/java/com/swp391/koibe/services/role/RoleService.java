@@ -20,12 +20,12 @@ public class RoleService implements IRoleService{
 
     @Override
     public Role createRole(RoleDTO roleDTO) {
-        if(roleRepository.findByName(roleDTO.name()).isPresent()){
-            throw new DataAlreadyExistException("Role with name " + roleDTO.name() + " already exist");
+        if(roleRepository.findByUserRole(roleDTO.userRole()).isPresent()){
+            throw new DataAlreadyExistException("Role with name " + roleDTO.userRole().name() + " already exist");
         }
 
         Role newRole = Role.builder()
-            .name(roleDTO.name())
+            .userRole(roleDTO.userRole())
             .build();
 
         return roleRepository.save(newRole);
@@ -35,7 +35,7 @@ public class RoleService implements IRoleService{
     public Role updateRole(long id, RoleDTO roleDTO) {
         Role existingRole = roleRepository.findById(id)
             .orElseThrow(() -> new DataNotFoundException("Role with id " + id + " not found"));
-        existingRole.setName(roleDTO.name());
+        existingRole.setUserRole(roleDTO.userRole());
         return roleRepository.save(existingRole);
     }
 

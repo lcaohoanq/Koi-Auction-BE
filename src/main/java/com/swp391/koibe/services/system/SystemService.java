@@ -30,9 +30,8 @@ import org.thymeleaf.context.Context;
 
 import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -103,17 +102,22 @@ public class SystemService {
         Long winnerBidderId = auctionKoi.getCurrentBidderId();
         if (winnerBidderId != null && winnerBidderId != 0) {
             List<Bid> bids = biddingHistoryService.getBidsByAuctionKoiId(auctionKoi.getId());
-            Map<Long, Long> userBids = new HashMap<>();
-            // iterate through the Map userBids
-            for (Map.Entry<Long, Long> entry :
-                    FilterUtils.filterBiddersExceptWinner(
-                            winnerBidderId,
-                            bids,
-                            userBids
-                    ).entrySet()) {
-                Long bidedAmount = biddingHistoryService.getBidderLatestBid(entry.getKey(), auctionKoi.getId()).getBidAmount();
+
+            // Create map of bidder IDs and their latest bids directly from bids list
+            Map<Long, Bid> bidderLatestBids = bids.stream()
+                    .filter(bid -> !bid.getBidder().getId().equals(winnerBidderId))
+                    .collect(Collectors.groupingBy(
+                            bid -> bid.getBidder().getId(),
+                            Collectors.collectingAndThen(
+                                    Collectors.maxBy(Comparator.comparing(Bid::getBidTime)),
+                                    Optional::get
+                            )
+                    ));
+
+            // Process refunds
+            for (Map.Entry<Long, Bid> entry : bidderLatestBids.entrySet()) {
                 try {
-                    userService.updateAccountBalance(entry.getKey(), bidedAmount);
+                    userService.updateAccountBalance(entry.getKey(), entry.getValue().getBidAmount());
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }

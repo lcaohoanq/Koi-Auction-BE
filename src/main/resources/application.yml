@@ -15,15 +15,15 @@ spring:
     encoding: UTF-8
 
   datasource:
-    url: ${PROD_SPRING_DATASOURCE_URL}
-    username: ${PROD_DB_DEV_USER}
-    password: ${PROD_DB_DEV_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL:PROD_SPRING_DATASOURCE_URL}
+    username: ${MYSQL_DEV_USER:PROD_DB_DEV_USER}
+    password: ${MYSQL_DEV_PASSWORD:PROD_DB_DEV_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
 
   mail:

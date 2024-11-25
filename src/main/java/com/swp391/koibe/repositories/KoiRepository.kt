@@ -11,14 +11,18 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 
 interface KoiRepository : JpaRepository<Koi, Long> {
+    @Query("SELECT k FROM Koi k WHERE k.owner.id = :ownerId AND k.isDisplay = 1")
     fun findByOwnerId(ownerId: Long, pageable: Pageable): Page<Koi>
     fun findByOwnerIdAndStatus(ownerId: Long, status: EKoiStatus, pageable: Pageable): Page<Koi>
     fun findByStatus(status: EKoiStatus, pageable: Pageable): Page<Koi>
 
-    @Query("SELECT COUNT(k) FROM Koi k WHERE k.owner.id = :ownerId")
+    @Query("SELECT k FROM Koi k WHERE k.isDisplay = 1")
+    fun findAllKoiByIsDisplayIsTrue(pageable: Pageable): Page<Koi>
+
+    @Query("SELECT COUNT(k) FROM Koi k WHERE k.owner.id = :ownerId AND k.isDisplay = 1")
     fun countKoisByOwnerId(ownerId: Long): Long
 
-    @Query("SELECT COUNT(k) FROM Koi k WHERE k.category.id = :categoryId")
+    @Query("SELECT COUNT(k) FROM Koi k WHERE k.category.id = :categoryId AND k.isDisplay = 1")
     fun countKoisByCategoryId(categoryId: Long): Long
 
     @Modifying
@@ -30,19 +34,21 @@ interface KoiRepository : JpaRepository<Koi, Long> {
     @Query(
         "SELECT new com.swp391.koibe.responses.KoiInAuctionResponse(k.id, k.name, k.sex, k.length, k.yearBorn, k.price, k.status, k.isDisplay, k.thumbnail, k.description, k.owner.id, k.category.id, k.createdAt, k.updatedAt, ak.auction.id, ak.bidMethod) " +
                 "FROM Koi k INNER JOIN AuctionKoi ak ON k.id = ak.koi.id " +
-                "WHERE (k.status = 'VERIFIED') AND (k.isDisplay = 1) AND " +
-                "(:keyword IS NULL OR :keyword = '' OR " +
+                "INNER JOIN Auction a ON ak.auction.id = a.id " +
+                "WHERE (k.status = 'VERIFIED') AND (k.isDisplay = 1) " +
+                "AND (a.status IN (com.swp391.koibe.enums.EAuctionStatus.UPCOMING, com.swp391.koibe.enums.EAuctionStatus.ONGOING)) " +
+                "AND (:keyword IS NULL OR :keyword = '' OR " +
                 "k.name LIKE CONCAT('%', :keyword, '%') " +
                 "OR k.description LIKE CONCAT('%', :keyword, '%') " +
                 "OR CAST(k.sex as string) LIKE CONCAT('%', :keyword, '%') " +
                 "OR CAST(k.length AS string) LIKE CONCAT('%', :keyword, '%') " +
                 "OR CAST(k.yearBorn AS string) LIKE CONCAT('%', :keyword, '%') " +
-                "OR CAST(k.owner.firstName as string) LIKE CONCAT('%', :keyword, '%')" +
-                "OR CAST(k.owner.lastName as string) LIKE CONCAT('%', :keyword, '%')" +
-                "OR CAST(CONCAT(k.owner.firstName, ' ', k.owner.lastName) as string) LIKE CONCAT('%', :keyword, '%')" +
+                "OR CAST(k.owner.firstName as string) LIKE CONCAT('%', :keyword, '%') " +
+                "OR CAST(k.owner.lastName as string) LIKE CONCAT('%', :keyword, '%') " +
+                "OR CAST(CONCAT(k.owner.firstName, ' ', k.owner.lastName) as string) LIKE CONCAT('%', :keyword, '%') " +
                 "OR CAST(ak.basePrice AS string) LIKE CONCAT('%', :keyword, '%') " +
                 "OR CAST(ak.ceilPrice AS string) LIKE CONCAT('%', :keyword, '%') " +
-                "OR CAST(ak.bidMethod as string) LIKE CONCAT('%', :keyword, '%')" +
+                "OR CAST(ak.bidMethod as string) LIKE CONCAT('%', :keyword, '%') " +
                 "OR CAST(ak.bidStep as string) LIKE CONCAT('%', :keyword, '%'))"
     )
     fun findByKeyword(
@@ -90,10 +96,19 @@ interface KoiRepository : JpaRepository<Koi, Long> {
     )
     fun findAllKoiByKeyword(keyword: String, pageable: Pageable): Page<Koi>
 
-    @Query(
-        "SELECT k FROM Koi k LEFT JOIN AuctionKoi ak ON k.id = ak.koi.id " +
-                "WHERE k.owner.id = :ownerId AND k.status = 'VERIFIED' AND ak.id IS NULL"
+    @Query("""
+    SELECT DISTINCT k FROM Koi k 
+    LEFT JOIN AuctionKoi ak ON k.id = ak.koi.id 
+    LEFT JOIN Auction a ON ak.auction.id = a.id 
+    WHERE k.owner.id = :ownerId 
+    AND k.status = 'VERIFIED' 
+    AND NOT EXISTS (
+        SELECT 1 FROM AuctionKoi ak2 
+        INNER JOIN Auction a2 ON ak2.auction.id = a2.id 
+        WHERE ak2.koi.id = k.id 
+        AND a2.status IN (com.swp391.koibe.enums.EAuctionStatus.UPCOMING, com.swp391.koibe.enums.EAuctionStatus.ONGOING)
     )
+""")
     fun findByOwnerIdAndStatusAndAuctionIsNull(ownerId: Long, pageable: Pageable): Page<Koi>
 
 }

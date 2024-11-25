@@ -4,6 +4,7 @@ import com.swp391.koibe.dtos.auctionkoi.AuctionKoiDTO;
 import com.swp391.koibe.dtos.auctionkoi.UpdateAuctionKoiDTO;
 import com.swp391.koibe.exceptions.GenerateDataException;
 import com.swp391.koibe.exceptions.KoiRevokeException;
+import com.swp391.koibe.exceptions.MalformBehaviourException;
 import com.swp391.koibe.exceptions.MalformDataException;
 import com.swp391.koibe.exceptions.MethodArgumentNotValidException;
 import com.swp391.koibe.exceptions.base.DataNotFoundException;
@@ -12,6 +13,7 @@ import com.swp391.koibe.models.User;
 import com.swp391.koibe.responses.AuctionKoiResponse;
 import com.swp391.koibe.responses.BidMethodQuantityResponse;
 import com.swp391.koibe.responses.KoiInAuctionResponse;
+import com.swp391.koibe.responses.base.BaseResponse;
 import com.swp391.koibe.responses.pagination.KoiInAuctionPaginationResponse;
 import com.swp391.koibe.services.auctionkoi.IAuctionKoiService;
 import com.swp391.koibe.services.redis.koi.IKoiRedisService;
@@ -24,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -45,7 +48,8 @@ public class AuctionKoiController {
     }
 
     @GetMapping("/auction/{id}")
-    public ResponseEntity<List<AuctionKoiResponse>> getAuctionKoisByAuctionId(@PathVariable Long id) {
+    public ResponseEntity<List<AuctionKoiResponse>> getAuctionKoisByAuctionId(
+        @PathVariable Long id) {
         try {
             return ResponseEntity.ok(auctionKoiService.getAuctionKoiByAuctionId(id));
         } catch (Exception e) {
@@ -55,19 +59,21 @@ public class AuctionKoiController {
     }
 
     @GetMapping("/{aid}/{id}")
-    public ResponseEntity<?> getAuctionKoiByAuctionIdAndKoiId(@PathVariable Long aid, @PathVariable Long id) {
+    public ResponseEntity<?> getAuctionKoiByAuctionIdAndKoiId(@PathVariable Long aid,
+                                                              @PathVariable Long id) {
         try {
             return ResponseEntity.ok(auctionKoiService.getAuctionKoiByAuctionIdAndKoiId(aid, id));
         } catch (Exception e) {
             log.error("Error getting auctionkoi by auction id and koi id: " + e.getMessage());
-            throw new DataNotFoundException("Error getting auctionkoi by auction id and koi id: " + e.getMessage());
+            throw new DataNotFoundException(
+                "Error getting auctionkoi by auction id and koi id: " + e.getMessage());
         }
     }
 
     @GetMapping("") // /auctions/?page=1&limit=10
     public ResponseEntity<List<AuctionKoiResponse>> getAllAuctions(
-            @RequestParam int page,
-            @RequestParam int limit) {
+        @RequestParam int page,
+        @RequestParam int limit) {
         try {
             PageRequest pageRequest = PageRequest.of(page, limit);
             Page<AuctionKoiResponse> auctionKois = auctionKoiService.getAllAuctionKois(pageRequest);
@@ -95,9 +101,9 @@ public class AuctionKoiController {
     @PostMapping("")
     @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_STAFF', 'ROLE_BREEDER')")
     public ResponseEntity<AuctionKoiResponse> createAuctionKoi(
-            @Valid @RequestBody AuctionKoiDTO auctionKoiDTO,
-            BindingResult result,
-            @RequestHeader("Authorization") String authorizationHeader
+        @Valid @RequestBody AuctionKoiDTO auctionKoiDTO,
+        BindingResult result,
+        @RequestHeader("Authorization") String authorizationHeader
     ) throws Exception {
         String extractedToken = authorizationHeader.substring(7);
         User user = userService.getUserDetailsFromToken(extractedToken);
@@ -106,7 +112,7 @@ public class AuctionKoiController {
         }
 
         //check breeder account have enough money to register koi to auction
-        if (user.getAccountBalance() < Math.floorDiv(auctionKoiDTO.basePrice(),10)){
+        if (user.getAccountBalance() < Math.floorDiv(auctionKoiDTO.basePrice(), 10)) {
             throw new MalformDataException("You dont have enough money to register Koi to Auction");
         }
 
@@ -125,7 +131,8 @@ public class AuctionKoiController {
             response.setAuctionId(newAuctionKoi.getAuction().getId());
             response.setBidStep(newAuctionKoi.getBidStep());
             //update breeder account balance
-            userService.updateAccountBalance(user.getId(), - Math.floorDiv(auctionKoiDTO.basePrice(),10));
+            userService.updateAccountBalance(user.getId(),
+                                             -Math.floorDiv(auctionKoiDTO.basePrice(), 10));
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             log.error("Error creating auctionkoi: " + e.getMessage());
@@ -135,10 +142,9 @@ public class AuctionKoiController {
 
     @PutMapping("/auctionkois/{auctionkoi_id}")
     public ResponseEntity<AuctionKoiResponse> updateAuctionKoi(
-            @PathVariable Long auctionkoi_id,
-            @Valid @RequestBody UpdateAuctionKoiDTO updateAuctionKoiDTO,
-            BindingResult result)
-    {
+        @PathVariable Long auctionkoi_id,
+        @Valid @RequestBody UpdateAuctionKoiDTO updateAuctionKoiDTO,
+        BindingResult result) {
         if (result.hasErrors()) {
             throw new MethodArgumentNotValidException(result);
         }
@@ -147,19 +153,34 @@ public class AuctionKoiController {
         return ResponseEntity.ok(updatedAuctionKoi);
     }
 
-    @DeleteMapping("/kois/{koi_id}/auctions/{auction_id}")
+    @PutMapping("/revoke/koi/{koi_id}/auction/{auction_id}")
     @PreAuthorize("hasAnyRole('ROLE_BREEDER', 'ROLE_MANAGER', 'ROLE_STAFF')")
-    public ResponseEntity<AuctionKoiResponse> revokeKoiInAuction(
+    public ResponseEntity<?> revokeKoiInAuction(
         @PathVariable Long koi_id,
         @PathVariable Long auction_id
-    ){
-        try {
-            AuctionKoi updatedAuctionKoi = auctionKoiService.revokeKoiInAuction(koi_id, auction_id);
-            return ResponseEntity.ok(DTOConverter.convertToAuctionKoiDTO(updatedAuctionKoi));
-        } catch (Exception e) {
-            log.error("Error revoking koi in auction: " + e.getMessage());
-            throw new KoiRevokeException(e.getMessage());
+    ) {
+
+        BaseResponse<Object> response = new BaseResponse<>();
+        try{
+            auctionKoiService.revokeKoiInAuction(koi_id, auction_id);
+            response.setMessage("Koi in Auction revoked successfully");
+            response.setIsSuccess(true);
+            response.setStatusCode(200);
+            return ResponseEntity.ok(response);
+        }catch (DataNotFoundException e){
+            response.setMessage("Koi in Auction not found");
+            response.setReason(e.getMessage());
+            response.setIsSuccess(false);
+            response.setStatusCode(404);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }catch (MalformBehaviourException e){
+            response.setMessage("Koi in Auction cannot be revoked");
+            response.setReason(e.getMessage());
+            response.setIsSuccess(false);
+            response.setStatusCode(400);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
+
     }
 
     @DeleteMapping("/{id}")
@@ -173,7 +194,6 @@ public class AuctionKoiController {
             throw new DataNotFoundException("Error deleting auctionkoi: " + e.getMessage());
         }
     }
-
 
     @GetMapping("/get-kois-by-keyword")
     public ResponseEntity<KoiInAuctionPaginationResponse> getOrdersByKeyword(
@@ -199,7 +219,8 @@ public class AuctionKoiController {
 //            return ResponseEntity.ok(response);
 //        }
 
-        Page<KoiInAuctionResponse> koiPage = auctionKoiService.getKoiByKeyword(keyword, pageRequest);
+        Page<KoiInAuctionResponse> koiPage = auctionKoiService.getKoiByKeyword(keyword,
+                                                                               pageRequest);
         response.setItem(koiPage.getContent());
         response.setTotalItem(koiPage.getTotalElements());
         response.setTotalPage(koiPage.getTotalPages());

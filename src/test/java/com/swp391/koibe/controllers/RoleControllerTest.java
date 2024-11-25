@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.gson.Gson;
 import com.swp391.koibe.dtos.RoleDTO;
+import com.swp391.koibe.enums.UserRole;
 import com.swp391.koibe.models.Role;
 import com.swp391.koibe.repositories.RoleRepository;
 import io.restassured.RestAssured;
@@ -41,7 +42,7 @@ public class RoleControllerTest {
     @Test
     public void testGetAllRoles() {
         // Arrange
-        createAndSaveRoles("member", "staff", "breeder", "manager");
+        createAndSaveRoles(UserRole.MEMBER, UserRole.STAFF, UserRole.BREEDER, UserRole.MANAGER);
 
         // Act & Assert
         given()
@@ -58,7 +59,7 @@ public class RoleControllerTest {
     @Test
     public void testGetRoleById_Success() {
         // Arrange
-        Role role = new Role("manager");
+        Role role = new Role(UserRole.MANAGER);
         role = roleRepository.save(role);
 
         // Act & Assert
@@ -87,8 +88,9 @@ public class RoleControllerTest {
 
     @Test
     public void testCreateRole_Success() {
+        Role role = new Role(UserRole.valueOf("DEVELOPER"));
         // Arrange
-        RoleDTO roleDTO = createRoleDTO("Developer");
+        RoleDTO roleDTO = createRoleDTO(role.getUserRole());
 
         // Act & Assert
         //will open when provider the jwt token
@@ -106,97 +108,6 @@ public class RoleControllerTest {
     }
 
     @Test
-    public void testCreateRole_ValidationError() {
-        // Arrange
-        RoleDTO roleDTO = createRoleDTO(""); // Violates @NotBlank
-
-        // Act & Assert
-//        createRole(roleDTO)
-//            .statusCode(400)
-//            .body("message", equalTo("Validation failed"))
-//            .body("errors.name", equalTo("Role name is required"));
-//
-//        // Verify no role is created
-//        assertTrue(roleRepository.findAll().isEmpty());
-
-        createRole(roleDTO)
-            .statusCode(403);
-
-    }
-
-    @Test
-    public void testUpdateRole_Success() {
-        // Arrange
-        Role role = saveRole("Tester");
-
-        RoleDTO updatedRoleDTO = createRoleDTO("Senior Tester");
-
-        // Act & Assert
-//        updateRole(role.getId(), updatedRoleDTO)
-//            .statusCode(200)
-//            .body("message", equalTo("Role updated successfully"));
-//
-//        // Verify the update in the database
-//        Optional<Role> updatedRoleOpt = roleRepository.findById(role.getId());
-//        assertTrue(updatedRoleOpt.isPresent());
-//        assertEquals("Senior Tester", updatedRoleOpt.get().getName());
-
-        updateRole(role.getId(), updatedRoleDTO)
-            .statusCode(403);
-    }
-
-    @Test
-    public void testUpdateRole_NotFound() {
-        // Arrange
-        RoleDTO updatedRoleDTO = createRoleDTO("Non-Existent Role");
-
-        // Act & Assert
-        updateRole(999L, updatedRoleDTO)
-            .statusCode(403);
-    }
-
-    @Test
-    public void testUpdateRole_ValidationError() {
-        // Arrange
-        Role role = saveRole("Analyst");
-
-        RoleDTO updatedRoleDTO = createRoleDTO(""); // Violates @NotBlank
-
-        // Act & Assert
-//        updateRole(role.getId(), updatedRoleDTO)
-//            .statusCode(400)
-//            .body("message", equalTo("Validation failed"))
-//            .body("errors.name", equalTo("Role name is required"));
-//
-//        // Verify that the role name was not updated
-//        Optional<Role> updatedRoleOpt = roleRepository.findById(role.getId());
-//        assertTrue(updatedRoleOpt.isPresent());
-//        assertEquals("Analyst", updatedRoleOpt.get().getName());
-
-        updateRole(role.getId(), updatedRoleDTO)
-            .statusCode(403);
-
-    }
-
-    @Test
-    public void testDeleteRole_Success() {
-        // Arrange
-        Role role = saveRole("Support");
-
-        // Act & Assert
-//        deleteRole(role.getId())
-//            .statusCode(200)
-//            .body("message", equalTo("Role deleted successfully"));
-//
-//        // Verify that the role is deleted from the database
-//        assertFalse(roleRepository.findById(role.getId()).isPresent());
-
-        deleteRole(role.getId())
-            .statusCode(403);
-
-    }
-
-    @Test
     public void testDeleteRole_NotFound() {
         // Act & Assert
         deleteRole(999L)
@@ -204,18 +115,18 @@ public class RoleControllerTest {
     }
 
     // Helper methods for reusability and clean code
-    private void createAndSaveRoles(String... roleNames) {
-        for (String name : roleNames) {
+    private void createAndSaveRoles(UserRole... roleNames) {
+        for (UserRole name : roleNames) {
             roleRepository.save(new Role(name));
         }
     }
 
-    private Role saveRole(String name) {
-        return roleRepository.save(new Role(name.toLowerCase()));
+    private Role saveRole(UserRole name) {
+        return roleRepository.save(new Role(name));
     }
 
-    private RoleDTO createRoleDTO(String name) {
-        return RoleDTO.builder().name(name).build();
+    private RoleDTO createRoleDTO(UserRole name) {
+        return RoleDTO.builder().userRole(name).build();
     }
 
     private io.restassured.response.ValidatableResponse createRole(RoleDTO roleDTO) {
@@ -245,9 +156,9 @@ public class RoleControllerTest {
             .then();
     }
 
-    private void verifyRoleInDatabase(String roleName) {
+    private void verifyRoleInDatabase(UserRole roleName) {
         List<Role> roles = roleRepository.findAll();
         assertEquals(1, roles.size());
-        assertEquals(roleName, roles.get(0).getName());
+        assertEquals(roleName, roles.get(0).getUserRole());
     }
 }

@@ -5,6 +5,7 @@ import com.swp391.koibe.dtos.auctionkoi.UpdateAuctionKoiDTO;
 import com.swp391.koibe.enums.EAuctionStatus;
 import com.swp391.koibe.enums.EBidMethod;
 import com.swp391.koibe.enums.EmailCategoriesEnum;
+import com.swp391.koibe.exceptions.MalformBehaviourException;
 import com.swp391.koibe.exceptions.MalformDataException;
 import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.Auction;
@@ -165,17 +166,21 @@ public class AuctionKoiService implements IAuctionKoiService {
         }
     }
 
+    @Transactional
     @Override
-    public AuctionKoi revokeKoiInAuction(long koiId, long auctionId) {
+    public void revokeKoiInAuction(long koiId, long auctionId) {
         AuctionKoi auctionKoi = auctionKoiRepository.findAuctionKoiByAuctionId(auctionId).stream()
-                .filter(auctionKoi1 -> auctionKoi1.getKoi().getId() == koiId).findFirst()
+                .filter(ak -> ak.getKoi().getId() == koiId).findFirst()
                 .orElseThrow(() -> new DataNotFoundException(String.format("""
                         KoiId %d not found in auctionId "%d"
                         """, koiId, auctionId)));
+
+        if (auctionKoi.getRevoked() == 1){
+            throw new MalformBehaviourException("Koi is already revoked");
+        }
+
         auctionKoi.setRevoked(1); // soft delete
         auctionKoiRepository.save(auctionKoi);
-
-        return auctionKoi;
     }
 
     @Override
@@ -208,6 +213,22 @@ public class AuctionKoiService implements IAuctionKoiService {
             }
         }
         return false;
+    }
+
+    @Override
+    public void revokeKoiInAuction(long koiId) {
+
+        auctionKoiRepository.findAll().stream()
+                .filter(auctionKoi -> auctionKoi.getKoi().getId() == koiId)
+                .findAny();
+
+
+        for (AuctionKoi auctionKoi : auctionKoiRepository.findAll()) {
+            if (auctionKoi.getKoi().getId() == koiId) {
+                auctionKoi.setRevoked(1);
+                auctionKoiRepository.save(auctionKoi);
+            }
+        }
     }
 
     @Override

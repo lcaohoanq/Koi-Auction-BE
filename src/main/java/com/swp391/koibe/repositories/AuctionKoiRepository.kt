@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface AuctionKoiRepository : JpaRepository<AuctionKoi, Long> {
     fun findAuctionKoiByAuctionId(auctionId: Long): List<AuctionKoi>
+    fun existsByKoiIdAndAuctionId(koiId: Long, auctionId: Long): Boolean
 }

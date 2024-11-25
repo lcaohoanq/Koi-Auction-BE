@@ -5,13 +5,16 @@ import com.swp391.koibe.dtos.koi.KoiDTO;
 import com.swp391.koibe.dtos.koi.UpdateKoiDTO;
 import com.swp391.koibe.dtos.koi.UpdateKoiStatusDTO;
 import com.swp391.koibe.enums.EKoiStatus;
+import com.swp391.koibe.exceptions.MalformBehaviourException;
 import com.swp391.koibe.exceptions.MethodArgumentNotValidException;
+import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.Koi;
 import com.swp391.koibe.models.KoiImage;
 import com.swp391.koibe.models.User;
 import com.swp391.koibe.responses.KoiGenderResponse;
 import com.swp391.koibe.responses.KoiResponse;
 import com.swp391.koibe.responses.KoiStatusResponse;
+import com.swp391.koibe.responses.base.BaseResponse;
 import com.swp391.koibe.responses.pagination.KoiPaginationResponse;
 import com.swp391.koibe.services.koi.IKoiService;
 import com.swp391.koibe.services.redis.koi.IKoiRedisService;
@@ -192,7 +195,7 @@ public class KoiController {
 
 //        int totalPage = koiPage.getTotalPages();
 //        koiResponses = koiPage.getContent();
-//        for(KoiResponse koi: koiResponses){
+//        for(KoiResponse koi: koiResponses){@
 //            koi.setTotalPage(totalPage);
 //        }
 //
@@ -309,8 +312,27 @@ public class KoiController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_BREEDER', 'ROLE_MANAGER', 'ROLE_STAFF')")
     public ResponseEntity<?> deleteProduct(@PathVariable("id") Long koiId) throws Exception {
-        koiService.deleteKoi(koiId);
-        return ResponseEntity.ok().body("Koi deleted successfully");
+        BaseResponse<Koi> response = new BaseResponse<>();
+        try{
+            koiService.deleteKoi(koiId);
+            response.setMessage("Delete koi successfully");
+            response.setReason("Koi deleted successfully");
+            response.setIsSuccess(true);
+            response.setStatusCode(HttpStatus.OK.value());
+            return ResponseEntity.ok(response);
+        }catch(DataNotFoundException e){
+            response.setMessage("Delete koi failed");
+            response.setReason(e.getMessage());
+            response.setIsSuccess(false);
+            response.setStatusCode(HttpStatus.NOT_FOUND.value());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }catch (MalformBehaviourException e){
+            response.setMessage("Delete koi failed");
+            response.setReason(e.getMessage());
+            response.setIsSuccess(false);
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
     }
 
     @PostMapping(value = "uploads/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
