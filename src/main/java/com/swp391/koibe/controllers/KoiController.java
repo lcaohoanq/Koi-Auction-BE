@@ -14,6 +14,7 @@ import com.swp391.koibe.models.User;
 import com.swp391.koibe.responses.KoiGenderResponse;
 import com.swp391.koibe.responses.KoiResponse;
 import com.swp391.koibe.responses.KoiStatusResponse;
+import com.swp391.koibe.responses.base.ApiResponse;
 import com.swp391.koibe.responses.base.BaseResponse;
 import com.swp391.koibe.responses.pagination.KoiPaginationResponse;
 import com.swp391.koibe.services.koi.IKoiService;
@@ -97,11 +98,32 @@ public class KoiController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<KoiResponse> getKoi(@PathVariable long id) {
+    public ResponseEntity<ApiResponse<KoiResponse>> getKoi(@PathVariable long id) {
         try {
-            return ResponseEntity.ok(koiService.getKoiById(id));
+            KoiResponse koiResponse = koiService.getKoiById(id);
+            ApiResponse<KoiResponse> response = ApiResponse.<KoiResponse>builder()
+                .data(koiResponse)
+                .statusCode(200)
+                .isSuccess(true)
+                .message("Koi fetched successfully")
+                .build();
+            return ResponseEntity.ok(response);  // HTTP 200 OK
+        } catch (DataNotFoundException e) {
+            ApiResponse<KoiResponse> errorResponse = ApiResponse.<KoiResponse>builder()
+                .statusCode(404)
+                .isSuccess(false)
+                .message("Error fetching koi")
+                .reason(e.getMessage())
+                .build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);  // HTTP 404 Not Found
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(null);
+            ApiResponse<KoiResponse> errorResponse = ApiResponse.<KoiResponse>builder()
+                .statusCode(500)
+                .isSuccess(false)
+                .message("Unexpected error occurred")
+                .reason(e.getMessage())
+                .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);  // HTTP 500 Internal Server Error
         }
     }
 

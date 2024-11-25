@@ -6,12 +6,11 @@ import com.swp391.koibe.exceptions.MethodArgumentNotValidException;
 import com.swp391.koibe.exceptions.base.DataNotFoundException;
 import com.swp391.koibe.models.Category;
 import com.swp391.koibe.responses.CategoryResponse;
-import com.swp391.koibe.responses.pagination.CategoryPaginationResponse;
+import com.swp391.koibe.responses.base.PageResponse;
 import com.swp391.koibe.services.category.ICategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,27 +36,18 @@ public class CategoryController {
     private final LocalizationUtils localizationUtils;
 
     @GetMapping("")
-    public ResponseEntity<CategoryPaginationResponse> getAllCategories(
+    public ResponseEntity<PageResponse<CategoryResponse>> getAllCategories(
         @RequestParam("page") int page,
         @RequestParam("limit") int limit
     ) {
         try {
-            PageRequest pageRequest = PageRequest.of(page, limit);
-            Page<CategoryResponse> categories = categoryService.getAllCategories(pageRequest);
-
-            CategoryPaginationResponse response = new CategoryPaginationResponse();
-
-            response.setItem(categories.getContent());
-            response.setTotalPage(categories.getTotalPages());
-            response.setTotalItem(categories.getTotalElements());
-
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(categoryService.getAllCategories(PageRequest.of(page, limit)));
         } catch (Exception e) {
             throw new DataNotFoundException(
                 localizationUtils.getLocalizedMessage("category.get_all_failed"));
         }
-
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable int id) {
