@@ -77,13 +77,10 @@ public non-sealed class KoiService implements IKoiService<KoiResponse> {
         return koiRepository.save(newKoi);
     }
 
-    @Override
     public KoiResponse getKoiById(long id) throws DataNotFoundException {
-        Optional<Koi> existingKoi = koiRepository.findById(id);
-        if(existingKoi.isEmpty()){
-            throw new DataNotFoundException("Koi not found: " + id);
-        }
-        return DTOConverter.convertToKoiDTO(existingKoi.get());
+        return koiRepository.findById(id)
+            .map(DTOConverter::convertToKoiDTO)
+            .orElseThrow(() -> new DataNotFoundException("Koi not found: " + id));
     }
 
     @Override

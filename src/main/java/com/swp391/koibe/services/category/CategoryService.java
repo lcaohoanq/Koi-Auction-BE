@@ -5,13 +5,17 @@ import com.swp391.koibe.exceptions.CategoryAlreadyExistException;
 import com.swp391.koibe.exceptions.CategoryNotFoundException;
 import com.swp391.koibe.exceptions.base.DataAlreadyExistException;
 import com.swp391.koibe.exceptions.base.DataNotFoundException;
+import com.swp391.koibe.metadata.PaginationMeta;
 import com.swp391.koibe.models.Category;
 import com.swp391.koibe.repositories.CategoryRepository;
 import com.swp391.koibe.responses.CategoryResponse;
+import com.swp391.koibe.responses.base.PageResponse;
 import com.swp391.koibe.utils.DTOConverter;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,8 +45,25 @@ public class CategoryService implements ICategoryService{
     }
 
     @Override
-    public Page<CategoryResponse> getAllCategories(Pageable pageable) {
-        return categoryRepository.findAll(pageable).map(dtoConverter::convertToCategoryDTO);
+    public PageResponse<CategoryResponse> getAllCategories(PageRequest pageRequest) {
+        Page<Category> categoriesPage = categoryRepository.findAll(pageRequest);
+
+        List<CategoryResponse> categoryResponses = categoriesPage.getContent().stream()
+            .map(dtoConverter::convertToCategoryDTO)
+            .collect(Collectors.toList());
+
+        return PageResponse.<CategoryResponse>pageBuilder()
+            .data(categoryResponses)
+            .pagination(PaginationMeta.builder()
+                            .totalPages(categoriesPage.getTotalPages())
+                            .totalItems(categoriesPage.getTotalElements())
+                            .currentPage(pageRequest.getPageNumber())
+                            .pageSize(pageRequest.getPageSize())
+                            .build())
+            .statusCode(200)
+            .isSuccess(true)
+            .message("Categories fetched successfully")
+            .build();
     }
 
     @Override
