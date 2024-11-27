@@ -80,7 +80,7 @@ public class BreederService implements IBreederService {
     }
 
     @Override
-    public KoiResponse createKoi(Integer categoryId, KoiDTO koiDTO, long breederId) {
+    public KoiResponse createKoi(Long categoryId, KoiDTO koiDTO, long breederId) {
 
         User existingBreeder = userRepository.findBreederById(koiDTO.ownerId())
             .orElseThrow(() ->

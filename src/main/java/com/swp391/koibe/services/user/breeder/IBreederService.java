@@ -17,7 +17,7 @@ public interface IBreederService {
     PageResponse<BreederResponse> getAllBreeders(Pageable pageable);
     List<UserResponse> getAllBreeders();
     User findById(long breederId) throws DataNotFoundException;
-    KoiResponse createKoi(Integer categoryId, KoiDTO koiDTO, long breederId);
+    KoiResponse createKoi(Long categoryId, KoiDTO koiDTO, long breederId);
     void updateBreeder(long breederId, User breeder);
     void updateKoi(long koiId, KoiDTO koiDTO);
     void deleteBreeder(long breederId);

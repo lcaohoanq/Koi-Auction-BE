@@ -19,7 +19,6 @@ import com.swp391.koibe.services.user.IUserService;
 import com.swp391.koibe.utils.DTOConverter;
 import com.swp391.koibe.utils.DateTimeUtils;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -88,7 +87,7 @@ public class BiddingHistoryService implements IBiddingHistoryService, Biddable {
     }
 
     @Override
-    public ArrayList<Bid> getBidsByAuctionKoiId(Long auctionKoiId) {
+    public List<Bid> getBidsByAuctionKoiId(Long auctionKoiId) {
         return bidHistoryRepository.getAllByAuctionKoiId(auctionKoiId);
     }
 
@@ -99,7 +98,7 @@ public class BiddingHistoryService implements IBiddingHistoryService, Biddable {
 
     @Override
     public Bid getBidderLatestBid(Long auctionKoiId, Long bidderId) {
-        ArrayList<Bid> bids = getBidsByAuctionKoiId(auctionKoiId);
+        List<Bid> bids = getBidsByAuctionKoiId(auctionKoiId);
         if (bids.isEmpty()) {
             return null;
         } else {
@@ -112,7 +111,7 @@ public class BiddingHistoryService implements IBiddingHistoryService, Biddable {
 
     @Override
     public BidResponse getBidderHighestBid(Long auctionKoiId, Long bidderId) {
-        ArrayList<Bid> bids = getBidsByAuctionKoiId(auctionKoiId);
+        List<Bid> bids = getBidsByAuctionKoiId(auctionKoiId);
         Bid highestBid;
         if (bids.isEmpty()) {
             return null;

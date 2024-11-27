@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record CategoryResponse (
     @JsonProperty("id")
-    Integer id,
+    Long id,
     @JsonProperty("name")
     String name,
     @JsonProperty("koi_count")

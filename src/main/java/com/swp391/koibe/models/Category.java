@@ -31,7 +31,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "categories_seq")
     @Column(name="id", unique=true, nullable=false)
     @JsonProperty("id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "name", nullable = false)
     private String name;

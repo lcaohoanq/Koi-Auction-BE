@@ -26,7 +26,7 @@ public record KoiResponse(
     @JsonProperty("thumbnail") String thumbnail,
     @JsonProperty("description") String description,
     @JsonProperty("owner_id") Long ownerId,
-    @JsonProperty("category_id") Integer categoryId,
+    @JsonProperty("category_id") Long categoryId,
     @JsonProperty("created_at") LocalDateTime createdAt,
     @JsonProperty("updated_at") LocalDateTime updatedAt,
     @JsonProperty("total_page") Integer totalPage

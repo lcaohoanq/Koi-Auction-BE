@@ -20,7 +20,7 @@ public record KoiInAuctionResponse(
     @JsonProperty("thumbnail") String thumbnail,
     @JsonProperty("description") String description,
     @JsonProperty("owner_id") Long ownerId,
-    @JsonProperty("category_id") Integer categoryId,
+    @JsonProperty("category_id") Long categoryId,
     @JsonProperty("created_at") LocalDateTime createdAt,
     @JsonProperty("updated_at") LocalDateTime updatedAt,
     @JsonProperty("auction_id") Long auctionId,
@@ -32,7 +32,7 @@ public record KoiInAuctionResponse(
                                 Long price,
                                 EKoiStatus status, int isDisplay, String thumbnail,
                                 String description,
-                                Long ownerId, Integer categoryId, LocalDateTime createdAt,
+                                Long ownerId, Long categoryId, LocalDateTime createdAt,
                                 LocalDateTime updatedAt,
                                 Long auctionId, EBidMethod bidMethod) {
         this(id, name, sex, length, yearBorn, price, status.name(), isDisplay, thumbnail,
