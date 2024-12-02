@@ -161,9 +161,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/managers", apiPrefix), "PUT"),
                 Pair.of(String.format("%s/managers", apiPrefix), "DELETE"),
 
-                // UserController
-                Pair.of(String.format("%s/users/register", apiPrefix), "POST"),
-                Pair.of(String.format("%s/users/login", apiPrefix), "POST"),
+                // AuthController
+                Pair.of(String.format("%s/auth/register", apiPrefix), "POST"),
+                Pair.of(String.format("%s/auth/login", apiPrefix), "POST"),
 
                 // Verify OTP
 

@@ -12,12 +12,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.util.Pair;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -79,6 +78,11 @@ public class WebSecurityConfig {
                     )
                     .permitAll()
 
+                    //AuthController
+                    .requestMatchers(POST, String.format("%s/auth/login", apiPrefix)).permitAll()
+                    .requestMatchers(POST, String.format("%s/auth/register", apiPrefix)).permitAll()
+                    .requestMatchers(POST, String.format("%s/auth/logout", apiPrefix)).hasAnyRole(Role.MANAGER, Role.MEMBER, Role.BREEDER, Role.STAFF)
+
                     //UserController
                     .requestMatchers(GET, String.format("%s/users/{id:\\d+}", apiPrefix)).permitAll()
                     .requestMatchers(POST, String.format("%s/users/details", apiPrefix)).hasAnyRole(Role.MANAGER, Role.MEMBER, Role.BREEDER, Role.STAFF)
@@ -86,7 +90,6 @@ public class WebSecurityConfig {
                     .requestMatchers(POST, String.format("%s/users/register", apiPrefix)).permitAll()
                     .requestMatchers(PUT, String.format(("%s/users/verify/{otp:\\d+}"), apiPrefix)).permitAll()
                     .requestMatchers(POST, String.format(("%s/users/verify"), apiPrefix)).permitAll()
-                    .requestMatchers(POST, String.format("%s/users/logout", apiPrefix)).hasAnyRole(Role.MANAGER, Role.MEMBER, Role.BREEDER, Role.STAFF)
                     .requestMatchers(PUT, String.format("%s/users/{userId:\\d+}/deposit/{payment:\\d+}", apiPrefix)).hasAnyRole(Role.MANAGER, Role.MEMBER, Role.BREEDER, Role.STAFF)
                     .requestMatchers(PUT, String.format("%s/users/{id:\\d+}/update-role/{roleId:\\d+}", apiPrefix)).hasAnyRole(Role.MANAGER)
                     .requestMatchers(DELETE, String.format("%s/users/{id:\\d+}", apiPrefix)).hasAnyRole(Role.MANAGER)
