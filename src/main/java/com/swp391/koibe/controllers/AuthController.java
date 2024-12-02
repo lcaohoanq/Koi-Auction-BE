@@ -9,6 +9,7 @@ import com.swp391.koibe.models.User;
 import com.swp391.koibe.responses.LoginResponse;
 import com.swp391.koibe.responses.UserResponse;
 import com.swp391.koibe.responses.base.ApiResponse;
+import com.swp391.koibe.services.auth.IAuthService;
 import com.swp391.koibe.services.token.TokenService;
 import com.swp391.koibe.services.user.IUserService;
 import com.swp391.koibe.utils.DTOConverter;
@@ -41,6 +42,7 @@ public class AuthController {
     private final LocalizationUtils localizationUtils;
     private final TokenService tokenService;
     private final HttpServletRequest request;
+    private final IAuthService authService;
 
     @Timed(
         value = "custom.login.requests",
@@ -57,9 +59,9 @@ public class AuthController {
             throw new MethodArgumentNotValidException(result);
         }
 
-        String token = userService.login(userLoginDTO.email(), userLoginDTO.password());
+        String token = authService.login(userLoginDTO.email(), userLoginDTO.password());
         String userAgent = request.getHeader("User-Agent");
-        User userDetail = userService.getUserDetailsFromToken(token);
+        User userDetail = authService.getUserDetailsFromToken(token);
         Token jwtToken = tokenService.addToken(userDetail, token, isMobileDevice(userAgent));
         log.info("User logged in successfully");
         return ResponseEntity.ok(LoginResponse.builder()
@@ -97,7 +99,7 @@ public class AuthController {
             throw new MethodArgumentNotValidException(result);
         }
 
-        User user = userService.createUser(userRegisterDTO);
+        User user = authService.createUser(userRegisterDTO);
         log.info("New user registered successfully");
         return ResponseEntity.status(HttpStatus.CREATED).body(
             ApiResponse.<UserResponse>builder()
@@ -115,7 +117,7 @@ public class AuthController {
         description = "Track logout request count")
     @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_MEMBER', 'ROLE_STAFF', 'ROLE_BREEDER')")
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<Objects>> logout() {
+    public ResponseEntity<ApiResponse<Objects>> logout() throws Exception {
 
         String authorizationHeader = request.getHeader("Authorization");
 
@@ -126,7 +128,7 @@ public class AuthController {
                 .getAuthentication().getPrincipal();
             User user = userService.findByUsername(userDetails.getUsername());
 
-            tokenService.deleteToken(token, user); //revoke token
+            authService.logout(token, user);
 
             return ResponseEntity.ok().body(
                 ApiResponse.<Objects>builder()

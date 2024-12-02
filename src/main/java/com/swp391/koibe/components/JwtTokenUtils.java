@@ -1,11 +1,15 @@
 package com.swp391.koibe.components;
 
 import com.swp391.koibe.exceptions.InvalidParamException;
+import com.swp391.koibe.models.Token;
 import com.swp391.koibe.models.User;
-import com.swp391.koibe.services.user.IUserService;
+import com.swp391.koibe.repositories.TokenRepository;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
@@ -16,16 +20,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtTokenUtils {
 
+    private final TokenRepository tokenRepository;
     @Value("${jwt.expiration}")
     private int expiration; //save to an environment variable
 
@@ -43,13 +47,13 @@ public class JwtTokenUtils {
         claims.put("email", user.getEmail());
         claims.put("userId", user.getId());
         try {
-            String token = Jwts.builder()
+            //how to extract claims from this ?
+            return Jwts.builder()
                 .setClaims(claims) //how to extract claims from this ?
                 .setSubject(user.getEmail())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000L))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
-            return token;
         } catch (Exception e) {
             //you can "inject" Logger, instead System.out.println
             throw new InvalidParamException("Cannot create jwt token, error: " + e.getMessage());
@@ -67,8 +71,7 @@ public class JwtTokenUtils {
         SecureRandom random = new SecureRandom();
         byte[] keyBytes = new byte[32]; // 256-bit key
         random.nextBytes(keyBytes);
-        String secretKey = Encoders.BASE64.encode(keyBytes);
-        return secretKey;
+        return Encoders.BASE64.encode(keyBytes);
     }
 
     private Claims extractAllClaims(String token) {
@@ -93,32 +96,28 @@ public class JwtTokenUtils {
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
     }
+
     public boolean validateToken(String token, User userDetails) {
-
-        String email = extractEmail(token);
-        return (email.equals(userDetails.getEmail()))
+        try {
+            String email = extractEmail(token);
+            Token existingToken = tokenRepository.findByToken(token);
+            if (existingToken == null ||
+                existingToken.isRevoked() ||
+                !userDetails.isActive()
+            ) {
+                return false;
+            }
+            return (email.equals(userDetails.getUsername()))
                 && !isTokenExpired(token);
-
-//        try {
-//            String email = extractPhoneNumber(token);
-//            Token existingToken = tokenRepository.findByToken(token);
-//            if(existingToken == null ||
-//                    existingToken.isRevoked() == true ||
-//                    !userDetails.isActive()
-//            ) {
-//                return false;
-//            }
-//            return (email.equals(userDetails.getUsername()))
-//                    && !isTokenExpired(token);
-//        } catch (MalformedJwtException e) {
-//            logger.error("Invalid JWT token: {}", e.getMessage());
-//        } catch (ExpiredJwtException e) {
-//            logger.error("JWT token is expired: {}", e.getMessage());
-//        } catch (UnsupportedJwtException e) {
-//            logger.error("JWT token is unsupported: {}", e.getMessage());
-//        } catch (IllegalArgumentException e) {
-//            logger.error("JWT claims string is empty: {}", e.getMessage());
-//        }
-//        return false;
+        } catch (MalformedJwtException e) {
+            log.error("Invalid JWT token: {}", e.getMessage());
+        } catch (ExpiredJwtException e) {
+            log.error("JWT token is expired: {}", e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            log.error("JWT token is unsupported: {}", e.getMessage());
+        } catch (IllegalArgumentException e) {
+            log.error("JWT claims string is empty: {}", e.getMessage());
+        }
+        return false;
     }
 }

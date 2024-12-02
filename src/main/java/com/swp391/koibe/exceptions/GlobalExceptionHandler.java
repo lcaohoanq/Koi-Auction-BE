@@ -42,6 +42,17 @@ public class GlobalExceptionHandler {
                 .build();
     }
 
+    @ExceptionHandler(ExpiredTokenException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError<Object> handleExpiredTokenException(ExpiredTokenException e) {
+        return ApiError.errorBuilder()
+            .message("Token has expired")
+            .reason(e.getMessage())
+            .statusCode(HttpStatus.BAD_REQUEST.value())
+            .isSuccess(false)
+            .build();
+    }
+
     @ExceptionHandler(NullPointerException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError<Object> handleNullPointerException(NullPointerException e) {
